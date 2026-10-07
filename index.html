@@ -660,9 +660,9 @@
         <div class="target-field-selector">
           <span class="selector-title">Escolha o que deseja calcular:</span>
           <div class="target-pills">
+            <button type="button" class="btn-pill" id="pillMonths" onclick="selecionarCampoParaCalcular('calcMonths')">Prazo</button>
             <button type="button" class="btn-pill" id="pillRate" onclick="selecionarCampoParaCalcular('calcRate')">Juros</button>
             <button type="button" class="btn-pill active" id="pillPayment" onclick="selecionarCampoParaCalcular('calcPayment')">Prestação</button>
-            <button type="button" class="btn-pill" id="pillMonths" onclick="selecionarCampoParaCalcular('calcMonths')">Prazo</button>
             <button type="button" class="btn-pill" id="pillPrincipal" onclick="selecionarCampoParaCalcular('calcPrincipal')">Valor Financiado</button>
           </div>
         </div>
@@ -1053,9 +1053,9 @@
     function atualizarDestaqueAlvo(targetId) {
       alvoSelecionadoManualmente = targetId;
       const targets = [
+        { id: 'calcMonths', pillId: 'pillMonths' },
         { id: 'calcRate', pillId: 'pillRate' },
         { id: 'calcPayment', pillId: 'pillPayment' },
-        { id: 'calcMonths', pillId: 'pillMonths' },
         { id: 'calcPrincipal', pillId: 'pillPrincipal' }
       ];
 
