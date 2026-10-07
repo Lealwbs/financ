@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Financiamento</title>
+  <title>Calculadora Financeira</title>
 
   <!-- Favicon / Icone da Pagina (SVG) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e3a8a'/%3E%3Cpath d='M8 7h16v3H8zm0 6h4v4H8zm6 0h4v4h-4zm6 0h4v4h-4zM8 19h4v4H8zm6 0h4v4h-4zm6 0h4v6h-4zm-12 6h10v2H8z' fill='%23ffffff'/%3E%3C/svg%3E">
@@ -180,30 +180,6 @@
       box-shadow: 0 1px 3px rgba(30, 58, 138, 0.25);
     }
 
-    .btn-calc-target {
-      background-color: transparent;
-      border: 1px solid var(--border);
-      color: var(--primary);
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s ease;
-      flex-shrink: 0;
-    }
-
-    .btn-calc-target:hover {
-      background-color: #eff6ff;
-      border-color: var(--primary);
-    }
-
-    .btn-calc-target.active {
-      background-color: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
-    }
 
     .bacen-form {
       padding: 18px 20px 20px;
@@ -261,6 +237,20 @@
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
+    }
+
+    .form-control:read-only,
+    .form-control.field-locked {
+      background-color: #f8fafc;
+      cursor: not-allowed;
+      border-color: #cbd5e1;
+      color: var(--text-muted);
+    }
+
+    .form-control.field-locked:focus {
+      outline: none;
+      box-shadow: none;
+      border-color: #cbd5e1;
     }
 
     .calculated-highlight {
@@ -421,35 +411,10 @@
       color: var(--text-main);
     }
 
-    .system-toggle-group {
-      display: inline-flex;
-      background-color: var(--border);
-      border-radius: var(--radius);
-      padding: 3px;
-      gap: 3px;
-    }
-
-    .btn-toggle {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      padding: 6px 14px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      border-radius: calc(var(--radius) - 2px);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: var(--font);
-    }
-
-    .btn-toggle:hover {
-      color: var(--text-main);
-    }
-
-    .btn-toggle.active {
-      background-color: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    .amort-select {
+      width: auto;
+      min-width: 240px;
+      font-weight: 500;
     }
 
     /* Tabela Comparativa Sem Amortizacao vs Com Amortizacao */
@@ -673,7 +638,7 @@
   <!-- CABECALHO -->
   <header class="header">
     <div class="header-container">
-      <h1 class="header-title">Calculadora de Financiamento</h1>
+      <h1 class="header-title">Calculadora Financeira</h1>
     </div>
   </header>
 
@@ -688,7 +653,7 @@
           Financiamento com prestações fixas
         </div>
         <div class="bacen-instruction">
-          Preencha 3 campos e deixe 1 vazio para calcular (ou use os botões abaixo).
+          Escolha o que deseja calcular, informe os outros 3 valores e clique em Calcular.
         </div>
 
         <!-- Seletor Rapido de Campo para Calcular -->
@@ -696,7 +661,7 @@
           <span class="selector-title">Escolha o que deseja calcular:</span>
           <div class="target-pills">
             <button type="button" class="btn-pill" id="pillRate" onclick="selecionarCampoParaCalcular('calcRate')">Juros</button>
-            <button type="button" class="btn-pill" id="pillPayment" onclick="selecionarCampoParaCalcular('calcPayment')">Prestação</button>
+            <button type="button" class="btn-pill active" id="pillPayment" onclick="selecionarCampoParaCalcular('calcPayment')">Prestação</button>
             <button type="button" class="btn-pill" id="pillMonths" onclick="selecionarCampoParaCalcular('calcMonths')">Prazo</button>
             <button type="button" class="btn-pill" id="pillPrincipal" onclick="selecionarCampoParaCalcular('calcPrincipal')">Valor Financiado</button>
           </div>
@@ -707,10 +672,10 @@
           <div class="form-row">
             <label for="calcMonths" class="form-label">
               Prazo
+              <small>em meses</small>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcMonths" class="form-control" min="1" max="420" step="1" value="24" placeholder="(Em meses)">
-              <button type="button" class="btn-calc-target" id="btnTargetMonths" onclick="selecionarCampoParaCalcular('calcMonths')" title="Calcular o Prazo">Calcular este</button>
+              <input type="number" id="calcMonths" class="form-control" min="1" max="420" step="1" value="" placeholder="">
             </div>
           </div>
 
@@ -718,11 +683,11 @@
           <div class="form-row">
             <label for="calcRate" class="form-label">
               Juros
+              <small>taxa mensal em %</small>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcRate" class="form-control" min="0" step="any" value="1.50" placeholder="(Taxa mensal em %)">
+              <input type="number" id="calcRate" class="form-control" min="0" step="any" value="" placeholder="">
               <span class="unit-label">%</span>
-              <button type="button" class="btn-calc-target" id="btnTargetRate" onclick="selecionarCampoParaCalcular('calcRate')" title="Calcular os Juros">Calcular este</button>
             </div>
           </div>
 
@@ -730,10 +695,10 @@
           <div class="form-row">
             <label for="calcPayment" class="form-label">
               Prestação
+              <small>1ª parcela em 30 dias</small>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcPayment" class="form-control" min="0" step="any" value="" placeholder="(1ª parcela em 30 dias)">
-              <button type="button" class="btn-calc-target" id="btnTargetPayment" onclick="selecionarCampoParaCalcular('calcPayment')" title="Calcular a Prestação">Calcular este</button>
+              <input type="number" id="calcPayment" class="form-control field-locked" min="0" step="any" value="" placeholder="" readonly>
             </div>
           </div>
 
@@ -741,10 +706,10 @@
           <div class="form-row">
             <label for="calcPrincipal" class="form-label">
               Valor Financiado
+              <small>não inclui o valor da entrada</small>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcPrincipal" class="form-control" min="0" step="any" value="100000" placeholder="(Não inclui o valor da entrada)">
-              <button type="button" class="btn-calc-target" id="btnTargetPrincipal" onclick="selecionarCampoParaCalcular('calcPrincipal')" title="Calcular o Valor Financiado">Calcular este</button>
+              <input type="number" id="calcPrincipal" class="form-control" min="0" step="any" value="" placeholder="">
             </div>
           </div>
 
@@ -818,7 +783,7 @@
     <!-- ========================================================================
          PARTE 2: SIMULACAO DE AMORTIZACAO DE FINANCIAMENTO
          ======================================================================== -->
-    <section class="card simulation-section" id="amortizationSection">
+    <section class="card simulation-section" id="amortizationSection" style="display: none;">
       <div>
         <h2 class="card-title">Simulação de Amortização de Financiamento</h2>
         <p class="card-subtitle">
@@ -829,16 +794,16 @@
       <!-- Barra de Parametros da Amortizacao -->
       <div class="amort-controls-bar">
         <div class="amort-control-group">
-          <span class="amort-control-label">Sistema de Amortização:</span>
-          <div class="system-toggle-group">
-            <button type="button" class="btn-toggle active" id="btnSystemPrice" onclick="selecionarSistemaAmortizacao('PRICE')">Tabela Price</button>
-            <button type="button" class="btn-toggle" id="btnSystemSac" onclick="selecionarSistemaAmortizacao('SAC')">SAC</button>
-          </div>
+          <label for="systemSelect" class="amort-control-label">Sistema de Amortização:</label>
+          <select id="systemSelect" class="form-control amort-select" onchange="selecionarSistemaAmortizacao(this.value)">
+            <option value="PRICE" selected>Tabela Price (Prestações Fixas)</option>
+            <option value="SAC">SAC (Amortização Constante)</option>
+          </select>
         </div>
 
         <div class="amort-control-group">
           <label for="extraMonthlyInput" class="amort-control-label">Aporte Extra Todo Mês (R$):</label>
-          <input type="number" id="extraMonthlyInput" class="form-control" style="width: 150px;" min="0" step="any" value="0" placeholder="Ex: 500" oninput="atualizarSimulacaoAmortizacao()">
+          <input type="number" id="extraMonthlyInput" class="form-control" style="width: 150px;" min="0" step="any" value="0" placeholder="" oninput="atualizarSimulacaoAmortizacao()">
         </div>
       </div>
 
@@ -1083,55 +1048,49 @@
        ========================================================================== */
 
     let alvoSelecionadoManualmente = 'calcPayment';
+    let hasCalculated = false;
 
     function atualizarDestaqueAlvo(targetId) {
       alvoSelecionadoManualmente = targetId;
       const targets = [
-        { id: 'calcRate', pillId: 'pillRate', btnId: 'btnTargetRate' },
-        { id: 'calcPayment', pillId: 'pillPayment', btnId: 'btnTargetPayment' },
-        { id: 'calcMonths', pillId: 'pillMonths', btnId: 'btnTargetMonths' },
-        { id: 'calcPrincipal', pillId: 'pillPrincipal', btnId: 'btnTargetPrincipal' }
+        { id: 'calcRate', pillId: 'pillRate' },
+        { id: 'calcPayment', pillId: 'pillPayment' },
+        { id: 'calcMonths', pillId: 'pillMonths' },
+        { id: 'calcPrincipal', pillId: 'pillPrincipal' }
       ];
 
       targets.forEach(t => {
         const inp = document.getElementById(t.id);
         const pill = document.getElementById(t.pillId);
-        const btn = document.getElementById(t.btnId);
 
         if (t.id === targetId) {
-          if (inp) inp.classList.add('calculated-highlight');
+          if (inp) {
+            inp.classList.add('calculated-highlight', 'field-locked');
+            inp.readOnly = true;
+          }
           if (pill) pill.classList.add('active');
-          if (btn) btn.classList.add('active');
         } else {
-          if (inp) inp.classList.remove('calculated-highlight');
+          if (inp) {
+            inp.classList.remove('calculated-highlight', 'field-locked');
+            inp.readOnly = false;
+          }
           if (pill) pill.classList.remove('active');
-          if (btn) btn.classList.remove('active');
         }
       });
     }
 
     function selecionarCampoParaCalcular(fieldId) {
       const field = document.getElementById(fieldId);
-      field.value = '';
-      field.focus();
-      atualizarDestaqueAlvo(fieldId);
-    }
-
-    function sincronizarCamposVazios() {
-      const fRate = String(document.getElementById('calcRate').value || '').trim();
-      const fPayment = String(document.getElementById('calcPayment').value || '').trim();
-      const fMonths = String(document.getElementById('calcMonths').value || '').trim();
-      const fPrincipal = String(document.getElementById('calcPrincipal').value || '').trim();
-
-      const empty = [];
-      if (fRate === '') empty.push('calcRate');
-      if (fPayment === '') empty.push('calcPayment');
-      if (fMonths === '') empty.push('calcMonths');
-      if (fPrincipal === '') empty.push('calcPrincipal');
-
-      if (empty.length === 1) {
-        atualizarDestaqueAlvo(empty[0]);
+      if (field) {
+        field.value = '';
       }
+      atualizarDestaqueAlvo(fieldId);
+
+      // Foca no primeiro campo editável que estiver vazio
+      const editaveis = ['calcMonths', 'calcRate', 'calcPayment', 'calcPrincipal'].filter(id => id !== fieldId);
+      const primeiroVazio = editaveis.find(id => String(document.getElementById(id).value).trim() === '') || editaveis[0];
+      const elFocus = document.getElementById(primeiroVazio);
+      if (elFocus) elFocus.focus();
     }
 
     function executarCalculoBacen() {
@@ -1150,29 +1109,12 @@
       let pmt = parseFloat(rawPayment);
       let pv = parseFloat(rawPrincipal);
 
-      // Identifica quais campos estao vazios
-      const emptyFields = [];
-      if (rawRate === '' || isNaN(rateMonthly)) emptyFields.push('calcRate');
-      if (rawPayment === '' || isNaN(pmt)) emptyFields.push('calcPayment');
-      if (rawMonths === '' || isNaN(n)) emptyFields.push('calcMonths');
-      if (rawPrincipal === '' || isNaN(pv)) emptyFields.push('calcPrincipal');
-
-      let targetToCalculate = null;
-
-      if (emptyFields.length === 1) {
-        targetToCalculate = emptyFields[0];
-      } else if (emptyFields.length === 0) {
-        // Todos estao preenchidos: recalcula o campo atualmente selecionado ou a prestacao
-        targetToCalculate = alvoSelecionadoManualmente || 'calcPayment';
-      } else {
-        alert('Por favor, preencha pelo menos 3 dos 4 campos (deixe apenas 1 em branco para ser calculado).');
-        return;
-      }
+      const targetToCalculate = alvoSelecionadoManualmente || 'calcPayment';
 
       // 1. Calcula Taxa de Juros Mensal
       if (targetToCalculate === 'calcRate') {
         if (!pv || !pmt || !n) {
-          alert('Preencha o Nº de meses, o Valor da prestação e o Valor financiado para calcular a taxa de juros.');
+          alert('Preencha o Prazo, a Prestação e o Valor Financiado para calcular a taxa de juros.');
           return;
         }
         const calcRate = solveRateNewtonRaphson(pv, pmt, n);
@@ -1182,22 +1124,20 @@
         }
         rateMonthly = calcRate;
         inpRate.value = (rateMonthly * 100.0).toFixed(2);
-        atualizarDestaqueAlvo('calcRate');
       } 
       // 2. Calcula Valor da Prestacao
       else if (targetToCalculate === 'calcPayment') {
         if (!pv || isNaN(rateMonthly) || !n) {
-          alert('Preencha o Nº de meses, a Taxa de juros e o Valor financiado para calcular a prestação.');
+          alert('Preencha o Prazo, os Juros e o Valor Financiado para calcular a prestação.');
           return;
         }
         pmt = solvePMT(pv, rateMonthly, n);
         inpPayment.value = pmt.toFixed(2);
-        atualizarDestaqueAlvo('calcPayment');
       } 
       // 3. Calcula Nº de Meses
       else if (targetToCalculate === 'calcMonths') {
         if (!pv || isNaN(rateMonthly) || !pmt) {
-          alert('Preencha a Taxa de juros, a Prestação e o Valor financiado para calcular o prazo.');
+          alert('Preencha os Juros, a Prestação e o Valor Financiado para calcular o prazo.');
           return;
         }
         const calcN = solvePeriod(pv, pmt, rateMonthly);
@@ -1207,26 +1147,33 @@
         }
         n = calcN;
         inpMonths.value = n;
-        atualizarDestaqueAlvo('calcMonths');
       } 
       // 4. Calcula Valor Financiado
       else if (targetToCalculate === 'calcPrincipal') {
         if (!pmt || isNaN(rateMonthly) || !n) {
-          alert('Preencha o Nº de meses, a Taxa de juros e o Valor da prestação para calcular o valor financiado.');
+          alert('Preencha o Prazo, os Juros e a Prestação para calcular o valor financiado.');
           return;
         }
         pv = solvePV(pmt, rateMonthly, n);
         inpPrincipal.value = pv.toFixed(2);
-        atualizarDestaqueAlvo('calcPrincipal');
       }
+
+      // Garante que o campo permaneça bloqueado e destacado
+      atualizarDestaqueAlvo(targetToCalculate);
 
       // Atualiza o estado consolidado
       currentLoanState.PV = pv;
       currentLoanState.monthlyRate = rateMonthly;
       currentLoanState.months = n;
       currentLoanState.PMT = pmt;
+      hasCalculated = true;
 
-      // Executa a simulacao de amortizacao logo abaixo
+      // Revela a seção de simulação e executa a projeção
+      const simSection = document.getElementById('amortizationSection');
+      if (simSection) {
+        simSection.style.display = 'block';
+      }
+
       atualizarSimulacaoAmortizacao();
     }
 
@@ -1236,58 +1183,53 @@
       document.getElementById('calcPayment').value = '';
       document.getElementById('calcPrincipal').value = '';
       document.getElementById('extraMonthlyInput').value = '0';
-      atualizarDestaqueAlvo(null);
+      hasCalculated = false;
+
+      const simSection = document.getElementById('amortizationSection');
+      if (simSection) {
+        simSection.style.display = 'none';
+      }
+
+      atualizarDestaqueAlvo(alvoSelecionadoManualmente || 'calcPayment');
     }
 
     let currentSystem = 'PRICE';
 
     function selecionarSistemaAmortizacao(system) {
       currentSystem = system;
-      const btnPrice = document.getElementById('btnSystemPrice');
-      const btnSac = document.getElementById('btnSystemSac');
-
-      if (system === 'PRICE') {
-        if (btnPrice) btnPrice.classList.add('active');
-        if (btnSac) btnSac.classList.remove('active');
-      } else {
-        if (btnSac) btnSac.classList.add('active');
-        if (btnPrice) btnPrice.classList.remove('active');
+      const sel = document.getElementById('systemSelect');
+      if (sel && sel.value !== system) {
+        sel.value = system;
       }
 
-      atualizarSimulacaoAmortizacao();
+      if (hasCalculated) {
+        atualizarSimulacaoAmortizacao();
+      }
     }
 
     function carregarExemploBacen(tipo) {
       limparCampos();
 
       if (tipo === 'meses') {
+        selecionarCampoParaCalcular('calcMonths');
         document.getElementById('calcPrincipal').value = '2000';
         document.getElementById('calcRate').value = '1.0';
         document.getElementById('calcPayment').value = '261.50';
-        document.getElementById('calcMonths').value = '';
-        atualizarDestaqueAlvo('calcMonths');
-        document.getElementById('calcMonths').focus();
       } else if (tipo === 'taxa') {
+        selecionarCampoParaCalcular('calcRate');
         document.getElementById('calcPrincipal').value = '750';
         document.getElementById('calcMonths').value = '10';
         document.getElementById('calcPayment').value = '86.00';
-        document.getElementById('calcRate').value = '';
-        atualizarDestaqueAlvo('calcRate');
-        document.getElementById('calcRate').focus();
       } else if (tipo === 'prestacao') {
+        selecionarCampoParaCalcular('calcPayment');
         document.getElementById('calcPrincipal').value = '1290';
         document.getElementById('calcMonths').value = '4';
         document.getElementById('calcRate').value = '1.99';
-        document.getElementById('calcPayment').value = '';
-        atualizarDestaqueAlvo('calcPayment');
-        document.getElementById('calcPayment').focus();
       } else if (tipo === 'financiado') {
+        selecionarCampoParaCalcular('calcPrincipal');
         document.getElementById('calcMonths').value = '24';
         document.getElementById('calcRate').value = '1.99';
         document.getElementById('calcPayment').value = '935.00';
-        document.getElementById('calcPrincipal').value = '';
-        atualizarDestaqueAlvo('calcPrincipal');
-        document.getElementById('calcPrincipal').focus();
       }
     }
 
@@ -1584,14 +1526,13 @@
       executarCalculoBacen();
     });
 
-    ['calcMonths', 'calcRate', 'calcPayment', 'calcPrincipal'].forEach(id => {
-      document.getElementById(id).addEventListener('input', sincronizarCamposVazios);
-    });
-
-    // Carga inicial
+    // Carga inicial (valores vazios por padrao, alvo inicial na Prestacao)
     window.addEventListener('DOMContentLoaded', () => {
       atualizarDestaqueAlvo('calcPayment');
-      executarCalculoBacen();
+      const simSection = document.getElementById('amortizationSection');
+      if (simSection) {
+        simSection.style.display = 'none';
+      }
     });
   </script>
 </body>

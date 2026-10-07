@@ -1,4 +1,4 @@
-# Calculadora de Financiamento
+# Calculadora Financeira
 ## Trabalho Prático 1 - Administração Financeira | UFMG
 
 **Instituição:** Universidade Federal de Minas Gerais (UFMG)  
@@ -16,14 +16,14 @@
 
 Aplicação web desenvolvida em **arquivo único HTML** (`index.html`), inspirada na interface oficial da **Calculadora do Cidadão (Banco Central do Brasil - BACEN)** integrada a um módulo completo de **Simulação de Amortização de Financiamento**:
 
-### Etapa 1: Calculadora de Financiamento com Prestações Fixas (Estilo BACEN)
+### Etapa 1: Calculadora com Prestações Fixas (Estilo BACEN)
 Permite ao usuário calcular qualquer uma das 4 variáveis fundamentais do financiamento:
-1. **Nº de meses ($n$)**
-2. **Taxa de juros mensal ($i$)** (resolvida via convergência numérica de *Newton-Raphson*)
-3. **Valor da prestação ($PMT$)**
-4. **Valor financiado ($PV$)**
+1. **Prazo ($n$)** (em meses)
+2. **Juros ($i$)** (taxa mensal em %, resolvida via *Newton-Raphson*)
+3. **Prestação ($PMT$)** (1ª parcela em 30 dias)
+4. **Valor Financiado ($PV$)** (não inclui a entrada)
 
-Possui botões **Calcular** e **Limpar**, seletores rápidos (pills e botões por linha) para definir qual variável calcular, e 4 cartões clicáveis com **Exemplos de Cálculo** oficiais do BACEN que carregam e resolvem os cenários instantaneamente.
+Possui botões **Calcular** e **Limpar**, seletor rápido para definir qual variável calcular (bloqueando o campo selecionado para receber o resultado do cálculo), e 4 cartões clicáveis com **Exemplos** oficiais do BACEN. Por padrão, a aplicação inicia com os campos vazios e a seção de amortização é revelada após o cálculo.
 
 ### Etapa 2: Simulação de Amortização de Financiamento
 Após calcular as condições iniciais, o sistema projeta a liquidação do passivo:
