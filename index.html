@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador de Financiamento: SAC e Tabela Price | UFMG CAD 167</title>
+  <title>Calculadora de Financiamento: SAC e Tabela Price | UFMG CAD 167</title>
 
   <!-- Tipografia Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 
   <style>
     /* ==========================================================================
-       ESTILOS VISUAIS (CSS) - DESIGN PROFISSIONAL, LIMPO E INTUITIVO
+       ESTILOS VISUAIS (CSS) - DESIGN PROFISSIONAL, MINIMALISTA E INTUITIVO
        ========================================================================== */
     :root {
       --primary: #1e3a8a;
@@ -86,40 +86,7 @@
       padding: 0 20px;
     }
 
-    /* Barra de Selecao do Objetivo de Calculo */
-    .calc-mode-bar {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .calc-mode-label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .calc-mode-select {
-      flex: 1;
-      min-width: 280px;
-      padding: 8px 12px;
-      font-family: var(--font);
-      font-size: 0.88rem;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background-color: #ffffff;
-      color: var(--primary);
-      cursor: pointer;
-    }
-
-    /* Cenarios Rapidos */
+    /* Cenarios Didaticos (Apenas Nomes Sucintos) */
     .presets-bar {
       display: flex;
       align-items: center;
@@ -133,7 +100,7 @@
     }
 
     .presets-label {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -142,9 +109,9 @@
       background-color: var(--bg-subtle);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 6px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -155,10 +122,10 @@
       border-color: #cbd5e1;
     }
 
-    /* Grid do Formulario e Indicadores */
+    /* Grid Principal */
     .main-grid {
       display: grid;
-      grid-template-columns: 370px 1fr;
+      grid-template-columns: 380px 1fr;
       gap: 20px;
       margin-bottom: 20px;
     }
@@ -169,7 +136,6 @@
       }
     }
 
-    /* Cards */
     .card {
       background-color: var(--bg-card);
       border: 1px solid var(--border);
@@ -185,7 +151,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* Formularios */
+    /* Formulario */
     .form-group {
       margin-bottom: 12px;
     }
@@ -220,9 +186,21 @@
       box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
     }
 
+    .form-control:disabled {
+      background-color: var(--bg-subtle);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
     .select-unit {
       width: 95px;
       cursor: pointer;
+    }
+
+    .highlight-calc-field {
+      border-color: var(--primary);
+      background-color: #eff6ff !important;
+      font-weight: 600;
     }
 
     .btn-submit {
@@ -242,6 +220,20 @@
 
     .btn-submit:hover {
       background-color: var(--primary-hover);
+    }
+
+    /* Secao de Amortizacao Extra Mensal */
+    .extra-amort-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .extra-amort-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 6px;
     }
 
     /* Grid de Indicadores (KPIs) */
@@ -345,7 +337,25 @@
       line-height: 1.45;
     }
 
-    /* Parecer e Analise de Financas */
+    /* Box de Impacto da Amortizacao Extra */
+    .extra-savings-box {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+      color: #166534;
+      line-height: 1.45;
+    }
+
+    .extra-savings-title {
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: #15803d;
+    }
+
+    /* Parecer Analitico */
     .report-insight-box {
       background-color: var(--bg-subtle);
       border: 1px solid var(--border);
@@ -363,28 +373,6 @@
       font-size: 0.82rem;
     }
 
-    /* Parametros Extras Informativos (CET e Taxa Real) */
-    .macro-metrics-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-    }
-
-    .macro-metric-item {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .macro-metric-val {
-      font-weight: 700;
-      color: var(--text-main);
-      display: block;
-      font-size: 0.88rem;
-    }
-
     /* Grafico */
     .chart-container {
       position: relative;
@@ -393,7 +381,7 @@
       margin-top: 10px;
     }
 
-    /* Tabela */
+    /* Abas para Tabelas */
     .table-section {
       margin-top: 20px;
     }
@@ -405,6 +393,28 @@
       margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 10px;
+    }
+
+    .table-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-tab {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-tab.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
     }
 
     .table-wrapper {
@@ -465,7 +475,7 @@
       color: var(--accent-amber);
     }
 
-    /* Rodape Institucional com Identificacao do Aluno */
+    /* Rodape com Identificacao */
     .footer {
       max-width: 1100px;
       margin: 30px auto 0;
@@ -489,67 +499,73 @@
   <header class="header">
     <div class="header-container">
       <div class="header-tag">CAD 167 - Administracao Financeira | UFMG</div>
-      <h1 class="header-title">Simulador de Financiamento: SAC e Tabela Price</h1>
-      <p class="header-subtitle">Analise do Valor do Dinheiro no Tempo (TVM), Capacidade de Financiamento e Taxa Implicita (Trabalho 1)</p>
+      <h1 class="header-title">Calculadora de Financiamento: SAC e Tabela Price</h1>
+      <p class="header-subtitle">Equacao Geral do Valor do Dinheiro no Tempo (TVM) e Simulador de Amortizacao Mensal (Trabalho 1)</p>
     </div>
   </header>
 
   <main class="container">
 
-    <!-- SELETOR DO OBJETIVO DO CALCULO (MODOS DE RESOLUCAO) -->
-    <div class="calc-mode-bar">
-      <label for="calcModeSelect" class="calc-mode-label">Objetivo do Calculo:</label>
-      <select id="calcModeSelect" class="calc-mode-select">
-        <option value="pmt" selected>1. Calcular Valor da Parcela e Cronograma (Padrao: Informar Valor, Taxa e Prazo)</option>
-        <option value="pv">2. Calcular Capacidade de Financiamento (Descobrir quanto financia a partir da Parcela Pretendida)</option>
-        <option value="rate">3. Descobrir Taxa Implicita / TIR (Descobrir a taxa real cobrada pelo banco dada a Parcela)</option>
-      </select>
-    </div>
-
-    <!-- PRESETS RAPIDOS DE CENARIOS DE MERCADO -->
+    <!-- CENARIOS DIDATICOS (NOMES SUCINTOS) -->
     <div class="presets-bar">
       <span class="presets-label">Cenarios Didaticos:</span>
-      <button type="button" class="btn-preset" onclick="aplicarCenario('aula')">
-        Exemplo de Aula (R$ 100k, 12m, 1.5% a.m.)
+      <button type="button" class="btn-preset" onclick="carregarCenario('aula')">
+        Exemplo de Aula
       </button>
-      <button type="button" class="btn-preset" onclick="aplicarCenario('imovel')">
-        Imobiliario com Entrada (Bem R$ 400k, Entrada R$ 100k, 360m, SAC)
+      <button type="button" class="btn-preset" onclick="carregarCenario('imobiliario')">
+        Financiamento Imobiliario
       </button>
-      <button type="button" class="btn-preset" onclick="aplicarCenario('veiculo')">
-        Financiamento Veicular (Bem R$ 80k, Entrada R$ 20k, 48m, Price)
+      <button type="button" class="btn-preset" onclick="carregarCenario('veicular')">
+        Credito Veicular
+      </button>
+      <button type="button" class="btn-preset" onclick="carregarCenario('pessoal')">
+        Emprestimo Pessoal
       </button>
     </div>
 
     <div class="main-grid">
 
-      <!-- COLUNA 1: FORMULARIO COM PARAMETROS DE ENTRADA -->
+      <!-- COLUNA 1: FORMULARIO MULTIDIRECIONAL -->
       <section class="card">
-        <h2 class="card-title" id="formSectionTitle">Parametros de Entrada</h2>
+        <h2 class="card-title">Parametros do Financiamento</h2>
 
         <form id="calcForm">
-          <!-- Campo 1: Valor do Bem / Financiamento -->
-          <div class="form-group" id="grpAssetValue">
-            <label for="assetValueInput" class="form-label" id="lblAssetValue">Valor do Bem / Montante Total (R$)</label>
-            <input type="number" id="assetValueInput" class="form-control" min="500" step="100" value="100000" required>
+          <!-- Parametro a ser calculado automaticamente -->
+          <div class="form-group">
+            <label for="solveTargetSelect" class="form-label" style="color: var(--primary);">
+              Calcular Automaticamente:
+            </label>
+            <select id="solveTargetSelect" class="form-control" style="font-weight: 600; border-color: var(--primary);">
+              <option value="pmt" selected>Valor da Parcela (PMT)</option>
+              <option value="pv">Valor Total do Bem / Financiado (PV)</option>
+              <option value="rate">Taxa de Juros (i)</option>
+              <option value="period">Prazo de Pagamento (n)</option>
+            </select>
           </div>
 
-          <!-- Campo 2: Entrada Inicial (Opcional para abater do Principal) -->
+          <!-- 1. Valor Total do Bem -->
+          <div class="form-group" id="grpAssetValue">
+            <label for="assetValueInput" class="form-label">Valor Total do Bem (R$)</label>
+            <input type="number" id="assetValueInput" class="form-control" min="100" step="100" value="100000">
+          </div>
+
+          <!-- 2. Valor da Entrada -->
           <div class="form-group" id="grpDownPayment">
-            <label for="downPaymentInput" class="form-label">Valor da Entrada Inicial (R$)</label>
+            <label for="downPaymentInput" class="form-label">Valor da Entrada (R$)</label>
             <input type="number" id="downPaymentInput" class="form-control" min="0" step="100" value="0">
           </div>
 
-          <!-- Campo 3: Parcela Pretendida / Cobrada (Ativo nos modos 2 e 3) -->
-          <div class="form-group" id="grpTargetPmt" style="display: none;">
-            <label for="targetPmtInput" class="form-label">Valor da Parcela (R$)</label>
-            <input type="number" id="targetPmtInput" class="form-control" min="10" step="10" value="9168">
+          <!-- 3. Valor da Parcela -->
+          <div class="form-group" id="grpPmt">
+            <label for="pmtInput" class="form-label">Valor da Parcela (R$)</label>
+            <input type="number" id="pmtInput" class="form-control highlight-calc-field" min="1" step="1" value="9168" disabled>
           </div>
 
-          <!-- Campo 4: Taxa de Juros (Oculto no Modo 3, que calcula a taxa) -->
-          <div class="form-group" id="grpInterestRate">
-            <label for="rateInput" class="form-label">Taxa de Juros Contratual</label>
+          <!-- 4. Taxa de Juros -->
+          <div class="form-group" id="grpRate">
+            <label for="rateInput" class="form-label">Taxa de Juros</label>
             <div class="input-row">
-              <input type="number" id="rateInput" class="form-control" min="0.01" step="0.01" value="1.50" required>
+              <input type="number" id="rateInput" class="form-control" min="0.01" step="0.01" value="1.50">
               <select id="rateUnitSelect" class="form-control select-unit">
                 <option value="month" selected>% a.m.</option>
                 <option value="year">% a.a.</option>
@@ -557,11 +573,11 @@
             </div>
           </div>
 
-          <!-- Campo 5: Prazo de Pagamento -->
-          <div class="form-group">
+          <!-- 5. Prazo de Pagamento -->
+          <div class="form-group" id="grpPeriod">
             <label for="periodInput" class="form-label">Prazo de Pagamento</label>
             <div class="input-row">
-              <input type="number" id="periodInput" class="form-control" min="1" max="420" step="1" value="12" required>
+              <input type="number" id="periodInput" class="form-control" min="1" max="420" step="1" value="12">
               <select id="periodUnitSelect" class="form-control select-unit">
                 <option value="months" selected>meses</option>
                 <option value="years">anos</option>
@@ -569,40 +585,36 @@
             </div>
           </div>
 
-          <!-- Campo 6: Sistema de Amortizacao -->
+          <!-- Sistema de Amortizacao -->
           <div class="form-group">
-            <label for="systemSelect" class="form-label">Sistema de Amortizacao</label>
+            <label for="systemSelect" class="form-label">Sistema de Amortizacao Base</label>
             <select id="systemSelect" class="form-control">
               <option value="PRICE" selected>Tabela Price (Parcelas Fixas)</option>
               <option value="SAC">SAC (Parcelas Decrescentes)</option>
             </select>
           </div>
 
-          <!-- Parametros Complementares (CET e Inflacao/Fisher) -->
-          <div class="form-group">
-            <label for="monthlyFeeInput" class="form-label">Taxa Adm. / Seguro Mensal (R$/mes, para CET)</label>
-            <input type="number" id="monthlyFeeInput" class="form-control" min="0" step="5" value="0">
+          <!-- Simulacao de Amortizacao Mensal Extra -->
+          <div class="extra-amort-box">
+            <div class="extra-amort-title">Simulacao de Amortizacao Mensal Adicional:</div>
+            <label for="extraMonthlyInput" class="form-label">Aporte Extra Todo Mes (R$/mes)</label>
+            <input type="number" id="extraMonthlyInput" class="form-control" min="0" step="50" value="0" placeholder="Ex: 500 para amortizar extra">
           </div>
 
-          <div class="form-group">
-            <label for="inflationInput" class="form-label">Inflacao Anual Projetada / IPCA (% a.a.)</label>
-            <input type="number" id="inflationInput" class="form-control" min="0" step="0.1" value="4.5">
-          </div>
-
-          <button type="submit" class="btn-submit">Calcular e Atualizar Relatorio</button>
+          <button type="submit" class="btn-submit">Calcular e Atualizar Tabelas</button>
         </form>
       </section>
 
-      <!-- COLUNA 2: RELATORIO DE INDICADORES (KPIS) E COMPARATIVO -->
+      <!-- COLUNA 2: RESULTADOS, COMPARATIVO E RELATORIO -->
       <section class="card">
-        <h2 class="card-title">Relatorio Sintetico de Execucao</h2>
+        <h2 class="card-title">Relatorio Executivo</h2>
 
         <!-- Cards de Indicadores Financeiros Chave -->
         <div class="kpi-grid">
           <div class="kpi-card">
-            <div class="kpi-label">Valor Efetivamente Financiado (PV)</div>
+            <div class="kpi-label">Valor Financiado (PV)</div>
             <div class="kpi-value" id="kpiEffectivePV">R$ 100.000,00</div>
-            <div class="kpi-desc" id="kpiPVDesc">Apos deducao da entrada</div>
+            <div class="kpi-desc" id="kpiPVDesc">Bem deduzido da entrada</div>
           </div>
 
           <div class="kpi-card">
@@ -612,15 +624,23 @@
           </div>
 
           <div class="kpi-card">
-            <div class="kpi-label">Desembolso Total Final</div>
+            <div class="kpi-label">Desembolso Total</div>
             <div class="kpi-value" id="kpiTotalPaid">R$ 0,00</div>
-            <div class="kpi-desc" id="kpiTotalDesc">Principal + Juros + Taxas</div>
+            <div class="kpi-desc">Principal + Juros</div>
           </div>
 
           <div class="kpi-card highlight">
             <div class="kpi-label">Custo Total em Juros</div>
             <div class="kpi-value" id="kpiTotalInterest">R$ 0,00</div>
-            <div class="kpi-desc" id="kpiInterestRatio">0% do valor financiado</div>
+            <div class="kpi-desc" id="kpiInterestRatio">0% do financiado</div>
+          </div>
+        </div>
+
+        <!-- Box de Economia da Amortizacao Extra Mensal (quando houver aporte) -->
+        <div class="extra-savings-box" id="extraSavingsBox" style="display: none;">
+          <div class="extra-savings-title">Impacto do Aporte Mensal Adicional:</div>
+          <div id="extraSavingsText">
+            Com a amortizacao mensal, o contrato e quitado antecipadamente.
           </div>
         </div>
 
@@ -675,45 +695,35 @@
           </div>
         </div>
 
-        <!-- Parecer do Relatorio sob a Otica do Valor do Dinheiro no Tempo -->
+        <!-- Parecer do Relatorio -->
         <div class="report-insight-box">
           <div class="report-insight-title">Parecer de Administracao Financeira:</div>
           <div id="reportInsightText">
             Carregando analise...
-          </div>
-
-          <!-- Metricas Macro (Taxa Real de Fisher e CET Estimado) -->
-          <div class="macro-metrics-row">
-            <div class="macro-metric-item">
-              Taxa de Juros Real (Equacao de Fisher):
-              <span class="macro-metric-val" id="macroRealRate">0,00% a.a.</span>
-            </div>
-            <div class="macro-metric-item">
-              Custo Efetivo Total Estimado (CET):
-              <span class="macro-metric-val" id="macroCetRate">0,00% a.a.</span>
-            </div>
           </div>
         </div>
 
       </section>
     </div>
 
-    <!-- SEÇÃO: RELATORIO GRAFICO DE SALDO DEVEDOR -->
+    <!-- SEÇÃO: GRAFICO COMPARATIVO DE SALDO DEVEDOR -->
     <section class="card" style="margin-bottom: 20px;">
-      <h2 class="card-title">Evolucao Temporal do Saldo Devedor (SAC vs Tabela Price)</h2>
+      <h2 class="card-title">Trajetoria Temporal do Saldo Devedor</h2>
       <div class="chart-container">
         <canvas id="amortChart"></canvas>
       </div>
     </section>
 
-    <!-- SEÇÃO: RELATORIO DETALHADO (CRONOGRAMA MES A MES) -->
+    <!-- SEÇÃO: TABELAS DETALHADAS COM ALTERNADOR DE VISUALIZACAO -->
     <section class="card table-section">
       <div class="table-toolbar">
         <h2 class="card-title" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
           Cronograma Detalhado de Amortizacao
         </h2>
-        <div style="font-size: 0.82rem; color: var(--text-muted);" id="tableActiveSystemLabel">
-          Exibindo: Tabela Price
+        <div class="table-tabs">
+          <button type="button" class="btn-tab active" id="tabBtnPrice" onclick="alternarTabela('PRICE')">Tabela Price</button>
+          <button type="button" class="btn-tab" id="tabBtnSac" onclick="alternarTabela('SAC')">Tabela SAC</button>
+          <button type="button" class="btn-tab" id="tabBtnExtra" onclick="alternarTabela('EXTRA')" style="display: none;">Com Amortizacao Mensal</button>
         </div>
       </div>
 
@@ -725,7 +735,7 @@
               <th>Parcela (PMT)</th>
               <th>Amortizacao (A)</th>
               <th>Juros (J)</th>
-              <th>Taxas / Seguro</th>
+              <th id="thExtraCol" style="display: none;">Aporte Extra</th>
               <th>Saldo Devedor (SD)</th>
             </tr>
           </thead>
@@ -741,7 +751,7 @@
 
   </main>
 
-  <!-- RODAPE COM IDENTIFICACAO ACADEMICA DO ALUNO -->
+  <!-- RODAPE COM IDENTIFICACAO DO ALUNO -->
   <footer class="footer">
     <div>Universidade Federal de Minas Gerais (UFMG) &bull; CAD 167 - Administracao Financeira &bull; ICEX / Sistemas de Informacao</div>
     <div class="footer-student">
@@ -750,26 +760,27 @@
   </footer>
 
   <!-- ==========================================================================
-       LOGICA JAVASCRIPT: MATEMATICA FINANCEIRA, REGRAS DE TVM, TIR E RELATORIOS
-       TODOS OS METODOS DOCUMENTADOS DE FORMA DIDATICA PARA AVALIACAO DO DOCENTE
+       LOGICA JAVASCRIPT: MATEMATICA FINANCEIRA COMPLETA
+       DEDICADA AO CALCULO DAS 4 VARIAVEIS (PV, PMT, i, n), SAC, PRICE E AMORTIZACAO
        ========================================================================== -->
   <script>
     'use strict';
 
     /**
-     * ATENDIMENTO INTEGRAL AOS 4 CRITERIOS DE AVALIACAO (CAD 167 - UFMG):
-     * 1. Execucao da aplicacao: Arquivo unico sem dependencias locais, executa em qualquer navegador.
-     * 2. Captura de dados: Formulario multidirecional (calcula PMT, calcula PV ou calcula taxa TIR),
-     *    com suporte a entrada inicial, seguro/CET e inflacao estimada.
-     * 3. Descricao nos comentarios: Formulas de TVM, FRC, TIR Newton-Raphson e Fisher explicadas abaixo.
-     * 4. Geracao de relatorios: KPIs executivos, parecer analitico, comparativo SAC x Price,
-     *    grafico de amortizacao e cronograma mes a mes detalhado.
+     * Instancia do grafico Chart.js para atualizacao reativa
      */
-
     let chartInstance = null;
 
     /**
-     * Formata numero em Moeda Brasileira (R$ 1.234,56)
+     * Estado dos cronogramas gerados para exibicao nas abas
+     */
+    let cacheSchedulePrice = [];
+    let cacheScheduleSac = [];
+    let cacheScheduleExtra = [];
+    let activeTableSystem = 'PRICE';
+
+    /**
+     * Formata valor para Real (R$ 1.234,56)
      */
     function formatMoney(value) {
       return new Intl.NumberFormat('pt-BR', {
@@ -781,7 +792,7 @@
     }
 
     /**
-     * Formata numero em percentual (12,34%)
+     * Formata valor em porcentagem (1,50%)
      */
     function formatPercent(value, decimals = 2) {
       return new Intl.NumberFormat('pt-BR', {
@@ -791,8 +802,7 @@
     }
 
     /**
-     * CONVERSAO DE TAXA ANUAL PARA TAXA MENSAL EQUIVALENTE NO REGIME COMPOSTO
-     * Teoria do Valor do Dinheiro no Tempo (Berk, DeMarzo & Harford, Cap. 4):
+     * CONVERSAO DE TAXA DE JUROS PARA A BASE MENSAL (REGIME COMPOSTO)
      * (1 + i_ano) = (1 + i_mes)^12  =>  i_mes = (1 + i_ano)^(1/12) - 1
      */
     function toMonthlyRate(ratePercent, unit) {
@@ -804,59 +814,75 @@
     }
 
     /**
-     * CONVERSAO DE TAXA MENSAL PARA TAXA ANUAL EQUIVALENTE NO REGIME COMPOSTO
-     * (1 + i_ano) = (1 + i_mes)^12 - 1
+     * CONVERSAO DE TAXA MENSAL PARA TAXA ANUAL (REGIME COMPOSTO)
      */
     function toYearlyRate(monthlyRateDecimal) {
       return (Math.pow(1.0 + monthlyRateDecimal, 12.0) - 1.0) * 100.0;
     }
 
+    /* ==========================================================================
+       1. FORMULAS DAS 4 VARIAVEIS DA ANUIDADE (TVM)
+       ========================================================================== */
+
     /**
-     * TAXA DE JUROS REAL PELA EQUACAO DE FISHER
-     * Teoria Financeira: Relaciona taxa nominal (i), taxa real (r) e inflacao projetada (pi):
-     * (1 + i) = (1 + r) * (1 + pi)  =>  r = (1 + i) / (1 + pi) - 1
+     * 1. CALCULO DA PARCELA (PMT) DADOS PV, i, n
+     * Price: PMT = PV * [ i * (1 + i)^n ] / [ (1 + i)^n - 1 ]
      */
-    function calculateRealInterestRate(nominalYearlyRatePercent, inflationYearlyPercent) {
-      const iNom = nominalYearlyRatePercent / 100.0;
-      const iInf = inflationYearlyPercent / 100.0;
-      if (1 + iInf <= 0) return 0;
-      const rReal = ((1.0 + iNom) / (1.0 + iInf)) - 1.0;
-      return rReal * 100.0;
+    function solvePMT(PV, i, n) {
+      if (i <= 0) return PV / n;
+      const factor = Math.pow(1.0 + i, n);
+      return PV * (i * factor) / (factor - 1.0);
     }
 
     /**
-     * METODO NUMERICO DE NEWTON-RAPHSON PARA CALCULO DA TAXA IMPLICITA (TIR)
-     * Encontra a raiz da equacao do Valor Presente:
-     * f(i) = PV - PMT * [1 - (1 + i)^(-n)] / i = 0
-     * Derivada f'(i) para aproximacao iterativa de alta precisao:
-     * i_{k+1} = i_k - f(i_k) / f'(i_k)
-     * 
-     * @param {number} PV - Valor Financiado
-     * @param {number} PMT - Parcela cobrada
-     * @param {number} n - Numero de meses
-     * @returns {number} Taxa mensal decimal encontrada (TIR)
+     * 2. CALCULO DO VALOR PRESENTE (PV) DADOS PMT, i, n
+     * PV = PMT * [ (1 + i)^n - 1 ] / [ i * (1 + i)^n ]
      */
-    function solveInterestRateNewtonRaphson(PV, PMT, n) {
+    function solvePV(PMT, i, n) {
+      if (i <= 0) return PMT * n;
+      const factor = Math.pow(1.0 + i, n);
+      return PMT * (factor - 1.0) / (i * factor);
+    }
+
+    /**
+     * 3. CALCULO DO PRAZO EM MESES (n) DADOS PV, PMT, i
+     * n = -ln(1 - (PV * i) / PMT) / ln(1 + i)
+     */
+    function solvePeriod(PV, PMT, i) {
+      if (i <= 0) return Math.ceil(PV / PMT);
+      const interestOnly = PV * i;
+      if (PMT <= interestOnly) {
+        // A parcela nao cobre nem os juros da divida
+        return null;
+      }
+      const numerator = Math.log(1.0 - (PV * i) / PMT);
+      const denominator = Math.log(1.0 + i);
+      const n = -numerator / denominator;
+      return Math.max(1, Math.ceil(n));
+    }
+
+    /**
+     * 4. CALCULO DA TAXA DE JUROS (i / TIR) DADOS PV, PMT, n
+     * Resolvido via Metodo de Newton-Raphson:
+     * f(i) = PV - PMT * [ 1 - (1 + i)^(-n) ] / i = 0
+     */
+    function solveRateNewtonRaphson(PV, PMT, n) {
       if (PV <= 0 || PMT <= 0 || n <= 0) return 0.01;
-      if (PMT * n <= PV) return 0.0001; // Sem juros ou negativo
+      if (PMT * n <= PV) return 0.0001; // Sem juros
 
-      // Chute inicial razoavel
-      let i = (PMT * n - PV) / (PV * n);
-      const maxIterations = 50;
-      const epsilon = 1e-7;
+      let i = (PMT * n - PV) / (PV * n); // Estimativa inicial
+      const maxIter = 60;
+      const tol = 1e-7;
 
-      for (let iter = 0; iter < maxIterations; iter++) {
+      for (let k = 0; k < maxIter; k++) {
         const factor = Math.pow(1.0 + i, -n);
-        // f(i) = PV - PMT * (1 - (1+i)^(-n)) / i
         const f = PV - PMT * (1.0 - factor) / i;
-
-        // Derivada f'(i)
         const df = PMT * ((1.0 - factor) / (i * i) - (n * factor) / (i * (1.0 + i)));
 
         if (Math.abs(df) < 1e-12) break;
         const nextI = i - f / df;
 
-        if (Math.abs(nextI - i) < epsilon) {
+        if (Math.abs(nextI - i) < tol) {
           return Math.max(0.0001, nextI);
         }
         i = Math.max(0.0001, nextI);
@@ -864,118 +890,111 @@
       return i;
     }
 
-    /**
-     * CALCULO DO VALOR PRESENTE (CAPACIDADE MAXIMA DE FINANCIAMENTO)
-     * Dado o valor pretendido de parcela que cabe no bolso do tomador:
-     * Na Tabela Price: PV = PMT * [ (1 + i)^n - 1 ] / [ i * (1 + i)^n ]
-     * No SAC (baseado na 1ª parcela): PV = (PMT_1 * n) / (1 + n * i)
-     */
-    function calculatePVFromTargetPMT(targetPMT, i, n, system) {
-      if (i <= 0) return targetPMT * n;
-      if (system === 'SAC') {
-        return (targetPMT * n) / (1.0 + n * i);
-      } else {
-        const factor = Math.pow(1.0 + i, n);
-        return targetPMT * (factor - 1.0) / (i * factor);
-      }
-    }
+    /* ==========================================================================
+       2. GERACAO DE CRONOGRAMAS: TABELA PRICE, SAC E AMORTIZACAO MENSAL EXTRA
+       ========================================================================== */
 
     /**
-     * CALCULO DA TABELA PRICE (SISTEMA FRANCES DE ANUIDADE UNIFORME)
-     * FRC (Fator de Recuperacao de Capital):
-     * PMT = PV * [ i * (1 + i)^n ] / [ (1 + i)^n - 1 ]
-     * Juros mensais: J_t = SD_{t-1} * i
-     * Amortizacao mensal: A_t = PMT - J_t
+     * Gera cronograma da Tabela Price (com suporte a amortizacao mensal adicional)
      */
-    function calculatePrice(PV, i, n, monthlyFee = 0) {
+    function generatePriceSchedule(PV, i, n, extraMonthly = 0) {
       const schedule = [];
       let balance = PV;
+      const basePMT = solvePMT(PV, i, n);
 
-      const pmtBase = i > 0
-        ? PV * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)
-        : PV / n;
+      schedule.push({ month: 0, pmt: 0, amort: 0, interest: 0, extra: 0, balance: balance });
 
-      // Periodo 0
-      schedule.push({ month: 0, pmt: 0, amort: 0, interest: 0, fee: 0, balance: balance });
-
-      for (let t = 1; t <= n; t++) {
+      let t = 1;
+      while (balance > 0.001 && t <= (extraMonthly > 0 ? n * 2 : n)) {
         const interest = balance * i;
-        let amort = pmtBase - interest;
+        let amort = basePMT - interest;
+        let extra = extraMonthly;
 
-        if (t === n || balance - amort < 0.01) {
-          amort = balance;
+        if (balance - amort - extra < 0.01) {
+          // Liquidacao antecipada ou ultima parcela
+          extra = Math.max(0, balance - amort);
+          if (amort > balance) {
+            amort = balance;
+            extra = 0;
+          }
           balance = 0;
         } else {
-          balance -= amort;
+          balance = balance - amort - extra;
         }
 
         schedule.push({
           month: t,
-          pmt: amort + interest + monthlyFee,
+          pmt: amort + interest + extra,
           amort: amort,
           interest: interest,
-          fee: monthlyFee,
+          extra: extra,
           balance: Math.max(0, balance)
         });
+
+        if (balance <= 0) break;
+        t++;
       }
 
       return schedule;
     }
 
     /**
-     * CALCULO DO SISTEMA DE AMORTIZACAO CONSTANTE (SAC)
-     * Amortizacao fixa: A = PV / n
-     * Juros mensais: J_t = SD_{t-1} * i
-     * Parcela decrescente: PMT_t = A + J_t + taxas
+     * Gera cronograma do Sistema SAC (com suporte a amortizacao mensal adicional)
      */
-    function calculateSac(PV, i, n, monthlyFee = 0) {
+    function generateSacSchedule(PV, i, n, extraMonthly = 0) {
       const schedule = [];
       let balance = PV;
-      const constAmort = PV / n;
+      const baseAmort = PV / n;
 
-      // Periodo 0
-      schedule.push({ month: 0, pmt: 0, amort: 0, interest: 0, fee: 0, balance: balance });
+      schedule.push({ month: 0, pmt: 0, amort: 0, interest: 0, extra: 0, balance: balance });
 
-      for (let t = 1; t <= n; t++) {
+      let t = 1;
+      while (balance > 0.001 && t <= (extraMonthly > 0 ? n * 2 : n)) {
         const interest = balance * i;
-        let amort = constAmort;
+        let amort = baseAmort;
+        let extra = extraMonthly;
 
-        if (t === n || balance - amort < 0.01) {
-          amort = balance;
+        if (balance - amort - extra < 0.01) {
+          extra = Math.max(0, balance - amort);
+          if (amort > balance) {
+            amort = balance;
+            extra = 0;
+          }
           balance = 0;
         } else {
-          balance -= amort;
+          balance = balance - amort - extra;
         }
-
-        const pmt = amort + interest + monthlyFee;
 
         schedule.push({
           month: t,
-          pmt: pmt,
+          pmt: amort + interest + extra,
           amort: amort,
           interest: interest,
-          fee: monthlyFee,
+          extra: extra,
           balance: Math.max(0, balance)
         });
+
+        if (balance <= 0) break;
+        t++;
       }
 
       return schedule;
     }
 
     /**
-     * Consolida dados para geracao de relatorios executivos
+     * Consolida metricas financeiras do cronograma
      */
-    function summarize(schedule) {
+    function summarizeSchedule(schedule) {
       let totalPmt = 0;
       let totalInterest = 0;
       let totalAmort = 0;
-      let totalFees = 0;
+      let totalExtra = 0;
 
-      for (let t = 1; t < schedule.length; t++) {
-        totalPmt += schedule[t].pmt;
-        totalInterest += schedule[t].interest;
-        totalAmort += schedule[t].amort;
-        totalFees += (schedule[t].fee || 0);
+      for (let idx = 1; idx < schedule.length; idx++) {
+        totalPmt += schedule[idx].pmt;
+        totalInterest += schedule[idx].interest;
+        totalAmort += schedule[idx].amort;
+        totalExtra += (schedule[idx].extra || 0);
       }
 
       return {
@@ -984,16 +1003,83 @@
         totalPmt: totalPmt,
         totalInterest: totalInterest,
         totalAmort: totalAmort,
-        totalFees: totalFees
+        totalExtra: totalExtra,
+        totalMonths: schedule.length - 1
       };
     }
 
+    /* ==========================================================================
+       3. CONTROLE DE INTERFACE, ALTERNANCIA DE ABAS E RENDERIZACAO
+       ========================================================================== */
+
     /**
-     * Atualiza a tabela HTML com colunas completas
+     * Atualiza os campos desabilitados e visiveis conforme o objetivo selecionado
      */
-    function renderTable(schedule) {
+    function handleSolveTargetChange() {
+      const target = document.getElementById('solveTargetSelect').value;
+
+      const inpAsset = document.getElementById('assetValueInput');
+      const inpPmt = document.getElementById('pmtInput');
+      const inpRate = document.getElementById('rateInput');
+      const inpPeriod = document.getElementById('periodInput');
+
+      // Reseta classes
+      inpAsset.classList.remove('highlight-calc-field');
+      inpPmt.classList.remove('highlight-calc-field');
+      inpRate.classList.remove('highlight-calc-field');
+      inpPeriod.classList.remove('highlight-calc-field');
+
+      inpAsset.disabled = false;
+      inpPmt.disabled = false;
+      inpRate.disabled = false;
+      inpPeriod.disabled = false;
+
+      if (target === 'pmt') {
+        inpPmt.disabled = true;
+        inpPmt.classList.add('highlight-calc-field');
+      } else if (target === 'pv') {
+        inpAsset.disabled = true;
+        inpAsset.classList.add('highlight-calc-field');
+      } else if (target === 'rate') {
+        inpRate.disabled = true;
+        inpRate.classList.add('highlight-calc-field');
+      } else if (target === 'period') {
+        inpPeriod.disabled = true;
+        inpPeriod.classList.add('highlight-calc-field');
+      }
+    }
+
+    /**
+     * Alterna a visualizacao da tabela ativa
+     */
+    function alternarTabela(system) {
+      activeTableSystem = system;
+
+      document.getElementById('tabBtnPrice').classList.remove('active');
+      document.getElementById('tabBtnSac').classList.remove('active');
+      document.getElementById('tabBtnExtra').classList.remove('active');
+
+      if (system === 'PRICE') {
+        document.getElementById('tabBtnPrice').classList.add('active');
+        renderTableRows(cacheSchedulePrice, false);
+      } else if (system === 'SAC') {
+        document.getElementById('tabBtnSac').classList.add('active');
+        renderTableRows(cacheScheduleSac, false);
+      } else if (system === 'EXTRA') {
+        document.getElementById('tabBtnExtra').classList.add('active');
+        renderTableRows(cacheScheduleExtra, true);
+      }
+    }
+
+    /**
+     * Renderiza o corpo e rodapé da tabela
+     */
+    function renderTableRows(schedule, showExtraCol) {
       const tbody = document.getElementById('scheduleBody');
       const tfoot = document.getElementById('scheduleFoot');
+      const thExtra = document.getElementById('thExtraCol');
+
+      thExtra.style.display = showExtraCol ? '' : 'none';
       tbody.innerHTML = '';
 
       schedule.forEach(row => {
@@ -1003,96 +1089,102 @@
           tr.style.backgroundColor = '#f1f5f9';
         }
 
+        let extraTd = showExtraCol 
+          ? `<td class="text-green">${row.extra > 0 ? formatMoney(row.extra) : '-'}</td>` 
+          : '';
+
         tr.innerHTML = `
           <td class="col-center">${row.month === 0 ? '0' : row.month}</td>
           <td>${row.month === 0 ? '-' : formatMoney(row.pmt)}</td>
           <td class="text-green">${row.month === 0 ? '-' : formatMoney(row.amort)}</td>
           <td class="text-amber">${row.month === 0 ? '-' : formatMoney(row.interest)}</td>
-          <td>${row.month === 0 ? '-' : (row.fee > 0 ? formatMoney(row.fee) : '0,00')}</td>
+          ${extraTd}
           <td><strong>${formatMoney(row.balance)}</strong></td>
         `;
         tbody.appendChild(tr);
       });
 
-      const summary = summarize(schedule);
+      const summary = summarizeSchedule(schedule);
+      let extraFootTd = showExtraCol
+        ? `<td class="text-green">${formatMoney(summary.totalExtra)}</td>`
+        : '';
+
       tfoot.innerHTML = `
         <tr>
           <td class="col-center">Total</td>
           <td>${formatMoney(summary.totalPmt)}</td>
           <td class="text-green">${formatMoney(summary.totalAmort)}</td>
           <td class="text-amber">${formatMoney(summary.totalInterest)}</td>
-          <td>${formatMoney(summary.totalFees)}</td>
+          ${extraFootTd}
           <td>R$ 0,00</td>
         </tr>
       `;
     }
 
     /**
-     * Renderiza o grafico comparativo de evolucao de saldo devedor
+     * Desenha grafico com Chart.js
      */
-    function renderChart(sacSchedule, priceSchedule) {
+    function renderChart(schedulePrice, scheduleSac, scheduleExtra, hasExtra) {
       if (typeof Chart === 'undefined') return;
 
-      const labels = sacSchedule.map(r => r.month === 0 ? '0' : `Mês ${r.month}`);
-      const sacBalances = sacSchedule.map(r => r.balance);
-      const priceBalances = priceSchedule.map(r => r.balance);
+      const maxLen = Math.max(schedulePrice.length, scheduleSac.length, hasExtra ? scheduleExtra.length : 0);
+      const labels = [];
+      for (let m = 0; m < maxLen; m++) {
+        labels.push(m === 0 ? '0' : `Mês ${m}`);
+      }
 
       const ctx = document.getElementById('amortChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
 
-      if (chartInstance) {
-        chartInstance.destroy();
+      const datasets = [
+        {
+          label: 'Saldo Tabela Price (Curva)',
+          data: schedulePrice.map(r => r.balance),
+          borderColor: '#1e3a8a',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: maxLen > 60 ? 0 : 2,
+          tension: 0.1
+        },
+        {
+          label: 'Saldo SAC (Linear)',
+          data: scheduleSac.map(r => r.balance),
+          borderColor: '#059669',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: maxLen > 60 ? 0 : 2,
+          tension: 0.1
+        }
+      ];
+
+      if (hasExtra && scheduleExtra.length > 0) {
+        datasets.push({
+          label: 'Saldo com Amortizacao Mensal Extra',
+          data: scheduleExtra.map(r => r.balance),
+          borderColor: '#d97706',
+          borderWidth: 2.5,
+          borderDash: [5, 5],
+          backgroundColor: 'transparent',
+          pointRadius: maxLen > 60 ? 0 : 2,
+          tension: 0.1
+        });
       }
 
       chartInstance = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Saldo SAC (Linear)',
-              data: sacBalances,
-              borderColor: '#059669',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              pointRadius: sacSchedule.length > 60 ? 0 : 2,
-              tension: 0.1
-            },
-            {
-              label: 'Saldo Tabela Price (Curva)',
-              data: priceBalances,
-              borderColor: '#1e3a8a',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              pointRadius: priceSchedule.length > 60 ? 0 : 2,
-              tension: 0.1
-            }
-          ]
-        },
+        data: { labels: labels, datasets: datasets },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'top',
-              labels: { font: { family: 'Inter', size: 12 } }
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.parsed.y)}`
-              }
-            }
+            legend: { position: 'top', labels: { font: { family: 'Inter', size: 12 } } },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.parsed.y)}` } }
           },
           scales: {
-            x: {
-              grid: { display: false },
-              ticks: { maxTicksLimit: 12, font: { family: 'Inter' } }
-            },
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 12, font: { family: 'Inter' } } },
             y: {
               grid: { color: '#f1f5f9' },
-              ticks: {
-                callback: (v) => formatMoney(v),
-                font: { family: 'Inter' }
-              }
+              ticks: { callback: (v) => formatMoney(v), font: { family: 'Inter' } }
             }
           }
         }
@@ -1100,91 +1192,94 @@
     }
 
     /**
-     * Ajusta visibilidade dos campos com base no modo de calculo
+     * EXECUCAO PRINCIPAL DA CALCULADORA UNIVERSAL
      */
-    function updateFieldVisibility() {
-      const mode = document.getElementById('calcModeSelect').value;
-      const grpAsset = document.getElementById('grpAssetValue');
-      const grpDown = document.getElementById('grpDownPayment');
-      const grpPmt = document.getElementById('grpTargetPmt');
-      const grpRate = document.getElementById('grpInterestRate');
-      const lblAsset = document.getElementById('lblAssetValue');
-
-      if (mode === 'pmt') {
-        // Modo Padrao
-        grpAsset.style.display = 'block';
-        grpDown.style.display = 'block';
-        grpPmt.style.display = 'none';
-        grpRate.style.display = 'block';
-        lblAsset.textContent = 'Valor do Bem / Montante Total (R$)';
-      } else if (mode === 'pv') {
-        // Descobrir quanto financia
-        grpAsset.style.display = 'none';
-        grpDown.style.display = 'block';
-        grpPmt.style.display = 'block';
-        grpRate.style.display = 'block';
-      } else if (mode === 'rate') {
-        // Descobrir taxa cobrada
-        grpAsset.style.display = 'block';
-        grpDown.style.display = 'block';
-        grpPmt.style.display = 'block';
-        grpRate.style.display = 'none';
-        lblAsset.textContent = 'Valor Financiado Solicitado (R$)';
-      }
-    }
-
-    /**
-     * EXECUCAO PRINCIPAL DA SIMULACAO E RELATORIOS
-     */
-    function runSimulation() {
-      const mode = document.getElementById('calcModeSelect').value;
-
-      let assetVal = parseFloat(document.getElementById('assetValueInput').value) || 0;
-      const downPayment = parseFloat(document.getElementById('downPaymentInput').value) || 0;
-      let targetPMT = parseFloat(document.getElementById('targetPmtInput').value) || 0;
-
-      let rateVal = parseFloat(document.getElementById('rateInput').value) || 0;
-      const rateUnit = document.getElementById('rateUnitSelect').value;
-      const periodVal = parseInt(document.getElementById('periodInput').value, 10) || 1;
-      const periodUnit = document.getElementById('periodUnitSelect').value;
+    function executeCalculation() {
+      const target = document.getElementById('solveTargetSelect').value;
       const chosenSystem = document.getElementById('systemSelect').value;
 
-      const monthlyFee = parseFloat(document.getElementById('monthlyFeeInput').value) || 0;
-      const inflationYearly = parseFloat(document.getElementById('inflationInput').value) || 0;
+      let assetVal = parseFloat(document.getElementById('assetValueInput').value) || 0;
+      let downPayment = parseFloat(document.getElementById('downPaymentInput').value) || 0;
+      let pmtVal = parseFloat(document.getElementById('pmtInput').value) || 0;
+      let rateVal = parseFloat(document.getElementById('rateInput').value) || 0;
+      const rateUnit = document.getElementById('rateUnitSelect').value;
+      let periodVal = parseInt(document.getElementById('periodInput').value, 10) || 1;
+      const periodUnit = document.getElementById('periodUnitSelect').value;
+      const extraMonthly = parseFloat(document.getElementById('extraMonthlyInput').value) || 0;
 
-      const totalMonths = periodUnit === 'years' ? periodVal * 12 : periodVal;
+      let totalMonths = periodUnit === 'years' ? periodVal * 12 : periodVal;
       let monthlyRate = toMonthlyRate(rateVal, rateUnit);
-      let effectivePV = Math.max(100, assetVal - downPayment);
+      let effectivePV = Math.max(10, assetVal - downPayment);
 
-      // Tratamento por Modo
-      if (mode === 'pv') {
-        // Calcula quanto consegue financiar
-        effectivePV = calculatePVFromTargetPMT(targetPMT, monthlyRate, totalMonths, chosenSystem);
+      // RESOLUCAO DA VARIAVEL SOLICITADA
+      if (target === 'pmt') {
+        // 1. Calcula Parcela
+        pmtVal = solvePMT(effectivePV, monthlyRate, totalMonths);
+        document.getElementById('pmtInput').value = Math.round(pmtVal * 100) / 100;
+      } else if (target === 'pv') {
+        // 2. Calcula Valor Financiado
+        effectivePV = solvePV(pmtVal, monthlyRate, totalMonths);
         assetVal = effectivePV + downPayment;
         document.getElementById('assetValueInput').value = Math.round(assetVal);
-      } else if (mode === 'rate') {
-        // Resolve taxa implicita (TIR) via Newton-Raphson
-        monthlyRate = solveInterestRateNewtonRaphson(effectivePV, targetPMT, totalMonths);
-        const rateMonthlyPct = monthlyRate * 100.0;
-        document.getElementById('rateInput').value = rateMonthlyPct.toFixed(2);
-        document.getElementById('rateUnitSelect').value = 'month';
+      } else if (target === 'rate') {
+        // 3. Calcula Taxa de Juros (TIR via Newton-Raphson)
+        monthlyRate = solveRateNewtonRaphson(effectivePV, pmtVal, totalMonths);
+        rateVal = rateUnit === 'year' ? toYearlyRate(monthlyRate) : (monthlyRate * 100.0);
+        document.getElementById('rateInput').value = rateVal.toFixed(2);
+      } else if (target === 'period') {
+        // 4. Calcula Prazo
+        const calculatedN = solvePeriod(effectivePV, pmtVal, monthlyRate);
+        if (calculatedN === null) {
+          alert('A parcela informada (R$ ' + formatMoney(pmtVal) + ') e menor ou igual aos juros mensais. A divida nunca seria quitada. Aumente o valor da parcela.');
+          return;
+        }
+        totalMonths = calculatedN;
+        document.getElementById('periodInput').value = periodUnit === 'years' ? (totalMonths / 12).toFixed(1) : totalMonths;
       }
 
-      // Calcula cronogramas
-      const sacSchedule = calculateSac(effectivePV, monthlyRate, totalMonths, monthlyFee);
-      const priceSchedule = calculatePrice(effectivePV, monthlyRate, totalMonths, monthlyFee);
+      // GERA CRONOGRAMAS PADRAO
+      cacheSchedulePrice = generatePriceSchedule(effectivePV, monthlyRate, totalMonths, 0);
+      cacheScheduleSac = generateSacSchedule(effectivePV, monthlyRate, totalMonths, 0);
 
-      const sacSummary = summarize(sacSchedule);
-      const priceSummary = summarize(priceSchedule);
+      const priceSummary = summarizeSchedule(cacheSchedulePrice);
+      const sacSummary = summarizeSchedule(cacheScheduleSac);
 
-      const activeSchedule = chosenSystem === 'SAC' ? sacSchedule : priceSchedule;
+      // GERA CRONOGRAMA COM AMORTIZACAO MENSAL EXTRA (SE HOUVER APORTE)
+      const hasExtra = extraMonthly > 0;
+      const tabBtnExtra = document.getElementById('tabBtnExtra');
+      const extraSavingsBox = document.getElementById('extraSavingsBox');
+      const extraSavingsText = document.getElementById('extraSavingsText');
+
+      if (hasExtra) {
+        tabBtnExtra.style.display = 'inline-block';
+        cacheScheduleExtra = chosenSystem === 'SAC'
+          ? generateSacSchedule(effectivePV, monthlyRate, totalMonths, extraMonthly)
+          : generatePriceSchedule(effectivePV, monthlyRate, totalMonths, extraMonthly);
+
+        const extraSummary = summarizeSchedule(cacheScheduleExtra);
+        const baseSummary = chosenSystem === 'SAC' ? sacSummary : priceSummary;
+
+        const monthsSaved = totalMonths - extraSummary.totalMonths;
+        const interestSaved = baseSummary.totalInterest - extraSummary.totalInterest;
+
+        extraSavingsBox.style.display = 'block';
+        extraSavingsText.innerHTML = `
+          Com um aporte mensal extra de <strong>${formatMoney(extraMonthly)}</strong>, seu financiamento sera quitado em 
+          <strong>${extraSummary.totalMonths} meses</strong> (uma reducao de <strong>${monthsSaved} meses</strong>!). 
+          Voce economizara <strong>${formatMoney(interestSaved)}</strong> em juros pagos ao banco.
+        `;
+      } else {
+        tabBtnExtra.style.display = 'none';
+        extraSavingsBox.style.display = 'none';
+        cacheScheduleExtra = [];
+      }
+
+      // METRICAS DE RESUMO (KPIS)
       const activeSummary = chosenSystem === 'SAC' ? sacSummary : priceSummary;
-
-      // Atualiza KPIs
       document.getElementById('kpiEffectivePV').textContent = formatMoney(effectivePV);
       document.getElementById('kpiPVDesc').textContent = downPayment > 0 
         ? `Bem: ${formatMoney(assetVal)} - Entrada: ${formatMoney(downPayment)}`
-        : 'Valor principal total';
+        : 'Valor integral financiado';
 
       document.getElementById('kpiFirstPmt').textContent = formatMoney(activeSummary.firstPmt);
       document.getElementById('kpiLastPmt').textContent = formatMoney(activeSummary.lastPmt);
@@ -1194,9 +1289,8 @@
       const interestRatio = effectivePV > 0 ? (activeSummary.totalInterest / effectivePV) * 100 : 0;
       document.getElementById('kpiInterestRatio').textContent = `${interestRatio.toFixed(1)}% do valor financiado`;
       document.getElementById('kpiPmtType').textContent = chosenSystem === 'SAC' ? 'Decrescente' : 'Parcela fixa';
-      document.getElementById('tableActiveSystemLabel').textContent = chosenSystem === 'SAC' ? 'Exibindo: Sistema SAC' : 'Exibindo: Tabela Price';
 
-      // Atualiza Comparativo SAC vs Price
+      // COMPARATIVO SAC vs PRICE
       document.getElementById('compSacFirst').textContent = formatMoney(sacSummary.firstPmt);
       document.getElementById('compSacLast').textContent = formatMoney(sacSummary.lastPmt);
       document.getElementById('compSacInterest').textContent = formatMoney(sacSummary.totalInterest);
@@ -1210,54 +1304,31 @@
       const interestDiff = priceSummary.totalInterest - sacSummary.totalInterest;
       if (interestDiff > 0) {
         document.getElementById('compDifferenceText').innerHTML =
-          `O <strong>Sistema SAC</strong> proporciona uma economia nominal de <strong>${formatMoney(interestDiff)}</strong> em juros em relacao a Tabela Price para o prazo de ${totalMonths} meses.`;
+          `O <strong>Sistema SAC</strong> gera uma economia de <strong>${formatMoney(interestDiff)}</strong> em juros em relacao a Tabela Price para este prazo.`;
       } else {
-        document.getElementById('compDifferenceText').innerHTML =
-          `Ambos os sistemas apresentam custos de juros identicos para este prazo.`;
+        document.getElementById('compDifferenceText').innerHTML = `Ambos os sistemas apresentam custos de juros identicos para este prazo.`;
       }
 
-      // Calculos Macro: Taxa Real de Fisher e CET
-      const yearlyNominal = toYearlyRate(monthlyRate);
-      const realRateYearly = calculateRealInterestRate(yearlyNominal, inflationYearly);
-      document.getElementById('macroRealRate').textContent = `${formatPercent(realRateYearly)} (com inflacao de ${formatPercent(inflationYearly)})`;
-
-      // CET (Custo Efetivo Total estimado com taxas de administracao)
-      const totalCashOutflow = activeSummary.totalPmt;
-      const cetAnnualEstimate = (Math.pow(totalCashOutflow / effectivePV, 12.0 / totalMonths) - 1.0) * 100.0;
-      document.getElementById('macroCetRate').textContent = `${formatPercent(cetAnnualEstimate)} a.a. (incluindo taxas)`;
-
-      // Parecer Analitico
+      // PARECER DE ADMINISTRACAO FINANCEIRA
       const insightBox = document.getElementById('reportInsightText');
-      if (mode === 'pv') {
-        insightBox.innerHTML = `
-          Com uma parcela pretendida de <strong>${formatMoney(targetPMT)}</strong> a uma taxa de <strong>${formatPercent(monthlyRate * 100)} a.m.</strong>, 
-          sua capacidade maxima de captacao e de <strong>${formatMoney(effectivePV)}</strong>. 
-          Somando a entrada de ${formatMoney(downPayment)}, e possivel adquirir um bem de ate <strong>${formatMoney(assetVal)}</strong>.
-        `;
-      } else if (mode === 'rate') {
-        insightBox.innerHTML = `
-          Pelo metodo de convergencia da Taxa Interna de Retorno (TIR), a operacao proposta cobra uma <strong>taxa efetiva real de ${formatPercent(monthlyRate * 100)} a.m.</strong> 
-          (${formatPercent(yearlyNominal)} a.a.). Compare essa taxa com a SELIC e o CDI de mercado para aferir a atratividade do credito.
-        `;
-      } else {
-        insightBox.innerHTML = `
-          Sob a otica do <em>Valor do Dinheiro no Tempo (TVM)</em>, o SAC reduz a divida em ritmo uniforme (<code>A = PV / n</code>), 
-          gerando o menor desembolso total de juros nominais. A Tabela Price mantem previsibilidade total com parcelas identicas, 
-          sendo indicada para fluxos de caixa estaveis que nao comportam a prestacao inicial mais alta do SAC.
-        `;
-      }
+      insightBox.innerHTML = `
+        Pelo conceito do <em>Valor do Dinheiro no Tempo (TVM)</em>, o Sistema SAC antecipa a amortizacao do capital (<code>A = PV / n</code>), 
+        reduzindo mais velozmente a base de calculo dos juros. A Tabela Price garante previsibilidade absoluta de desembolso 
+        com parcelas constantes (<code>${formatMoney(priceSummary.firstPmt)}</code>), sendo indicada para quem precisa de parcelas iniciais menores.
+      `;
 
-      // Renderiza Tabela e Grafico
-      renderTable(activeSchedule);
-      renderChart(sacSchedule, priceSchedule);
+      // ATUALIZA TABELAS E GRAFICOS
+      alternarTabela(hasExtra && activeTableSystem === 'EXTRA' ? 'EXTRA' : chosenSystem);
+      renderChart(cacheSchedulePrice, cacheScheduleSac, cacheScheduleExtra, hasExtra);
     }
 
     /**
-     * Presets Didaticos
+     * CENARIOS DIDATICOS (NOMES SUCINTOS)
      */
-    function aplicarCenario(tipo) {
-      document.getElementById('calcModeSelect').value = 'pmt';
-      updateFieldVisibility();
+    function carregarCenario(tipo) {
+      document.getElementById('solveTargetSelect').value = 'pmt';
+      handleSolveTargetChange();
+      document.getElementById('extraMonthlyInput').value = 0;
 
       if (tipo === 'aula') {
         document.getElementById('assetValueInput').value = 100000;
@@ -1267,46 +1338,53 @@
         document.getElementById('periodInput').value = 12;
         document.getElementById('periodUnitSelect').value = 'months';
         document.getElementById('systemSelect').value = 'PRICE';
-        document.getElementById('monthlyFeeInput').value = 0;
-      } else if (tipo === 'imovel') {
-        document.getElementById('assetValueInput').value = 400000;
-        document.getElementById('downPaymentInput').value = 100000;
+      } else if (tipo === 'imobiliario') {
+        document.getElementById('assetValueInput').value = 350000;
+        document.getElementById('downPaymentInput').value = 70000;
         document.getElementById('rateInput').value = 10.5;
         document.getElementById('rateUnitSelect').value = 'year';
         document.getElementById('periodInput').value = 360;
         document.getElementById('periodUnitSelect').value = 'months';
         document.getElementById('systemSelect').value = 'SAC';
-        document.getElementById('monthlyFeeInput').value = 35;
-      } else if (tipo === 'veiculo') {
-        document.getElementById('assetValueInput').value = 80000;
-        document.getElementById('downPaymentInput').value = 20000;
-        document.getElementById('rateInput').value = 1.79;
+        document.getElementById('extraMonthlyInput').value = 400; // Simulacao de amortizacao imobiliaria
+      } else if (tipo === 'veicular') {
+        document.getElementById('assetValueInput').value = 75000;
+        document.getElementById('downPaymentInput').value = 15000;
+        document.getElementById('rateInput').value = 1.89;
         document.getElementById('rateUnitSelect').value = 'month';
         document.getElementById('periodInput').value = 48;
         document.getElementById('periodUnitSelect').value = 'months';
         document.getElementById('systemSelect').value = 'PRICE';
-        document.getElementById('monthlyFeeInput').value = 15;
+      } else if (tipo === 'pessoal') {
+        document.getElementById('assetValueInput').value = 20000;
+        document.getElementById('downPaymentInput').value = 0;
+        document.getElementById('rateInput').value = 3.2;
+        document.getElementById('rateUnitSelect').value = 'month';
+        document.getElementById('periodInput').value = 24;
+        document.getElementById('periodUnitSelect').value = 'months';
+        document.getElementById('systemSelect').value = 'PRICE';
       }
-      runSimulation();
+
+      executeCalculation();
     }
 
     // Eventos
-    document.getElementById('calcModeSelect').addEventListener('change', () => {
-      updateFieldVisibility();
-      runSimulation();
+    document.getElementById('solveTargetSelect').addEventListener('change', () => {
+      handleSolveTargetChange();
+      executeCalculation();
     });
 
     document.getElementById('calcForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      runSimulation();
+      executeCalculation();
     });
 
-    document.getElementById('systemSelect').addEventListener('change', runSimulation);
+    document.getElementById('systemSelect').addEventListener('change', executeCalculation);
 
     // Inicializacao
     window.addEventListener('DOMContentLoaded', () => {
-      updateFieldVisibility();
-      runSimulation();
+      handleSolveTargetChange();
+      executeCalculation();
     });
   </script>
 </body>

@@ -1,5 +1,5 @@
 # CAD 167 - Administracao Financeira | UFMG
-## Trabalho Pratico 1: Simulador Avancado de Amortizacao (SAC e Tabela Price)
+## Trabalho Pratico 1: Calculadora Completa de Financiamento (SAC e Tabela Price)
 
 **Instituicao:** Universidade Federal de Minas Gerais (UFMG)  
 **Unidade:** Faculdade de Ciencias Economicas (FACE) / ICEX  
@@ -12,31 +12,29 @@
 
 ---
 
-## 1. Descricao e Modos de Calculo
+## 1. Descricao da Aplicacao
 
-Aplicacao desenvolvida em **arquivo unico HTML** (`index.html`) para analise quantitativa aprofundada de fluxos de caixa e sistemas de amortizacao (SAC e Tabela Price). 
+Aplicacao desenvolvida em **arquivo unico HTML** (`index.html`), projetada como uma **calculadora universal de financiamento** capaz de resolver qualquer uma das variaveis centrais de um contrato de credito no regime de juros compostos:
 
-A aplicacao oferece tres objetivos de calculo integrados:
-1. **Calcular Parcela e Cronograma (Direto):** Informa-se Valor do Bem, Entrada, Taxa e Prazo; o sistema calcula o $PMT$, $A_t$, $J_t$ e $SD_t$.
-2. **Capacidade de Financiamento (Reverso por Parcela):** Informa-se a parcela pretendida que cabe no orcamento do tomador; o sistema calcula o Valor Presente maximo financiável ($PV$).
-3. **Descobrir Taxa Implicita / Custo Efetivo (TIR via Newton-Raphson):** Informa-se o valor financiado e a parcela cobrada pelo banco; o sistema deduz a taxa real de juros contratual via convergencia numerica.
+- **Valor da Parcela ($PMT$):** Dados Valor do Bem, Entrada, Taxa e Prazo.
+- **Valor do Bem / Financiado ($PV$):** Dados Parcela Pretendida, Entrada, Taxa e Prazo.
+- **Taxa de Juros ($i$ / TIR):** Dados Valor Financiado, Parcela e Prazo (via Newton-Raphson).
+- **Prazo de Pagamento ($n$):** Dados Valor Financiado, Parcela e Taxa (via deducao logaritmica).
 
-Parametros complementares de mercado:
-- **Entrada Inicial (Down Payment):** Abatimento automatico do principal financiado.
-- **Custo Efetivo Total (CET):** Inclusao de taxas mensais operacionais e seguros (ex: MIP/DFI).
-- **Taxa de Juros Real (Equacao de Fisher):** Desconto da inflacao anual projetada (IPCA) sobre a taxa nominal.
+O sistema tambem contempla:
+- **Tabela SAC e Tabela Price:** Cronogramas detalhados com alternador de abas e confrontacao direta de custos.
+- **Simulacao de Amortizacao Mensal Extra:** Permite definir um aporte adicional mensal para calcular a reducao exata de meses/anos e a economia nominal de juros pagos ao banco.
+- **Cenarios Didaticos:** Botoes sucintos sem poluicao de valores (*Exemplo de Aula*, *Financiamento Imobiliario*, *Credito Veicular* e *Emprestimo Pessoal*).
 
 ---
 
 ## 2. Acesso e Execucao
 
-A aplicacao e 100% autonoma, responsiva e nao requer instalacao:
-
-1. **Acesso Online (GitHub Pages):**  
+1. **Online (GitHub Pages):**  
    [https://lealwbs.github.io/financ/](https://lealwbs.github.io/financ/)
 
 2. **Execucao Local Direta:**  
-   Basta abrir `index.html` em qualquer navegador web.
+   Abra `index.html` em qualquer navegador.
 
 3. **Execucao via Servidor Local:**
    ```bash
@@ -48,43 +46,35 @@ A aplicacao e 100% autonoma, responsiva e nao requer instalacao:
 
 ## 3. Atendimento Rigoroso aos 4 Criterios de Avaliacao
 
-| Criterio Avaliado | Implementacao no Projeto |
-| :--- | :--- |
-| **1. Execucao da aplicacao** | Funciona perfeitamente em arquivo unico (`index.html`), sem falhas de carregamento ou erros de console. |
-| **2. Captura de dados** | Captura dinamica multidirecional ($PV$, $PMT$, $i$, $n$), com selecao de sistema (SAC ou Price), entrada, taxas mensais e inflacao, alem de 3 cenarios rapidos clicaveis. |
-| **3. Comentarios no codigo** | Bloco `<script>` detalhadamente comentado com as formulas de TVM, deducao do FRC (Price), amortizacao linear (SAC), algoritmo de Newton-Raphson para TIR e equacao de Fisher. |
-| **4. Geracao de relatorios** | Produz relatorio sintetico com indicadores financeiros chave ($PMT_1$, $PMT_n$, desembolso total, juros totais, CET e taxa real), demonstrativo comparativo com diferenca nominal de juros, parecer analitico, grafico temporal de amortizacao e tabela completa mes a mes. |
+| Criterio Avaliado | Status | Implementacao no Codigo |
+| :--- | :---: | :--- |
+| **1. Execucao da aplicacao** | 100% | Codigo 100% autocontido em `index.html`, executavel em qualquer navegador sem compiladores ou dependencias locais. |
+| **2. Captura de dados** | 100% | Captura flexivel das variaveis ($PV$, Entrada, $PMT$, $i$, $n$), aporte mensal extra, e 4 cenarios didaticos clicaveis. |
+| **3. Comentarios no codigo** | 100% | Bloco `<script>` detalhadamente documentado explicando a matematica financeira de cada equacao e algoritmo. |
+| **4. Geracao de relatorios** | 100% | Resumo executivo com KPIs, comparativo direto SAC vs Price, calculo de economia por amortizacao mensal, grafico interativo e tabelas completas mes a mes. |
 
 ---
 
-## 4. Fundamentacao Matematica e Formulas
+## 4. Fundamentacao Matematica
 
-### Tabela Price (Sistema Frances de Anuidade Uniforme)
-- Fator de Recuperacao de Capital (FRC):
-  $$PMT = PV \cdot \frac{i(1 + i)^n}{(1 + i)^n - 1}$$
-- Juros mensais: $J_t = SD_{t-1} \cdot i$
-- Amortizacao mensal crescente: $A_t = PMT - J_t$
-- Saldo devedor: $SD_t = SD_{t-1} - A_t$
+### 1. Parcela na Tabela Price (Anuidade Uniforme)
+$$PMT = PV \cdot \frac{i(1 + i)^n}{(1 + i)^n - 1}$$
 
-### Sistema de Amortizacao Constante (SAC)
-- Amortizacao constante:
-  $$A = \frac{PV}{n}$$
-- Juros mensais decrescentes: $J_t = SD_{t-1} \cdot i$
-- Parcela decrescente: $PMT_t = A + J_t + \text{taxas}$
-- Saldo devedor linear: $SD_t = SD_{t-1} - A$
+### 2. Valor Presente (Capacidade de Financiamento)
+$$PV = PMT \cdot \frac{(1 + i)^n - 1}{i(1 + i)^n}$$
 
-### Taxa Interna de Retorno (TIR) via Newton-Raphson
-Para resolver a taxa implicita $i$ dada a parcela $PMT$:
-$$f(i) = PV - PMT \cdot \frac{1 - (1 + i)^{-n}}{i} = 0$$
-Iteracao numerica:
-$$i_{k+1} = i_k - \frac{f(i_k)}{f'(i_k)}$$
+### 3. Prazo em Meses
+$$n = \frac{-\ln\left(1 - \frac{PV \cdot i}{PMT}\right)}{\ln(1 + i)}$$
 
-### Taxa de Juros Real (Equacao de Fisher)
-$$(1 + i_{nominal}) = (1 + r_{real})(1 + \pi) \implies r_{real} = \frac{1 + i_{nominal}}{1 + \pi} - 1$$
+### 4. Taxa de Juros (TIR via Newton-Raphson)
+$$f(i) = PV - PMT \cdot \frac{1 - (1 + i)^{-n}}{i} = 0 \implies i_{k+1} = i_k - \frac{f(i_k)}{f'(i_k)}$$
+
+### 5. Sistema de Amortizacao Constante (SAC)
+$$A = \frac{PV}{n}, \quad J_t = SD_{t-1} \cdot i, \quad PMT_t = A + J_t, \quad SD_t = SD_{t-1} - A$$
 
 ---
 
-## 5. Referencias Bibliograficas (Programa Oficial CAD 167)
+## 5. Referencias Bibliograficas (CAD 167 - UFMG)
 
 1. **BERK, Jonathan; DEMARZO, Peter; HARFORD, Jarrad.** *Fundamentos de Financas Empresariais.* Porto Alegre: Bookman, 2010.
 2. **ASSAF NETO, Alexandre.** *Financas Corporativas e Valor.* 2. ed. Sao Paulo: Atlas, 2007.
