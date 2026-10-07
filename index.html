@@ -50,7 +50,7 @@
       padding-bottom: 50px;
     }
 
-    /* Cabecalho */
+    /* Cabecalho Limpo */
     .header {
       background-color: var(--primary);
       color: #ffffff;
@@ -62,22 +62,12 @@
     .header-container {
       max-width: 1050px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
     }
 
     .header-title {
       font-size: 1.35rem;
       font-weight: 700;
       letter-spacing: -0.3px;
-    }
-
-    .header-sub {
-      font-size: 0.8rem;
-      color: #cbd5e1;
     }
 
     .container {
@@ -119,24 +109,109 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
     .bacen-header {
       background-color: var(--primary);
       color: #ffffff;
-      padding: 10px 16px;
-      font-size: 0.92rem;
-      font-weight: 600;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
       text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    .bacen-instruction {
+      background-color: #eff6ff;
+      border-bottom: 1px solid #bfdbfe;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      color: var(--primary);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .target-field-selector {
+      padding: 14px 20px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .selector-title {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .target-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-pill {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: #ffffff;
+    }
+
+    .btn-pill.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 1px 3px rgba(30, 58, 138, 0.25);
+    }
+
+    .btn-calc-target {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-calc-target:hover {
+      background-color: #eff6ff;
+      border-color: var(--primary);
+    }
+
+    .btn-calc-target.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
     }
 
     .bacen-form {
-      padding: 20px;
+      padding: 18px 20px 20px;
     }
 
     .form-row {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 210px 1fr;
       align-items: center;
       gap: 12px;
       margin-bottom: 14px;
@@ -160,6 +235,8 @@
       font-size: 0.72rem;
       font-weight: 400;
       color: var(--text-muted);
+      line-height: 1.25;
+      margin-top: 2px;
     }
 
     .input-wrapper {
@@ -177,6 +254,7 @@
       border-radius: var(--radius);
       background-color: #ffffff;
       color: var(--text-main);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .form-control:focus {
@@ -186,9 +264,10 @@
     }
 
     .calculated-highlight {
-      border-color: var(--primary);
+      border-color: var(--primary) !important;
       background-color: #eff6ff !important;
-      font-weight: 600;
+      font-weight: 700 !important;
+      color: var(--primary) !important;
     }
 
     .unit-label {
@@ -208,7 +287,7 @@
     }
 
     .btn {
-      padding: 9px 24px;
+      padding: 9px 26px;
       font-family: var(--font);
       font-size: 0.88rem;
       font-weight: 600;
@@ -342,6 +421,37 @@
       color: var(--text-main);
     }
 
+    .system-toggle-group {
+      display: inline-flex;
+      background-color: var(--border);
+      border-radius: var(--radius);
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .btn-toggle {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: var(--font);
+    }
+
+    .btn-toggle:hover {
+      color: var(--text-main);
+    }
+
+    .btn-toggle.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
     /* Tabela Comparativa Sem Amortizacao vs Com Amortizacao */
     .comparison-report-table {
       width: 100%;
@@ -386,23 +496,93 @@
       color: var(--accent-green);
     }
 
-    /* Box de Resumo da Amortizacao */
-    .savings-summary-banner {
-      background-color: #ecfdf5;
-      border: 1px solid #a7f3d0;
+    /* Quadro Fixo de Impacto da Amortizacao Extra */
+    .impact-card {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px 18px;
+      padding: 16px 20px;
       margin-bottom: 20px;
-      font-size: 0.86rem;
-      color: #065f46;
-      line-height: 1.5;
+      min-height: 125px;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .savings-summary-title {
+    .impact-card.has-savings {
+      background-color: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    .impact-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .impact-title {
       font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
+      font-size: 0.92rem;
+      color: var(--primary);
+    }
+
+    .impact-card.has-savings .impact-title {
       color: #047857;
+    }
+
+    .impact-message {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.4;
+      min-height: 20px;
+    }
+
+    .impact-card.has-savings .impact-message {
+      color: #065f46;
+    }
+
+    .impact-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 650px) {
+      .impact-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    .impact-stat-item {
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+
+    .impact-card.has-savings .impact-stat-item {
+      border-color: #bbf7d0;
+    }
+
+    .impact-stat-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .impact-stat-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .impact-card.has-savings .impact-stat-value.highlight {
+      color: var(--accent-green);
     }
 
     /* Grafico */
@@ -494,7 +674,6 @@
   <header class="header">
     <div class="header-container">
       <h1 class="header-title">Calculadora de Financiamento</h1>
-      <span class="header-sub">Simulador Financeiro com Amortizacao</span>
     </div>
   </header>
 
@@ -506,54 +685,70 @@
     <section class="card" id="calculatorSection">
       <div class="bacen-box">
         <div class="bacen-header">
-          Financiamento com prestacoes fixas
+          Financiamento com prestações fixas
+        </div>
+        <div class="bacen-instruction">
+          Preencha 3 campos e deixe 1 vazio para calcular (ou use os botões abaixo).
         </div>
 
-        <form id="loanCalcForm" class="bacen-form">
-          <!-- 1. Nº de meses -->
+        <!-- Seletor Rapido de Campo para Calcular -->
+        <div class="target-field-selector">
+          <span class="selector-title">Escolha o que deseja calcular:</span>
+          <div class="target-pills">
+            <button type="button" class="btn-pill" id="pillRate" onclick="selecionarCampoParaCalcular('calcRate')">Juros</button>
+            <button type="button" class="btn-pill" id="pillPayment" onclick="selecionarCampoParaCalcular('calcPayment')">Prestação</button>
+            <button type="button" class="btn-pill" id="pillMonths" onclick="selecionarCampoParaCalcular('calcMonths')">Prazo</button>
+            <button type="button" class="btn-pill" id="pillPrincipal" onclick="selecionarCampoParaCalcular('calcPrincipal')">Valor Financiado</button>
+          </div>
+        </div>
+
+        <form id="loanCalcForm" class="bacen-form" novalidate>
+          <!-- 1. Prazo -->
           <div class="form-row">
             <label for="calcMonths" class="form-label">
-              Nº de meses
+              Prazo
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcMonths" class="form-control" min="1" max="420" step="1" value="24" placeholder="Ex: 24">
+              <input type="number" id="calcMonths" class="form-control" min="1" max="420" step="1" value="24" placeholder="(Em meses)">
+              <button type="button" class="btn-calc-target" id="btnTargetMonths" onclick="selecionarCampoParaCalcular('calcMonths')" title="Calcular o Prazo">Calcular este</button>
             </div>
           </div>
 
-          <!-- 2. Taxa de juros mensal -->
+          <!-- 2. Juros -->
           <div class="form-row">
             <label for="calcRate" class="form-label">
-              Taxa de juros mensal
+              Juros
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcRate" class="form-control" min="0.01" step="0.01" value="" placeholder="Deixe em branco se for calcular">
+              <input type="number" id="calcRate" class="form-control" min="0" step="any" value="1.50" placeholder="(Taxa mensal em %)">
               <span class="unit-label">%</span>
+              <button type="button" class="btn-calc-target" id="btnTargetRate" onclick="selecionarCampoParaCalcular('calcRate')" title="Calcular os Juros">Calcular este</button>
             </div>
           </div>
 
-          <!-- 3. Valor da prestacao -->
+          <!-- 3. Prestação -->
           <div class="form-row">
             <label for="calcPayment" class="form-label">
-              Valor da prestacao
-              <small>(Considera-se que a 1ª prestacao nao seja no ato)</small>
+              Prestação
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcPayment" class="form-control" min="1" step="0.01" value="4234.23" placeholder="Deixe em branco se for calcular">
+              <input type="number" id="calcPayment" class="form-control" min="0" step="any" value="" placeholder="(1ª parcela em 30 dias)">
+              <button type="button" class="btn-calc-target" id="btnTargetPayment" onclick="selecionarCampoParaCalcular('calcPayment')" title="Calcular a Prestação">Calcular este</button>
             </div>
           </div>
 
-          <!-- 4. Valor financiado -->
+          <!-- 4. Valor Financiado -->
           <div class="form-row">
             <label for="calcPrincipal" class="form-label">
-              Valor financiado
-              <small>(O valor financiado nao inclui o valor da entrada)</small>
+              Valor Financiado
             </label>
             <div class="input-wrapper">
-              <input type="number" id="calcPrincipal" class="form-control" min="100" step="100" value="100000" placeholder="Deixe em branco se for calcular">
+              <input type="number" id="calcPrincipal" class="form-control" min="0" step="any" value="100000" placeholder="(Não inclui o valor da entrada)">
+              <button type="button" class="btn-calc-target" id="btnTargetPrincipal" onclick="selecionarCampoParaCalcular('calcPrincipal')" title="Calcular o Valor Financiado">Calcular este</button>
             </div>
           </div>
 
-          <!-- Botoes Calcular e Limpar -->
+          <!-- Botões Calcular e Limpar -->
           <div class="bacen-actions">
             <button type="submit" class="btn btn-primary" id="btnCalculate">Calcular</button>
             <button type="button" class="btn btn-secondary" id="btnClear" onclick="limparCampos()">Limpar</button>
@@ -563,58 +758,58 @@
 
       <!-- Exemplos de Calculo (Cards Clicaveis no Estilo Bacen) -->
       <div class="examples-section">
-        <div class="examples-title">Exemplos de calculo:</div>
+        <div class="examples-title">Exemplos:</div>
         <div class="examples-grid">
           <!-- Exemplo 1: Calculo do nº de meses -->
           <div class="example-card" onclick="carregarExemploBacen('meses')">
             <div>
-              <div class="example-name">Calculo do nº de meses</div>
+              <div class="example-name">Cálculo do prazo</div>
               <div class="example-desc">
                 Financiado: R$ 2.000,00<br>
                 Taxa: 1,00% a.m.<br>
-                Prestacao: R$ 261,50
+                Prestação: R$ 261,50
               </div>
             </div>
-            <div class="example-action">Calcular prazo &rarr;</div>
+            <div class="example-action">Carregar exemplo &rarr;</div>
           </div>
 
           <!-- Exemplo 2: Calculo da taxa de juros -->
           <div class="example-card" onclick="carregarExemploBacen('taxa')">
             <div>
-              <div class="example-name">Calculo da taxa de juros</div>
+              <div class="example-name">Cálculo dos juros</div>
               <div class="example-desc">
                 Financiado: R$ 750,00<br>
                 Prazo: 10 meses<br>
-                Prestacao: R$ 86,00
+                Prestação: R$ 86,00
               </div>
             </div>
-            <div class="example-action">Calcular taxa &rarr;</div>
+            <div class="example-action">Carregar exemplo &rarr;</div>
           </div>
 
           <!-- Exemplo 3: Calculo da prestacao -->
           <div class="example-card" onclick="carregarExemploBacen('prestacao')">
             <div>
-              <div class="example-name">Calculo da prestacao</div>
+              <div class="example-name">Cálculo da prestação</div>
               <div class="example-desc">
                 Financiado: R$ 1.290,00<br>
                 Prazo: 4 meses<br>
                 Taxa: 1,99% a.m.
               </div>
             </div>
-            <div class="example-action">Calcular parcela &rarr;</div>
+            <div class="example-action">Carregar exemplo &rarr;</div>
           </div>
 
           <!-- Exemplo 4: Calculo do valor financiado -->
           <div class="example-card" onclick="carregarExemploBacen('financiado')">
             <div>
-              <div class="example-name">Calculo do valor financiado</div>
+              <div class="example-name">Cálculo do financiado</div>
               <div class="example-desc">
                 Prazo: 24 meses<br>
                 Taxa: 1,99% a.m.<br>
-                Prestacao: R$ 935,00
+                Prestação: R$ 935,00
               </div>
             </div>
-            <div class="example-action">Calcular valor &rarr;</div>
+            <div class="example-action">Carregar exemplo &rarr;</div>
           </div>
         </div>
       </div>
@@ -624,44 +819,60 @@
          PARTE 2: SIMULACAO DE AMORTIZACAO DE FINANCIAMENTO
          ======================================================================== -->
     <section class="card simulation-section" id="amortizationSection">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-        <div>
-          <h2 class="card-title">Simulacao de Amortizacao de Financiamento</h2>
-          <p class="card-subtitle">
-            Cronograma comparativo e projecao de amortizacao antecipada do saldo devedor
-          </p>
-        </div>
+      <div>
+        <h2 class="card-title">Simulação de Amortização de Financiamento</h2>
+        <p class="card-subtitle">
+          Cronograma comparativo e projeção de amortização antecipada do saldo devedor
+        </p>
       </div>
 
       <!-- Barra de Parametros da Amortizacao -->
       <div class="amort-controls-bar">
         <div class="amort-control-group">
-          <label for="systemSelect" class="amort-control-label">Sistema de Amortizacao:</label>
-          <select id="systemSelect" class="form-control" style="width: 170px;" onchange="atualizarSimulacaoAmortizacao()">
-            <option value="PRICE" selected>Tabela Price</option>
-            <option value="SAC">SAC</option>
-          </select>
+          <span class="amort-control-label">Sistema de Amortização:</span>
+          <div class="system-toggle-group">
+            <button type="button" class="btn-toggle active" id="btnSystemPrice" onclick="selecionarSistemaAmortizacao('PRICE')">Tabela Price</button>
+            <button type="button" class="btn-toggle" id="btnSystemSac" onclick="selecionarSistemaAmortizacao('SAC')">SAC</button>
+          </div>
         </div>
 
         <div class="amort-control-group">
-          <label for="extraMonthlyInput" class="amort-control-label">Aporte Extra Todo Mes (R$):</label>
-          <input type="number" id="extraMonthlyInput" class="form-control" style="width: 150px;" min="0" step="50" value="0" placeholder="Ex: 500" oninput="atualizarSimulacaoAmortizacao()">
+          <label for="extraMonthlyInput" class="amort-control-label">Aporte Extra Todo Mês (R$):</label>
+          <input type="number" id="extraMonthlyInput" class="form-control" style="width: 150px;" min="0" step="any" value="0" placeholder="Ex: 500" oninput="atualizarSimulacaoAmortizacao()">
         </div>
       </div>
 
-      <!-- Banner de Economia (Exibido quando ha amortizacao extra) -->
-      <div class="savings-summary-banner" id="savingsSummaryBanner" style="display: none;">
-        <div class="savings-summary-title">Impacto da Amortizacao Mensal Extra:</div>
-        <div id="savingsSummaryText"></div>
+      <!-- Quadro Fixo de Impacto da Amortizacao Extra (Estrutura Estavel) -->
+      <div class="impact-card" id="impactCard">
+        <div class="impact-header">
+          <div class="impact-title">Impacto da Amortização Mensal Extra</div>
+        </div>
+        <div class="impact-message" id="impactMessage">
+          Informe um aporte mensal adicional acima para simular a redução de prazo e economia de juros.
+        </div>
+        <div class="impact-stats-grid">
+          <div class="impact-stat-item">
+            <div class="impact-stat-label">Economia em Juros</div>
+            <div class="impact-stat-value" id="statInterestSaved">R$ 0,00</div>
+          </div>
+          <div class="impact-stat-item">
+            <div class="impact-stat-label">Tempo Economizado</div>
+            <div class="impact-stat-value" id="statMonthsSaved">0 meses</div>
+          </div>
+          <div class="impact-stat-item">
+            <div class="impact-stat-label">Prazo de Quitação</div>
+            <div class="impact-stat-value" id="statTotalTerms">0 parcelas</div>
+          </div>
+        </div>
       </div>
 
       <!-- Tabela Resumo: Sem Amortizacao vs Com Amortizacao (Inspirada no Relatorio) -->
       <table class="comparison-report-table">
         <thead>
           <tr>
-            <th>Condicoes Contratuais</th>
-            <th>Sem amortizacao</th>
-            <th>Com amortizacao</th>
+            <th>Condições Contratuais</th>
+            <th>Sem amortização</th>
+            <th>Com amortização</th>
           </tr>
         </thead>
         <tbody>
@@ -701,12 +912,12 @@
             <td id="rptAmortFirstPmt">R$ 0,00</td>
           </tr>
           <tr>
-            <td>Valor da ultima parcela</td>
+            <td>Valor da última parcela</td>
             <td id="rptOriginalLastPmt">R$ 0,00</td>
             <td id="rptAmortLastPmt">R$ 0,00</td>
           </tr>
           <tr>
-            <td>Sistema de amortizacao</td>
+            <td>Sistema de amortização</td>
             <td id="rptOriginalSystem">Price</td>
             <td id="rptAmortSystem">Price</td>
           </tr>
@@ -721,16 +932,16 @@
       <!-- Tabela Cronologica Detalhada Mes a Mes -->
       <div style="margin-top: 24px;">
         <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
-          Cronograma Detalhado Periodo a Periodo
+          Cronograma Detalhado Período a Período
         </h3>
         <div class="table-wrapper">
           <table class="schedule-table" id="scheduleTable">
             <thead>
               <tr>
-                <th class="col-center">Mes</th>
-                <th>Divida Inicial</th>
+                <th class="col-center">Mês</th>
+                <th>Dívida Inicial</th>
                 <th>Juros (J)</th>
-                <th>Amortizacao (A)</th>
+                <th>Amortização (A)</th>
                 <th id="thExtraCol" style="display: none;">Aporte Extra</th>
                 <th>Parcela Total</th>
                 <th>Saldo Devedor</th>
@@ -752,7 +963,7 @@
 
   <!-- RODAPE COM IDENTIFICACAO DO ALUNO -->
   <footer class="footer">
-    <div>Universidade Federal de Minas Gerais (UFMG) &bull; CAD 167 - Administracao Financeira &bull; ICEX / Sistemas de Informacao</div>
+    <div>Universidade Federal de Minas Gerais (UFMG) &bull; CAD 167 - Administração Financeira &bull; ICEX / Sistemas de Informação</div>
     <div class="footer-student">
       Aluno: Ítalo Leal Lana Santos &bull; Matrícula: 2024013893
     </div>
@@ -840,15 +1051,15 @@
     }
 
     /**
-     * 4. CALCULO DA TAXA DE JUROS MENSAL (i) VIA NEWTON-RAPHSON
+     * 4. CALCULO DA TAXA DE JUROS MENSAL (i) VIA NEWTON-RAPHSON ROBUSTO
      * f(i) = PV - PMT * [ 1 - (1 + i)^(-n) ] / i = 0
      */
     function solveRateNewtonRaphson(PV, PMT, n) {
       if (PV <= 0 || PMT <= 0 || n <= 0) return 0.01;
-      if (PMT * n <= PV) return 0.0001;
+      if (PMT * n <= PV) return null; // Total pago menor ou igual ao financiado (juros <= 0)
 
-      let i = (PMT * n - PV) / (PV * n);
-      const maxIter = 80;
+      let i = (PMT * n - PV) / (PV * n); // Chute inicial
+      const maxIter = 100;
       const tol = 1e-7;
 
       for (let k = 0; k < maxIter; k++) {
@@ -860,86 +1071,153 @@
         const nextI = i - f / df;
 
         if (Math.abs(nextI - i) < tol) {
-          return Math.max(0.0001, nextI);
+          return Math.max(0.00001, nextI);
         }
-        i = Math.max(0.0001, nextI);
+        i = Math.max(0.00001, nextI);
       }
       return i;
     }
 
     /* ==========================================================================
-       2. EXECUCAO DO CALCULO ESTILO BACEN
+       2. CONTROLES E EXECUCAO DO CALCULO ESTILO BACEN
        ========================================================================== */
 
+    let alvoSelecionadoManualmente = 'calcPayment';
+
+    function atualizarDestaqueAlvo(targetId) {
+      alvoSelecionadoManualmente = targetId;
+      const targets = [
+        { id: 'calcRate', pillId: 'pillRate', btnId: 'btnTargetRate' },
+        { id: 'calcPayment', pillId: 'pillPayment', btnId: 'btnTargetPayment' },
+        { id: 'calcMonths', pillId: 'pillMonths', btnId: 'btnTargetMonths' },
+        { id: 'calcPrincipal', pillId: 'pillPrincipal', btnId: 'btnTargetPrincipal' }
+      ];
+
+      targets.forEach(t => {
+        const inp = document.getElementById(t.id);
+        const pill = document.getElementById(t.pillId);
+        const btn = document.getElementById(t.btnId);
+
+        if (t.id === targetId) {
+          if (inp) inp.classList.add('calculated-highlight');
+          if (pill) pill.classList.add('active');
+          if (btn) btn.classList.add('active');
+        } else {
+          if (inp) inp.classList.remove('calculated-highlight');
+          if (pill) pill.classList.remove('active');
+          if (btn) btn.classList.remove('active');
+        }
+      });
+    }
+
+    function selecionarCampoParaCalcular(fieldId) {
+      const field = document.getElementById(fieldId);
+      field.value = '';
+      field.focus();
+      atualizarDestaqueAlvo(fieldId);
+    }
+
+    function sincronizarCamposVazios() {
+      const fRate = String(document.getElementById('calcRate').value || '').trim();
+      const fPayment = String(document.getElementById('calcPayment').value || '').trim();
+      const fMonths = String(document.getElementById('calcMonths').value || '').trim();
+      const fPrincipal = String(document.getElementById('calcPrincipal').value || '').trim();
+
+      const empty = [];
+      if (fRate === '') empty.push('calcRate');
+      if (fPayment === '') empty.push('calcPayment');
+      if (fMonths === '') empty.push('calcMonths');
+      if (fPrincipal === '') empty.push('calcPrincipal');
+
+      if (empty.length === 1) {
+        atualizarDestaqueAlvo(empty[0]);
+      }
+    }
+
     function executarCalculoBacen() {
-      const rawMonths = document.getElementById('calcMonths').value.trim();
-      const rawRate = document.getElementById('calcRate').value.trim();
-      const rawPayment = document.getElementById('calcPayment').value.trim();
-      const rawPrincipal = document.getElementById('calcPrincipal').value.trim();
+      const rawMonths = String(document.getElementById('calcMonths').value || '').trim();
+      const rawRate = String(document.getElementById('calcRate').value || '').trim();
+      const rawPayment = String(document.getElementById('calcPayment').value || '').trim();
+      const rawPrincipal = String(document.getElementById('calcPrincipal').value || '').trim();
 
       const inpMonths = document.getElementById('calcMonths');
       const inpRate = document.getElementById('calcRate');
       const inpPayment = document.getElementById('calcPayment');
       const inpPrincipal = document.getElementById('calcPrincipal');
 
-      // Limpa destaques
-      inpMonths.classList.remove('calculated-highlight');
-      inpRate.classList.remove('calculated-highlight');
-      inpPayment.classList.remove('calculated-highlight');
-      inpPrincipal.classList.remove('calculated-highlight');
-
       let n = parseFloat(rawMonths);
       let rateMonthly = parseFloat(rawRate) / 100.0;
       let pmt = parseFloat(rawPayment);
       let pv = parseFloat(rawPrincipal);
 
-      // Detecta qual campo deve ser calculado
-      if (rawRate === '' || isNaN(rateMonthly)) {
-        // 1. Calcula Taxa de Juros Mensal
+      // Identifica quais campos estao vazios
+      const emptyFields = [];
+      if (rawRate === '' || isNaN(rateMonthly)) emptyFields.push('calcRate');
+      if (rawPayment === '' || isNaN(pmt)) emptyFields.push('calcPayment');
+      if (rawMonths === '' || isNaN(n)) emptyFields.push('calcMonths');
+      if (rawPrincipal === '' || isNaN(pv)) emptyFields.push('calcPrincipal');
+
+      let targetToCalculate = null;
+
+      if (emptyFields.length === 1) {
+        targetToCalculate = emptyFields[0];
+      } else if (emptyFields.length === 0) {
+        // Todos estao preenchidos: recalcula o campo atualmente selecionado ou a prestacao
+        targetToCalculate = alvoSelecionadoManualmente || 'calcPayment';
+      } else {
+        alert('Por favor, preencha pelo menos 3 dos 4 campos (deixe apenas 1 em branco para ser calculado).');
+        return;
+      }
+
+      // 1. Calcula Taxa de Juros Mensal
+      if (targetToCalculate === 'calcRate') {
         if (!pv || !pmt || !n) {
-          alert('Preencha o Nº de meses, o Valor da prestacao e o Valor financiado para calcular a taxa.');
+          alert('Preencha o Nº de meses, o Valor da prestação e o Valor financiado para calcular a taxa de juros.');
           return;
         }
-        rateMonthly = solveRateNewtonRaphson(pv, pmt, n);
+        const calcRate = solveRateNewtonRaphson(pv, pmt, n);
+        if (calcRate === null) {
+          alert('O total das parcelas (R$ ' + formatMoney(pmt * n) + ') é menor ou igual ao valor financiado (R$ ' + formatMoney(pv) + '). Não há juros positivos a calcular.');
+          return;
+        }
+        rateMonthly = calcRate;
         inpRate.value = (rateMonthly * 100.0).toFixed(2);
-        inpRate.classList.add('calculated-highlight');
-      } else if (rawPayment === '' || isNaN(pmt)) {
-        // 2. Calcula Valor da Prestacao
+        atualizarDestaqueAlvo('calcRate');
+      } 
+      // 2. Calcula Valor da Prestacao
+      else if (targetToCalculate === 'calcPayment') {
         if (!pv || isNaN(rateMonthly) || !n) {
-          alert('Preencha o Nº de meses, a Taxa de juros e o Valor financiado para calcular a prestacao.');
+          alert('Preencha o Nº de meses, a Taxa de juros e o Valor financiado para calcular a prestação.');
           return;
         }
         pmt = solvePMT(pv, rateMonthly, n);
         inpPayment.value = pmt.toFixed(2);
-        inpPayment.classList.add('calculated-highlight');
-      } else if (rawMonths === '' || isNaN(n)) {
-        // 3. Calcula Nº de Meses
+        atualizarDestaqueAlvo('calcPayment');
+      } 
+      // 3. Calcula Nº de Meses
+      else if (targetToCalculate === 'calcMonths') {
         if (!pv || isNaN(rateMonthly) || !pmt) {
-          alert('Preencha a Taxa de juros, a Prestacao e o Valor financiado para calcular o prazo.');
+          alert('Preencha a Taxa de juros, a Prestação e o Valor financiado para calcular o prazo.');
           return;
         }
         const calcN = solvePeriod(pv, pmt, rateMonthly);
         if (calcN === null) {
-          alert('O valor da prestacao e menor ou igual aos juros mensais. Aumente o valor da prestacao.');
+          alert('A prestação informada (R$ ' + formatMoney(pmt) + ') é menor ou igual aos juros mensais (R$ ' + formatMoney(pv * rateMonthly) + '). Aumente o valor da prestação.');
           return;
         }
         n = calcN;
         inpMonths.value = n;
-        inpMonths.classList.add('calculated-highlight');
-      } else if (rawPrincipal === '' || isNaN(pv)) {
-        // 4. Calcula Valor Financiado
+        atualizarDestaqueAlvo('calcMonths');
+      } 
+      // 4. Calcula Valor Financiado
+      else if (targetToCalculate === 'calcPrincipal') {
         if (!pmt || isNaN(rateMonthly) || !n) {
-          alert('Preencha o Nº de meses, a Taxa de juros e o Valor da prestacao para calcular o valor financiado.');
+          alert('Preencha o Nº de meses, a Taxa de juros e o Valor da prestação para calcular o valor financiado.');
           return;
         }
         pv = solvePV(pmt, rateMonthly, n);
         inpPrincipal.value = pv.toFixed(2);
-        inpPrincipal.classList.add('calculated-highlight');
-      } else {
-        // Todos preenchidos: recalcula prestacao padrao
-        pmt = solvePMT(pv, rateMonthly, n);
-        inpPayment.value = pmt.toFixed(2);
-        inpPayment.classList.add('calculated-highlight');
+        atualizarDestaqueAlvo('calcPrincipal');
       }
 
       // Atualiza o estado consolidado
@@ -958,35 +1236,59 @@
       document.getElementById('calcPayment').value = '';
       document.getElementById('calcPrincipal').value = '';
       document.getElementById('extraMonthlyInput').value = '0';
+      atualizarDestaqueAlvo(null);
+    }
 
-      document.getElementById('calcMonths').classList.remove('calculated-highlight');
-      document.getElementById('calcRate').classList.remove('calculated-highlight');
-      document.getElementById('calcPayment').classList.remove('calculated-highlight');
-      document.getElementById('calcPrincipal').classList.remove('calculated-highlight');
+    let currentSystem = 'PRICE';
+
+    function selecionarSistemaAmortizacao(system) {
+      currentSystem = system;
+      const btnPrice = document.getElementById('btnSystemPrice');
+      const btnSac = document.getElementById('btnSystemSac');
+
+      if (system === 'PRICE') {
+        if (btnPrice) btnPrice.classList.add('active');
+        if (btnSac) btnSac.classList.remove('active');
+      } else {
+        if (btnSac) btnSac.classList.add('active');
+        if (btnPrice) btnPrice.classList.remove('active');
+      }
+
+      atualizarSimulacaoAmortizacao();
     }
 
     function carregarExemploBacen(tipo) {
       limparCampos();
 
       if (tipo === 'meses') {
-        document.getElementById('calcPrincipal').value = 2000;
-        document.getElementById('calcRate').value = 1.0;
-        document.getElementById('calcPayment').value = 261.50;
+        document.getElementById('calcPrincipal').value = '2000';
+        document.getElementById('calcRate').value = '1.0';
+        document.getElementById('calcPayment').value = '261.50';
+        document.getElementById('calcMonths').value = '';
+        atualizarDestaqueAlvo('calcMonths');
+        document.getElementById('calcMonths').focus();
       } else if (tipo === 'taxa') {
-        document.getElementById('calcPrincipal').value = 750;
-        document.getElementById('calcMonths').value = 10;
-        document.getElementById('calcPayment').value = 86.00;
+        document.getElementById('calcPrincipal').value = '750';
+        document.getElementById('calcMonths').value = '10';
+        document.getElementById('calcPayment').value = '86.00';
+        document.getElementById('calcRate').value = '';
+        atualizarDestaqueAlvo('calcRate');
+        document.getElementById('calcRate').focus();
       } else if (tipo === 'prestacao') {
-        document.getElementById('calcPrincipal').value = 1290;
-        document.getElementById('calcMonths').value = 4;
-        document.getElementById('calcRate').value = 1.99;
+        document.getElementById('calcPrincipal').value = '1290';
+        document.getElementById('calcMonths').value = '4';
+        document.getElementById('calcRate').value = '1.99';
+        document.getElementById('calcPayment').value = '';
+        atualizarDestaqueAlvo('calcPayment');
+        document.getElementById('calcPayment').focus();
       } else if (tipo === 'financiado') {
-        document.getElementById('calcMonths').value = 24;
-        document.getElementById('calcRate').value = 1.99;
-        document.getElementById('calcPayment').value = 935.00;
+        document.getElementById('calcMonths').value = '24';
+        document.getElementById('calcRate').value = '1.99';
+        document.getElementById('calcPayment').value = '935.00';
+        document.getElementById('calcPrincipal').value = '';
+        atualizarDestaqueAlvo('calcPrincipal');
+        document.getElementById('calcPrincipal').focus();
       }
-
-      executarCalculoBacen();
     }
 
     /* ==========================================================================
@@ -1002,7 +1304,7 @@
       // Mes 0
       schedule.push({
         month: 0,
-        startBalance: balance,
+        startBalance: 0,
         interest: 0,
         amort: 0,
         extra: 0,
@@ -1077,7 +1379,7 @@
       const PV = currentLoanState.PV;
       const i = currentLoanState.monthlyRate;
       const n = currentLoanState.months;
-      const system = document.getElementById('systemSelect').value;
+      const system = currentSystem;
       const extraMonthly = parseFloat(document.getElementById('extraMonthlyInput').value) || 0;
 
       // 1. Gera Cronograma Base (Sem Amortizacao Extra)
@@ -1115,28 +1417,58 @@
       document.getElementById('rptOriginalSystem').textContent = system === 'SAC' ? 'SAC' : 'Price';
       document.getElementById('rptAmortSystem').textContent = system === 'SAC' ? 'SAC' : 'Price';
 
-      // 4. Banner de Economia
-      const banner = document.getElementById('savingsSummaryBanner');
-      const bannerText = document.getElementById('savingsSummaryText');
-      if (extraMonthly > 0) {
-        const monthsSaved = baseSummary.termsCount - amortSummary.termsCount;
-        const interestSaved = baseSummary.totalInterest - amortSummary.totalInterest;
+      // 4. Atualiza Quadro Fixo de Impacto da Amortizacao Extra (Estrutura Estavel)
+      const impactCard = document.getElementById('impactCard');
+      const impactMsg = document.getElementById('impactMessage');
+      const statInterest = document.getElementById('statInterestSaved');
+      const statMonths = document.getElementById('statMonthsSaved');
+      const statTerms = document.getElementById('statTotalTerms');
 
-        banner.style.display = 'block';
-        bannerText.innerHTML = `
-          Com um aporte adicional de <strong>${formatMoney(extraMonthly)} por mes</strong>, o contrato e quitado em 
-          <strong>${amortSummary.termsCount} parcelas</strong> (eliminando <strong>${monthsSaved} meses</strong>!). 
-          Voce economiza <strong>${formatMoney(interestSaved)}</strong> em juros.
-        `;
+      const hasExtra = extraMonthly > 0;
+
+      if (hasExtra) {
+        const monthsSaved = Math.max(0, baseSummary.termsCount - amortSummary.termsCount);
+        const interestSaved = Math.max(0, baseSummary.totalInterest - amortSummary.totalInterest);
+
+        impactCard.classList.add('has-savings');
+        impactMsg.innerHTML = `Com um aporte adicional de <strong>${formatMoney(extraMonthly)} por mês</strong>, o contrato é quitado em <strong>${amortSummary.termsCount} parcelas</strong> (eliminando <strong>${monthsSaved} meses</strong>!). Você economiza <strong>${formatMoney(interestSaved)}</strong> em juros.`;
+
+        statInterest.textContent = formatMoney(interestSaved);
+        statInterest.classList.add('highlight');
+
+        statMonths.textContent = `${monthsSaved} ${monthsSaved === 1 ? 'mês' : 'meses'} a menos`;
+        statMonths.classList.add('highlight');
+
+        statTerms.textContent = `${amortSummary.termsCount} parcelas`;
+        statTerms.classList.add('highlight');
       } else {
-        banner.style.display = 'none';
+        impactCard.classList.remove('has-savings');
+        impactMsg.innerHTML = 'Informe um aporte mensal adicional acima para simular a redução de prazo e economia de juros.';
+
+        statInterest.textContent = 'R$ 0,00';
+        statInterest.classList.remove('highlight');
+
+        statMonths.textContent = '0 meses';
+        statMonths.classList.remove('highlight');
+
+        statTerms.textContent = `${baseSummary.termsCount} parcelas`;
+        statTerms.classList.remove('highlight');
       }
 
+      // Atualiza destaques da tabela comparativa
+      ['rptAmortTotal', 'rptAmortExtra', 'rptAmortInterest', 'rptAmortTerms'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (hasExtra) el.classList.add('highlight-savings');
+          else el.classList.remove('highlight-savings');
+        }
+      });
+
       // 5. Grafico de Saldo Devedor
-      renderChart(baseSchedule, amortSchedule, extraMonthly > 0);
+      renderChart(baseSchedule, amortSchedule, hasExtra);
 
       // 6. Tabela Detalhada Periodo a Periodo
-      renderScheduleTable(extraMonthly > 0 ? amortSchedule : baseSchedule, extraMonthly > 0);
+      renderScheduleTable(hasExtra ? amortSchedule : baseSchedule, hasExtra);
     }
 
     function renderScheduleTable(schedule, hasExtra) {
@@ -1160,11 +1492,11 @@
 
         tr.innerHTML = `
           <td class="col-center">${row.month === 0 ? '0' : row.month}</td>
-          <td>${row.month === 0 ? '-' : formatMoney(row.startBalance)}</td>
-          <td class="text-amber">${row.month === 0 ? '-' : formatMoney(row.interest)}</td>
-          <td class="text-green">${row.month === 0 ? '-' : formatMoney(row.amort)}</td>
+          <td>${row.month === 0 ? 'R$ 0,00' : formatMoney(row.startBalance)}</td>
+          <td class="text-amber">${row.month === 0 ? 'R$ 0,00' : formatMoney(row.interest)}</td>
+          <td class="text-green">${row.month === 0 ? 'R$ 0,00' : formatMoney(row.amort)}</td>
           ${extraTd}
-          <td><strong>${row.month === 0 ? '-' : formatMoney(row.pmt)}</strong></td>
+          <td><strong>${row.month === 0 ? 'R$ 0,00' : formatMoney(row.pmt)}</strong></td>
           <td><strong>${formatMoney(row.endBalance)}</strong></td>
         `;
         tbody.appendChild(tr);
@@ -1202,7 +1534,7 @@
 
       const datasets = [
         {
-          label: 'Saldo Sem Amortizacao Extra',
+          label: 'Saldo Sem Amortização Extra',
           data: baseSchedule.map(r => r.endBalance),
           borderColor: '#1e3a8a',
           backgroundColor: 'transparent',
@@ -1214,7 +1546,7 @@
 
       if (hasExtra) {
         datasets.push({
-          label: 'Saldo Com Amortizacao Mensal Extra',
+          label: 'Saldo Com Amortização Mensal Extra',
           data: amortSchedule.map(r => r.endBalance),
           borderColor: '#059669',
           borderWidth: 2.5,
@@ -1252,8 +1584,13 @@
       executarCalculoBacen();
     });
 
+    ['calcMonths', 'calcRate', 'calcPayment', 'calcPrincipal'].forEach(id => {
+      document.getElementById(id).addEventListener('input', sincronizarCamposVazios);
+    });
+
     // Carga inicial
     window.addEventListener('DOMContentLoaded', () => {
+      atualizarDestaqueAlvo('calcPayment');
       executarCalculoBacen();
     });
   </script>
