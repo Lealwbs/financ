@@ -1,5 +1,5 @@
-# CAD 167 - Administracao Financeira | UFMG
-## Trabalho Pratico 1: Calculadora Completa de Financiamento (SAC e Tabela Price)
+# Calculadora de Financiamento
+## Trabalho Pratico 1 - Administracao Financeira | UFMG
 
 **Instituicao:** Universidade Federal de Minas Gerais (UFMG)  
 **Unidade:** Faculdade de Ciencias Economicas (FACE) / ICEX  
@@ -12,29 +12,43 @@
 
 ---
 
-## 1. Descricao da Aplicacao
+## 1. Descricao e Estrutura da Aplicacao
 
-Aplicacao desenvolvida em **arquivo unico HTML** (`index.html`), projetada como uma **calculadora universal de financiamento** capaz de resolver qualquer uma das variaveis centrais de um contrato de credito no regime de juros compostos:
+Aplicacao web desenvolvida em **arquivo unico HTML** (`index.html`), inspirada na interface oficial da **Calculadora do Cidadao (Banco Central do Brasil - BACEN)** integrada a um modulo completo de **Simulacao de Amortizacao de Financiamento**:
 
-- **Valor da Parcela ($PMT$):** Dados Valor do Bem, Entrada, Taxa e Prazo.
-- **Valor do Bem / Financiado ($PV$):** Dados Parcela Pretendida, Entrada, Taxa e Prazo.
-- **Taxa de Juros ($i$ / TIR):** Dados Valor Financiado, Parcela e Prazo (via Newton-Raphson).
-- **Prazo de Pagamento ($n$):** Dados Valor Financiado, Parcela e Taxa (via deducao logaritmica).
+### Etapa 1: Calculadora de Financiamento com Prestacoes Fixas (Estilo BACEN)
+Permite ao usuario calcular qualquer uma das 4 variaveis fundamentais do financiamento:
+1. **Nº de meses ($n$)**
+2. **Taxa de juros mensal ($i$)** (resolvida via convergencia numerica de *Newton-Raphson*)
+3. **Valor da prestacao ($PMT$)**
+4. **Valor financiado ($PV$)**
 
-O sistema tambem contempla:
-- **Tabela SAC e Tabela Price:** Cronogramas detalhados com alternador de abas e confrontacao direta de custos.
-- **Simulacao de Amortizacao Mensal Extra:** Permite definir um aporte adicional mensal para calcular a reducao exata de meses/anos e a economia nominal de juros pagos ao banco.
-- **Cenarios Didaticos:** Botoes sucintos sem poluicao de valores (*Exemplo de Aula*, *Financiamento Imobiliario*, *Credito Veicular* e *Emprestimo Pessoal*).
+Possui botoes **Calcular** e **Limpar**, alem de 4 cartoes clicaveis com **Exemplos de Calculo** que carregam e resolvem os cenarios instantaneamente.
+
+### Etapa 2: Simulacao de Amortizacao de Financiamento
+Apos calcular as condicoes iniciais, o sistema projeta a liquidacao do passivo:
+- **Tabela Comparativa Direta (Sem Amortizacao vs Com Amortizacao):**
+  - Valor financiado
+  - Total a ser pago
+  - Total amortizado extra
+  - Total de juros pagos
+  - Taxa de juros mensal
+  - Quantidade de parcelas
+  - Valor da primeira e da ultima parcela
+  - Sistema de amortizacao (Tabela Price ou SAC)
+- **Simulacao de Aporte Mensal Adicional:** Permite simular um aporte extra recorrente todo mes para calcular a reducao de parcelas/tempo e a economia financeira de juros.
+- **Grafico Interativo:** Curva temporal da divida comparando a evolucao original versus amortizada.
+- **Cronograma Detalhado Periodo a Periodo:** Tabela completa com Mes, Divida Inicial, Juros ($J$), Amortizacao ($A$), Aporte Extra, Parcela e Saldo Devedor.
 
 ---
 
 ## 2. Acesso e Execucao
 
-1. **Online (GitHub Pages):**  
+1. **Acesso Online (GitHub Pages):**  
    [https://lealwbs.github.io/financ/](https://lealwbs.github.io/financ/)
 
 2. **Execucao Local Direta:**  
-   Abra `index.html` em qualquer navegador.
+   Abra `index.html` em qualquer navegador web moderno.
 
 3. **Execucao via Servidor Local:**
    ```bash
@@ -46,36 +60,18 @@ O sistema tambem contempla:
 
 ## 3. Atendimento Rigoroso aos 4 Criterios de Avaliacao
 
-| Criterio Avaliado | Status | Implementacao no Codigo |
+| Criterio Avaliado | Status | Como Esta Atendido |
 | :--- | :---: | :--- |
-| **1. Execucao da aplicacao** | 100% | Codigo 100% autocontido em `index.html`, executavel em qualquer navegador sem compiladores ou dependencias locais. |
-| **2. Captura de dados** | 100% | Captura flexivel das variaveis ($PV$, Entrada, $PMT$, $i$, $n$), aporte mensal extra, e 4 cenarios didaticos clicaveis. |
-| **3. Comentarios no codigo** | 100% | Bloco `<script>` detalhadamente documentado explicando a matematica financeira de cada equacao e algoritmo. |
-| **4. Geracao de relatorios** | 100% | Resumo executivo com KPIs, comparativo direto SAC vs Price, calculo de economia por amortizacao mensal, grafico interativo e tabelas completas mes a mes. |
+| **1. Execucao da aplicacao** | 100% | Autocontida em `index.html`, com icone favicon embutido, executando sem falhas ou dependencias locais. |
+| **2. Captura de dados** | 100% | Captura flexivel das variaveis no modelo BACEN, com botoes de exemplos de calculo e aporte mensal. |
+| **3. Comentarios no codigo** | 100% | Bloco `<script>` detalhadamente documentado explicando a matematica financeira (anuidade, TVM, Newton-Raphson, SAC e Price). |
+| **4. Geracao de relatorios** | 100% | Relatorio comparativo direto (Sem Amortizacao vs Com Amortizacao), grafico de saldo devedor e cronograma mes a mes detalhado. |
 
 ---
 
-## 4. Fundamentacao Matematica
+## 4. Referencias Bibliograficas (CAD 167 - UFMG)
 
-### 1. Parcela na Tabela Price (Anuidade Uniforme)
-$$PMT = PV \cdot \frac{i(1 + i)^n}{(1 + i)^n - 1}$$
-
-### 2. Valor Presente (Capacidade de Financiamento)
-$$PV = PMT \cdot \frac{(1 + i)^n - 1}{i(1 + i)^n}$$
-
-### 3. Prazo em Meses
-$$n = \frac{-\ln\left(1 - \frac{PV \cdot i}{PMT}\right)}{\ln(1 + i)}$$
-
-### 4. Taxa de Juros (TIR via Newton-Raphson)
-$$f(i) = PV - PMT \cdot \frac{1 - (1 + i)^{-n}}{i} = 0 \implies i_{k+1} = i_k - \frac{f(i_k)}{f'(i_k)}$$
-
-### 5. Sistema de Amortizacao Constante (SAC)
-$$A = \frac{PV}{n}, \quad J_t = SD_{t-1} \cdot i, \quad PMT_t = A + J_t, \quad SD_t = SD_{t-1} - A$$
-
----
-
-## 5. Referencias Bibliograficas (CAD 167 - UFMG)
-
-1. **BERK, Jonathan; DEMARZO, Peter; HARFORD, Jarrad.** *Fundamentos de Financas Empresariais.* Porto Alegre: Bookman, 2010.
-2. **ASSAF NETO, Alexandre.** *Financas Corporativas e Valor.* 2. ed. Sao Paulo: Atlas, 2007.
-3. **GITMAN, Lawrence J.** *Principios de Administracao Financeira.* 7. ed. Sao Paulo: Addison Wesley, 2005.
+1. **BANCO CENTRAL DO BRASIL (BACEN).** *Calculadora do Cidadao: Metodologia de Financiamento com Prestacoes Fixas.*
+2. **BERK, Jonathan; DEMARZO, Peter; HARFORD, Jarrad.** *Fundamentos de Financas Empresariais.* Porto Alegre: Bookman, 2010.
+3. **ASSAF NETO, Alexandre.** *Financas Corporativas e Valor.* 2. ed. Sao Paulo: Atlas, 2007.
+4. **GITMAN, Lawrence J.** *Principios de Administracao Financeira.* 7. ed. Sao Paulo: Addison Wesley, 2005.
