@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Financiamento: SAC e Tabela Price | UFMG CAD 167</title>
+  <title>Calculadora de Financiamento: SAC e Tabela Price</title>
 
   <!-- Tipografia Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +46,7 @@
       padding-bottom: 50px;
     }
 
-    /* Cabecalho Institucional */
+    /* Cabecalho Limpo */
     .header {
       background-color: var(--bg-card);
       border-bottom: 1px solid var(--border);
@@ -59,25 +59,10 @@
       margin: 0 auto;
     }
 
-    .header-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--primary);
-      margin-bottom: 4px;
-    }
-
     .header-title {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-main);
-    }
-
-    .header-subtitle {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 2px;
     }
 
     .container {
@@ -146,9 +131,16 @@
     .card-title {
       font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
+    }
+
+    .card-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
     }
 
     /* Formulario */
@@ -186,21 +178,9 @@
       box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
     }
 
-    .form-control:disabled {
-      background-color: var(--bg-subtle);
-      color: var(--text-muted);
-      cursor: not-allowed;
-    }
-
     .select-unit {
       width: 95px;
       cursor: pointer;
-    }
-
-    .highlight-calc-field {
-      border-color: var(--primary);
-      background-color: #eff6ff !important;
-      font-weight: 600;
     }
 
     .btn-submit {
@@ -495,12 +475,10 @@
 </head>
 <body>
 
-  <!-- CABECALHO ACADEMICO INSTITUCIONAL -->
+  <!-- CABECALHO LIMPO -->
   <header class="header">
     <div class="header-container">
-      <div class="header-tag">CAD 167 - Administracao Financeira | UFMG</div>
       <h1 class="header-title">Calculadora de Financiamento: SAC e Tabela Price</h1>
-      <p class="header-subtitle">Equacao Geral do Valor do Dinheiro no Tempo (TVM) e Simulador de Amortizacao Mensal (Trabalho 1)</p>
     </div>
   </header>
 
@@ -525,47 +503,37 @@
 
     <div class="main-grid">
 
-      <!-- COLUNA 1: FORMULARIO MULTIDIRECIONAL -->
+      <!-- COLUNA 1: FORMULARIO INTUITIVO -->
       <section class="card">
         <h2 class="card-title">Parametros do Financiamento</h2>
+        <p class="card-hint">
+          Preencha os valores conhecidos. Deixe qualquer um dos campos em branco para que ele seja calculado automaticamente.
+        </p>
 
         <form id="calcForm">
-          <!-- Parametro a ser calculado automaticamente -->
-          <div class="form-group">
-            <label for="solveTargetSelect" class="form-label" style="color: var(--primary);">
-              Calcular Automaticamente:
-            </label>
-            <select id="solveTargetSelect" class="form-control" style="font-weight: 600; border-color: var(--primary);">
-              <option value="pmt" selected>Valor da Parcela (PMT)</option>
-              <option value="pv">Valor Total do Bem / Financiado (PV)</option>
-              <option value="rate">Taxa de Juros (i)</option>
-              <option value="period">Prazo de Pagamento (n)</option>
-            </select>
-          </div>
-
           <!-- 1. Valor Total do Bem -->
           <div class="form-group" id="grpAssetValue">
             <label for="assetValueInput" class="form-label">Valor Total do Bem (R$)</label>
-            <input type="number" id="assetValueInput" class="form-control" min="100" step="100" value="100000">
+            <input type="number" id="assetValueInput" class="form-control" min="100" step="100" value="100000" placeholder="Ex: 100000">
           </div>
 
           <!-- 2. Valor da Entrada -->
           <div class="form-group" id="grpDownPayment">
             <label for="downPaymentInput" class="form-label">Valor da Entrada (R$)</label>
-            <input type="number" id="downPaymentInput" class="form-control" min="0" step="100" value="0">
+            <input type="number" id="downPaymentInput" class="form-control" min="0" step="100" value="0" placeholder="Ex: 20000">
           </div>
 
           <!-- 3. Valor da Parcela -->
           <div class="form-group" id="grpPmt">
             <label for="pmtInput" class="form-label">Valor da Parcela (R$)</label>
-            <input type="number" id="pmtInput" class="form-control highlight-calc-field" min="1" step="1" value="9168" disabled>
+            <input type="number" id="pmtInput" class="form-control" min="1" step="1" value="" placeholder="Deixe em branco para calcular">
           </div>
 
           <!-- 4. Taxa de Juros -->
           <div class="form-group" id="grpRate">
             <label for="rateInput" class="form-label">Taxa de Juros</label>
             <div class="input-row">
-              <input type="number" id="rateInput" class="form-control" min="0.01" step="0.01" value="1.50">
+              <input type="number" id="rateInput" class="form-control" min="0.01" step="0.01" value="1.50" placeholder="Deixe em branco para calcular">
               <select id="rateUnitSelect" class="form-control select-unit">
                 <option value="month" selected>% a.m.</option>
                 <option value="year">% a.a.</option>
@@ -577,7 +545,7 @@
           <div class="form-group" id="grpPeriod">
             <label for="periodInput" class="form-label">Prazo de Pagamento</label>
             <div class="input-row">
-              <input type="number" id="periodInput" class="form-control" min="1" max="420" step="1" value="12">
+              <input type="number" id="periodInput" class="form-control" min="1" max="420" step="1" value="12" placeholder="Deixe em branco para calcular">
               <select id="periodUnitSelect" class="form-control select-unit">
                 <option value="months" selected>meses</option>
                 <option value="years">anos</option>
@@ -636,7 +604,7 @@
           </div>
         </div>
 
-        <!-- Box de Economia da Amortizacao Extra Mensal (quando houver aporte) -->
+        <!-- Box de Economia da Amortizacao Extra Mensal -->
         <div class="extra-savings-box" id="extraSavingsBox" style="display: none;">
           <div class="extra-savings-title">Impacto do Aporte Mensal Adicional:</div>
           <div id="extraSavingsText">
@@ -761,7 +729,7 @@
 
   <!-- ==========================================================================
        LOGICA JAVASCRIPT: MATEMATICA FINANCEIRA COMPLETA
-       DEDICADA AO CALCULO DAS 4 VARIAVEIS (PV, PMT, i, n), SAC, PRICE E AMORTIZACAO
+       DEDICADA AO CALCULO DE QUALQUER VARIAVEL QUE ESTIVER EM BRANCO (PV, PMT, i, n)
        ========================================================================== -->
   <script>
     'use strict';
@@ -772,7 +740,7 @@
     let chartInstance = null;
 
     /**
-     * Estado dos cronogramas gerados para exibicao nas abas
+     * Cache de cronogramas gerados para exibicao dinamica
      */
     let cacheSchedulePrice = [];
     let cacheScheduleSac = [];
@@ -821,7 +789,7 @@
     }
 
     /* ==========================================================================
-       1. FORMULAS DAS 4 VARIAVEIS DA ANUIDADE (TVM)
+       1. FORMULAS MATEMATICAS DAS 4 VARIAVEIS DA ANUIDADE (TVM)
        ========================================================================== */
 
     /**
@@ -852,7 +820,6 @@
       if (i <= 0) return Math.ceil(PV / PMT);
       const interestOnly = PV * i;
       if (PMT <= interestOnly) {
-        // A parcela nao cobre nem os juros da divida
         return null;
       }
       const numerator = Math.log(1.0 - (PV * i) / PMT);
@@ -868,9 +835,9 @@
      */
     function solveRateNewtonRaphson(PV, PMT, n) {
       if (PV <= 0 || PMT <= 0 || n <= 0) return 0.01;
-      if (PMT * n <= PV) return 0.0001; // Sem juros
+      if (PMT * n <= PV) return 0.0001;
 
-      let i = (PMT * n - PV) / (PV * n); // Estimativa inicial
+      let i = (PMT * n - PV) / (PV * n);
       const maxIter = 60;
       const tol = 1e-7;
 
@@ -894,9 +861,6 @@
        2. GERACAO DE CRONOGRAMAS: TABELA PRICE, SAC E AMORTIZACAO MENSAL EXTRA
        ========================================================================== */
 
-    /**
-     * Gera cronograma da Tabela Price (com suporte a amortizacao mensal adicional)
-     */
     function generatePriceSchedule(PV, i, n, extraMonthly = 0) {
       const schedule = [];
       let balance = PV;
@@ -911,7 +875,6 @@
         let extra = extraMonthly;
 
         if (balance - amort - extra < 0.01) {
-          // Liquidacao antecipada ou ultima parcela
           extra = Math.max(0, balance - amort);
           if (amort > balance) {
             amort = balance;
@@ -938,9 +901,6 @@
       return schedule;
     }
 
-    /**
-     * Gera cronograma do Sistema SAC (com suporte a amortizacao mensal adicional)
-     */
     function generateSacSchedule(PV, i, n, extraMonthly = 0) {
       const schedule = [];
       let balance = PV;
@@ -981,9 +941,6 @@
       return schedule;
     }
 
-    /**
-     * Consolida metricas financeiras do cronograma
-     */
     function summarizeSchedule(schedule) {
       let totalPmt = 0;
       let totalInterest = 0;
@@ -1012,46 +969,6 @@
        3. CONTROLE DE INTERFACE, ALTERNANCIA DE ABAS E RENDERIZACAO
        ========================================================================== */
 
-    /**
-     * Atualiza os campos desabilitados e visiveis conforme o objetivo selecionado
-     */
-    function handleSolveTargetChange() {
-      const target = document.getElementById('solveTargetSelect').value;
-
-      const inpAsset = document.getElementById('assetValueInput');
-      const inpPmt = document.getElementById('pmtInput');
-      const inpRate = document.getElementById('rateInput');
-      const inpPeriod = document.getElementById('periodInput');
-
-      // Reseta classes
-      inpAsset.classList.remove('highlight-calc-field');
-      inpPmt.classList.remove('highlight-calc-field');
-      inpRate.classList.remove('highlight-calc-field');
-      inpPeriod.classList.remove('highlight-calc-field');
-
-      inpAsset.disabled = false;
-      inpPmt.disabled = false;
-      inpRate.disabled = false;
-      inpPeriod.disabled = false;
-
-      if (target === 'pmt') {
-        inpPmt.disabled = true;
-        inpPmt.classList.add('highlight-calc-field');
-      } else if (target === 'pv') {
-        inpAsset.disabled = true;
-        inpAsset.classList.add('highlight-calc-field');
-      } else if (target === 'rate') {
-        inpRate.disabled = true;
-        inpRate.classList.add('highlight-calc-field');
-      } else if (target === 'period') {
-        inpPeriod.disabled = true;
-        inpPeriod.classList.add('highlight-calc-field');
-      }
-    }
-
-    /**
-     * Alterna a visualizacao da tabela ativa
-     */
     function alternarTabela(system) {
       activeTableSystem = system;
 
@@ -1071,9 +988,6 @@
       }
     }
 
-    /**
-     * Renderiza o corpo e rodapé da tabela
-     */
     function renderTableRows(schedule, showExtraCol) {
       const tbody = document.getElementById('scheduleBody');
       const tfoot = document.getElementById('scheduleFoot');
@@ -1121,9 +1035,6 @@
       `;
     }
 
-    /**
-     * Desenha grafico com Chart.js
-     */
     function renderChart(schedulePrice, scheduleSac, scheduleExtra, hasExtra) {
       if (typeof Chart === 'undefined') return;
 
@@ -1192,32 +1103,52 @@
     }
 
     /**
-     * EXECUCAO PRINCIPAL DA CALCULADORA UNIVERSAL
+     * EXECUCAO PRINCIPAL DA CALCULADORA INTELIGENTE
+     * Detecta automaticamente qual campo foi deixado em branco para calcular!
      */
     function executeCalculation() {
-      const target = document.getElementById('solveTargetSelect').value;
       const chosenSystem = document.getElementById('systemSelect').value;
 
-      let assetVal = parseFloat(document.getElementById('assetValueInput').value) || 0;
-      let downPayment = parseFloat(document.getElementById('downPaymentInput').value) || 0;
-      let pmtVal = parseFloat(document.getElementById('pmtInput').value) || 0;
-      let rateVal = parseFloat(document.getElementById('rateInput').value) || 0;
+      const rawAsset = document.getElementById('assetValueInput').value.trim();
+      const rawDown = document.getElementById('downPaymentInput').value.trim();
+      const rawPmt = document.getElementById('pmtInput').value.trim();
+      const rawRate = document.getElementById('rateInput').value.trim();
       const rateUnit = document.getElementById('rateUnitSelect').value;
-      let periodVal = parseInt(document.getElementById('periodInput').value, 10) || 1;
+      const rawPeriod = document.getElementById('periodInput').value.trim();
       const periodUnit = document.getElementById('periodUnitSelect').value;
       const extraMonthly = parseFloat(document.getElementById('extraMonthlyInput').value) || 0;
 
-      let totalMonths = periodUnit === 'years' ? periodVal * 12 : periodVal;
-      let monthlyRate = toMonthlyRate(rateVal, rateUnit);
-      let effectivePV = Math.max(10, assetVal - downPayment);
+      let assetVal = parseFloat(rawAsset);
+      let downPayment = parseFloat(rawDown) || 0;
+      let pmtVal = parseFloat(rawPmt);
+      let rateVal = parseFloat(rawRate);
+      let periodVal = parseFloat(rawPeriod);
 
-      // RESOLUCAO DA VARIAVEL SOLICITADA
+      // Determina qual variavel calcular com base no campo vazio
+      let target = 'pmt'; // Padrao caso todos estejam preenchidos ou parcela vazia
+      if (rawPmt === '' || isNaN(pmtVal)) {
+        target = 'pmt';
+      } else if (rawRate === '' || isNaN(rateVal)) {
+        target = 'rate';
+      } else if (rawPeriod === '' || isNaN(periodVal)) {
+        target = 'period';
+      } else if (rawAsset === '' || isNaN(assetVal)) {
+        target = 'pv';
+      } else {
+        target = 'pmt';
+      }
+
+      let totalMonths = isNaN(periodVal) ? 12 : (periodUnit === 'years' ? periodVal * 12 : periodVal);
+      let monthlyRate = isNaN(rateVal) ? 0.015 : toMonthlyRate(rateVal, rateUnit);
+      let effectivePV = isNaN(assetVal) ? 100000 : Math.max(10, assetVal - downPayment);
+
+      // EXECUTA O CALCULO ESPECIFICO
       if (target === 'pmt') {
         // 1. Calcula Parcela
         pmtVal = solvePMT(effectivePV, monthlyRate, totalMonths);
         document.getElementById('pmtInput').value = Math.round(pmtVal * 100) / 100;
       } else if (target === 'pv') {
-        // 2. Calcula Valor Financiado
+        // 2. Calcula Valor Financiado a partir da Parcela
         effectivePV = solvePV(pmtVal, monthlyRate, totalMonths);
         assetVal = effectivePV + downPayment;
         document.getElementById('assetValueInput').value = Math.round(assetVal);
@@ -1230,21 +1161,21 @@
         // 4. Calcula Prazo
         const calculatedN = solvePeriod(effectivePV, pmtVal, monthlyRate);
         if (calculatedN === null) {
-          alert('A parcela informada (R$ ' + formatMoney(pmtVal) + ') e menor ou igual aos juros mensais. A divida nunca seria quitada. Aumente o valor da parcela.');
+          alert('A parcela informada (R$ ' + formatMoney(pmtVal) + ') e menor ou igual aos juros mensais. Aumente o valor da parcela.');
           return;
         }
         totalMonths = calculatedN;
         document.getElementById('periodInput').value = periodUnit === 'years' ? (totalMonths / 12).toFixed(1) : totalMonths;
       }
 
-      // GERA CRONOGRAMAS PADRAO
+      // GERA CRONOGRAMAS
       cacheSchedulePrice = generatePriceSchedule(effectivePV, monthlyRate, totalMonths, 0);
       cacheScheduleSac = generateSacSchedule(effectivePV, monthlyRate, totalMonths, 0);
 
       const priceSummary = summarizeSchedule(cacheSchedulePrice);
       const sacSummary = summarizeSchedule(cacheScheduleSac);
 
-      // GERA CRONOGRAMA COM AMORTIZACAO MENSAL EXTRA (SE HOUVER APORTE)
+      // AMORTIZACAO MENSAL EXTRA
       const hasExtra = extraMonthly > 0;
       const tabBtnExtra = document.getElementById('tabBtnExtra');
       const extraSavingsBox = document.getElementById('extraSavingsBox');
@@ -1326,9 +1257,8 @@
      * CENARIOS DIDATICOS (NOMES SUCINTOS)
      */
     function carregarCenario(tipo) {
-      document.getElementById('solveTargetSelect').value = 'pmt';
-      handleSolveTargetChange();
       document.getElementById('extraMonthlyInput').value = 0;
+      document.getElementById('pmtInput').value = '';
 
       if (tipo === 'aula') {
         document.getElementById('assetValueInput').value = 100000;
@@ -1346,7 +1276,7 @@
         document.getElementById('periodInput').value = 360;
         document.getElementById('periodUnitSelect').value = 'months';
         document.getElementById('systemSelect').value = 'SAC';
-        document.getElementById('extraMonthlyInput').value = 400; // Simulacao de amortizacao imobiliaria
+        document.getElementById('extraMonthlyInput').value = 400;
       } else if (tipo === 'veicular') {
         document.getElementById('assetValueInput').value = 75000;
         document.getElementById('downPaymentInput').value = 15000;
@@ -1369,11 +1299,6 @@
     }
 
     // Eventos
-    document.getElementById('solveTargetSelect').addEventListener('change', () => {
-      handleSolveTargetChange();
-      executeCalculation();
-    });
-
     document.getElementById('calcForm').addEventListener('submit', (e) => {
       e.preventDefault();
       executeCalculation();
@@ -1383,7 +1308,6 @@
 
     // Inicializacao
     window.addEventListener('DOMContentLoaded', () => {
-      handleSolveTargetChange();
       executeCalculation();
     });
   </script>
