@@ -1,0 +1,3541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicação web de Gestão de Investimentos e Orçamento de Capital (VPL, TIR, MTIR, Payback, IL, VAE, Ponto de Fisher, WACC/CAPM, Cenários e Sensibilidade) — CAD 167 UFMG.">
+  <title>Analisador de Viabilidade de Investimentos | CAD 167 - UFMG</title>
+
+  <!-- Favicon / Ícone da Página em SVG embutido (mesma identidade visual do Trabalho 1) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e3a8a'/%3E%3Cpath d='M7 22l6-7 5 4 7-9' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='25' cy='10' r='2.2' fill='%2310b981'/%3E%3C/svg%3E">
+
+  <!-- Tipografia Inter via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Biblioteca Chart.js via CDN para geração dos gráficos financeiros interativos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ==========================================================================
+       SISTEMA DE DESIGN & ESTILOS (CSS) - PADRÃO INSTITUCIONAL CAD 167 / UFMG
+       Inspirado na sobriedade da Calculadora Financeira (Trabalho 1)
+       ========================================================================== */
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #0f172a;
+      --primary-hover: #1e40af;
+      --primary-soft: #eff6ff;
+      --primary-border: #bfdbfe;
+      --accent-green: #059669;
+      --accent-green-bg: #ecfdf5;
+      --accent-green-border: #a7f3d0;
+      --accent-amber: #d97706;
+      --accent-amber-bg: #fffbeb;
+      --accent-amber-border: #fde68a;
+      --accent-red: #dc2626;
+      --accent-red-bg: #fef2f2;
+      --accent-red-border: #fecaca;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 8px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 56px;
+    }
+
+    /* Cabeçalho Institucional */
+    .header {
+      background-color: var(--primary);
+      color: #ffffff;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-title {
+      font-size: 1.32rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-subtitle {
+      font-size: 0.8rem;
+      color: #dbeafe;
+      margin-top: 2px;
+    }
+
+    .header-nav-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #ffffff;
+      text-decoration: none;
+      background-color: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background-color 0.15s ease;
+    }
+
+    .header-nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Card Padrão */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .card-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* --------------------------------------------------------------------------
+       ETAPA 1: CAIXA PRINCIPAL DE CAPTURA DE DADOS (ESTILO INSTITUCIONAL)
+       -------------------------------------------------------------------------- */
+    .module-box {
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .module-header {
+      background-color: var(--primary);
+      color: #ffffff;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    .module-instruction {
+      background-color: var(--primary-soft);
+      border-bottom: 1px solid var(--primary-border);
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      color: var(--primary);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    /* Navegação por Abas da Captura de Dados */
+    .tabs-bar {
+      display: flex;
+      background-color: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 190px;
+      padding: 11px 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      background-color: #ffffff;
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-pane {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Seletor Rápido em Pílulas (Modo Projeto Único vs Comparação A vs B) */
+    .mode-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+
+    .selector-title {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .target-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-pill {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: #ffffff;
+    }
+
+    .btn-pill.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 1px 3px rgba(30, 58, 138, 0.25);
+    }
+
+    /* Grade de Parâmetros de Entrada */
+    .params-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .params-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 780px) {
+      .params-grid, .params-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label small {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .field-link-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .field-link-btn:hover {
+      color: var(--primary-hover);
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 11px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background-color: #ffffff;
+      color: var(--text-main);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.14);
+    }
+
+    .form-control-sm {
+      padding: 6px 9px;
+      font-size: 0.83rem;
+    }
+
+    .unit-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .checkbox-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    /* Barra de Utilitários de Captura (Colar Série, Importar CSV, Preencher Anuidade) */
+    .capture-tools-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+
+    .capture-tools-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 18px;
+      font-family: var(--font);
+      font-size: 0.84rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-sm {
+      padding: 5px 11px;
+      font-size: 0.76rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-subtle);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background-color: #e2e8f0;
+    }
+
+    .btn-outline {
+      background-color: #ffffff;
+      border-color: var(--border);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-soft);
+    }
+
+    /* Tabela de Entrada dos Fluxos de Caixa */
+    .cf-input-wrapper {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow-x: auto;
+      background-color: #ffffff;
+    }
+
+    table.cf-input-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    table.cf-input-table th {
+      background-color: var(--bg-subtle);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.cf-input-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    table.cf-input-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.cf-input-table tr.row-t0 {
+      background-color: #f8fafc;
+    }
+
+    .period-badge {
+      display: inline-block;
+      min-width: 56px;
+      text-align: center;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background-color: var(--bg-subtle);
+      color: var(--primary);
+    }
+
+    .row-t0 .period-badge {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Construtor DRE -> FCL & WACC/CAPM */
+    .builder-preview-card {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .wacc-result-banner {
+      background-color: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      border-radius: 6px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .wacc-result-banner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .wacc-metric-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .wacc-metric-value {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* Exemplos Práticos (4 Cards Clicáveis estilo Trabalho 1) */
+    .examples-section {
+      margin-top: 24px;
+    }
+
+    .examples-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .examples-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .examples-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .example-card {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .example-card:hover {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+    }
+
+    .example-name {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .example-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .example-action {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-align: right;
+    }
+
+    /* --------------------------------------------------------------------------
+       ETAPA 2: RELATÓRIOS DE VIABILIDADE, GRÁFICOS E CRONOGRAMAS
+       -------------------------------------------------------------------------- */
+    .report-section {
+      margin-top: 28px;
+    }
+
+    .export-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Banner de Parecer Executivo */
+    .decision-banner {
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-subtle);
+    }
+
+    .decision-banner.viable {
+      background-color: var(--accent-green-bg);
+      border-color: var(--accent-green-border);
+    }
+
+    .decision-banner.inviable {
+      background-color: var(--accent-red-bg);
+      border-color: var(--accent-red-border);
+    }
+
+    .decision-banner.warning {
+      background-color: var(--accent-amber-bg);
+      border-color: var(--accent-amber-border);
+    }
+
+    .decision-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .decision-banner.viable .decision-title { color: #047857; }
+    .decision-banner.inviable .decision-title { color: #b91c1c; }
+    .decision-banner.warning .decision-title { color: #b45309; }
+
+    .decision-text {
+      font-size: 0.84rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    /* Grade de 4 Indicadores Principais (KPIs) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 850px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .kpi-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .text-green { color: var(--accent-green) !important; }
+    .text-amber { color: var(--accent-amber) !important; }
+    .text-red { color: var(--accent-red) !important; }
+    .text-primary { color: var(--primary) !important; }
+
+    /* Tabela Comparativa (Projeto Único ou Projeto A vs B) */
+    .comparison-report-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 22px;
+      font-size: 0.85rem;
+    }
+
+    .comparison-report-table th,
+    .comparison-report-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-report-table th {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .comparison-report-table th.num-col,
+    .comparison-report-table td.num-col {
+      text-align: right;
+    }
+
+    .comparison-report-table tr:nth-child(even) {
+      background-color: var(--bg-subtle);
+    }
+
+    .comparison-report-table td.metric-val {
+      font-weight: 600;
+    }
+
+    /* Área de Gráficos */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 880px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      background-color: #ffffff;
+    }
+
+    .chart-box-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+
+    .chart-box-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 270px;
+      width: 100%;
+    }
+
+    .chart-fallback {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      background-color: var(--bg-subtle);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    /* Seção de Cenários, Risco & Sensibilidade */
+    .subsection-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 22px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .scenario-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 780px) {
+      .scenario-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .scenario-box {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .scenario-box-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .scenario-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .scenario-mini-grid label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Tabela Detalhada de Fluxos e Payback */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background-color: #ffffff;
+      margin-top: 10px;
+    }
+
+    table.schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.81rem;
+      text-align: right;
+    }
+
+    table.schedule-table th {
+      background-color: var(--bg-subtle);
+      padding: 10px 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.schedule-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    table.schedule-table tbody tr:nth-child(even) {
+      background-color: #fbfcfe;
+    }
+
+    table.schedule-table tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    table.schedule-table tfoot td {
+      background-color: var(--bg-subtle);
+      font-weight: 700;
+      border-top: 2px solid var(--border);
+      padding: 10px 12px;
+    }
+
+    .col-center { text-align: center !important; }
+    .col-left { text-align: left !important; }
+
+    .badge-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-green {
+      background-color: var(--accent-green-bg);
+      color: #047857;
+      border: 1px solid var(--accent-green-border);
+    }
+
+    .badge-red {
+      background-color: var(--accent-red-bg);
+      color: #b91c1c;
+      border: 1px solid var(--accent-red-border);
+    }
+
+    .badge-amber {
+      background-color: var(--accent-amber-bg);
+      color: #b45309;
+      border: 1px solid var(--accent-amber-border);
+    }
+
+    /* Rodapé Acadêmico */
+    .footer {
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding: 20px 20px 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-student {
+      margin-top: 4px;
+      font-weight: 600;
+      color: var(--text-main);
+      font-size: 0.84rem;
+    }
+
+    /* ==========================================================================
+       FOLHA DE ESTILOS PARA IMPRESSÃO / EXPORTAÇÃO PDF (@media print)
+       ========================================================================== */
+    @media print {
+      body {
+        background-color: #ffffff;
+        padding-bottom: 0;
+        font-size: 11px;
+      }
+
+      .header {
+        background-color: #1e3a8a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 12px 16px;
+        margin-bottom: 14px;
+      }
+
+      .header-nav-link,
+      .no-print,
+      .examples-section,
+      .capture-tools-bar,
+      .form-actions,
+      .tabs-bar,
+      .export-actions,
+      .scenario-controls {
+        display: none !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #cbd5e1;
+        padding: 14px;
+        margin-bottom: 14px;
+        page-break-inside: avoid;
+      }
+
+      #inputSection {
+        display: none !important;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .chart-container {
+        height: 200px;
+      }
+
+      .table-wrapper {
+        overflow: visible;
+      }
+
+      .decision-banner,
+      .comparison-report-table th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO INSTITUCIONAL -->
+  <header class="header">
+    <div class="header-container">
+      <div>
+        <h1 class="header-title">Analisador de Viabilidade de Investimentos</h1>
+        <div class="header-subtitle">Gestão de Investimentos &amp; Orçamento de Capital &bull; CAD 167 - Administração Financeira (UFMG)</div>
+      </div>
+      <a href="../index.html" class="header-nav-link" title="Acessar Trabalho 1 - Calculadora Financeira">
+        &larr; Trabalho 1 (Calculadora TVM)
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ========================================================================
+         ETAPA 1: CAPTURA DE DADOS DO(S) PROJETO(S) DE INVESTIMENTO
+         ======================================================================== -->
+    <section class="card" id="inputSection">
+      <div class="module-box">
+        <div class="module-header">
+          Orçamento de Capital e Análise de Fluxos de Caixa
+        </div>
+        <div class="module-instruction">
+          Informe a TMA e os fluxos de caixa anuais (diretamente ou pelo Construtor DRE &rarr; FCL) para gerar o relatório de viabilidade.
+        </div>
+
+        <!-- Abas de Captura de Dados -->
+        <div class="tabs-bar" role="tablist">
+          <button type="button" class="tab-btn active" id="tabBtnDirect" onclick="alternarAbaCaptura('direct')">
+            1. Fluxos de Caixa (Direto)
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnBuilder" onclick="alternarAbaCaptura('builder')">
+            2. Construtor de Orçamento (DRE &rarr; FCL)
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnWacc" onclick="alternarAbaCaptura('wacc')">
+            3. Calculadora de TMA (WACC / CAPM)
+          </button>
+        </div>
+
+        <!-- ====================================================================
+             ABA 1: ENTRADA DIRETA DE FLUXOS DE CAIXA (PROJETO ÚNICO OU A vs B)
+             ==================================================================== -->
+        <div class="tab-pane active" id="paneDirect">
+          <div class="mode-selector">
+            <span class="selector-title">Modo de Análise:</span>
+            <div class="target-pills">
+              <button type="button" class="btn-pill active" id="pillSingle" onclick="definirModoAnalise('SINGLE')">
+                Projeto Único
+              </button>
+              <button type="button" class="btn-pill" id="pillCompare" onclick="definirModoAnalise('COMPARE')">
+                Comparar Projeto A vs Projeto B
+              </button>
+            </div>
+          </div>
+
+          <form id="investmentForm" novalidate>
+            <!-- Parâmetros Financeiros Principais -->
+            <div class="params-grid">
+              <div class="field-group">
+                <label for="tmaInput" class="field-label">
+                  <span>TMA / Custo de Capital</span>
+                  <button type="button" class="field-link-btn" onclick="alternarAbaCaptura('wacc')">Calcular via WACC</button>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="tmaInput" class="form-control" step="any" min="0" max="500" placeholder="Ex: 12.00">
+                  <span class="unit-label">% a.a.</span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="reinvestInput" class="field-label">
+                  <span>Taxa Reinvestimento (MTIR)</span>
+                  <small>padrão = TMA</small>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="reinvestInput" class="form-control" step="any" min="0" max="500" placeholder="Igual à TMA">
+                  <span class="unit-label">% a.a.</span>
+                </div>
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="syncReinvestChk" checked onchange="alternarSyncReinvestimento()">
+                  <span>Usar automaticamente a mesma taxa da TMA</span>
+                </label>
+              </div>
+
+              <div class="field-group">
+                <label for="horizonA" class="field-label">
+                  <span id="horizonALabel">Horizonte do Projeto (anos)</span>
+                  <small>1 a 20 anos</small>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="horizonA" class="form-control" min="1" max="20" step="1" value="5" onchange="ajustarHorizonteTabela()">
+                  <span class="unit-label">anos</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Identificação dos Projetos e Horizonte B (visível na comparação) -->
+            <div class="params-grid-2">
+              <div class="field-group">
+                <label for="projectNameA" class="field-label">
+                  <span>Nome do Projeto <span id="suffixLabelA"></span></span>
+                </label>
+                <input type="text" id="projectNameA" class="form-control" value="Projeto A" placeholder="Ex: Expansão Industrial">
+              </div>
+
+              <div class="field-group compare-only" style="display: none;">
+                <label for="projectNameB" class="field-label">
+                  <span>Nome do Projeto B</span>
+                  <small>Horizonte B (anos):</small>
+                </label>
+                <div class="input-wrapper">
+                  <input type="text" id="projectNameB" class="form-control" value="Projeto B" placeholder="Ex: Alternativa Tecnológica">
+                  <input type="number" id="horizonB" class="form-control" style="width: 90px;" min="1" max="20" step="1" value="5" onchange="ajustarHorizonteTabela()" title="Horizonte do Projeto B em anos">
+                </div>
+              </div>
+            </div>
+
+            <!-- Ferramentas Rápidas de Captura de Dados -->
+            <div class="capture-tools-bar">
+              <div class="capture-tools-group">
+                <span style="font-size: 0.76rem; font-weight: 600; color: var(--text-muted);">Captura Rápida:</span>
+                <button type="button" class="btn btn-outline btn-sm" onclick="colarSerieFluxos('A')">
+                  Colar Série (A)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm compare-only" style="display: none;" onclick="colarSerieFluxos('B')">
+                  Colar Série (B)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="preencherAnuidadeRapida('A')">
+                  Preencher Anuidade (A)
+                </button>
+              </div>
+              <div class="capture-tools-group">
+                <label for="csvFileInput" class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;">
+                  Importar CSV
+                </label>
+                <input type="file" id="csvFileInput" accept=".csv,.txt" style="display: none;" onchange="importarCSVFluxos(event)">
+              </div>
+            </div>
+
+            <!-- Tabela Dinâmica de Captura de Fluxos (Ano 0 até Ano max) -->
+            <div class="cf-input-wrapper">
+              <table class="cf-input-table">
+                <thead>
+                  <tr>
+                    <th style="width: 95px;">Período</th>
+                    <th>Descrição Contábil</th>
+                    <th style="min-width: 190px;" id="thFlowA">Fluxo de Caixa (R$)</th>
+                    <th style="min-width: 190px; display: none;" class="compare-only" id="thFlowB">Fluxo Projeto B (R$)</th>
+                  </tr>
+                </thead>
+                <tbody id="cfInputBody">
+                  <!-- Preenchido dinamicamente pelo JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btnAnalyze">Analisar Investimento</button>
+              <button type="button" class="btn btn-secondary" id="btnClear" onclick="limparFormulario()">Limpar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ====================================================================
+             ABA 2: CONSTRUTOR DE ORÇAMENTO DE CAPITAL (DRE PROJETADA -> FCL)
+             ==================================================================== -->
+        <div class="tab-pane" id="paneBuilder">
+          <p class="card-subtitle" style="margin-bottom: 14px;">
+            Projete os Fluxos de Caixa Livres (FCL) a partir de Capex, Receita, Custos, Depreciação Linear, Benefício Fiscal (IR/CSLL), Capital de Giro (NCG) e Valor Residual.
+          </p>
+
+          <div class="params-grid">
+            <div class="field-group">
+              <label for="bldName" class="field-label">Nome do Projeto</label>
+              <input type="text" id="bldName" class="form-control" value="Implantação de Plataforma SaaS">
+            </div>
+            <div class="field-group">
+              <label for="bldTma" class="field-label">TMA / WACC (% a.a.)</label>
+              <div class="input-wrapper">
+                <input type="number" id="bldTma" class="form-control" step="any" min="0" value="14">
+                <span class="unit-label">%</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldYears" class="field-label">Vida Útil (anos)</label>
+              <input type="number" id="bldYears" class="form-control" min="1" max="20" step="1" value="5" oninput="atualizarPreviewOrcamento()">
+            </div>
+
+            <div class="field-group">
+              <label for="bldCapex" class="field-label">Investimento Ativo Fixo (Capex)</label>
+              <div class="input-wrapper">
+                <span class="unit-label">R$</span>
+                <input type="number" id="bldCapex" class="form-control" step="any" min="0" value="300000" oninput="atualizarPreviewOrcamento()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldNcg" class="field-label">Capital de Giro Inicial (NCG)</label>
+              <div class="input-wrapper">
+                <span class="unit-label">R$</span>
+                <input type="number" id="bldNcg" class="form-control" step="any" min="0" value="40000" oninput="atualizarPreviewOrcamento()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldSalvage" class="field-label">Valor Residual de Venda (Ano n)</label>
+              <div class="input-wrapper">
+                <span class="unit-label">R$</span>
+                <input type="number" id="bldSalvage" class="form-control" step="any" min="0" value="50000" oninput="atualizarPreviewOrcamento()">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="bldRevenue" class="field-label">Receita Anual (Ano 1)</label>
+              <div class="input-wrapper">
+                <span class="unit-label">R$</span>
+                <input type="number" id="bldRevenue" class="form-control" step="any" min="0" value="260000" oninput="atualizarPreviewOrcamento()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldGrowth" class="field-label">Crescimento Anual da Receita</label>
+              <div class="input-wrapper">
+                <input type="number" id="bldGrowth" class="form-control" step="any" value="6" oninput="atualizarPreviewOrcamento()">
+                <span class="unit-label">% a.a.</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldTax" class="field-label">Alíquota IR + CSLL</label>
+              <div class="input-wrapper">
+                <input type="number" id="bldTax" class="form-control" step="any" min="0" max="100" value="34" oninput="atualizarPreviewOrcamento()">
+                <span class="unit-label">%</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="bldFixedCost" class="field-label">Custos Fixos Anuais (sem deprec.)</label>
+              <div class="input-wrapper">
+                <span class="unit-label">R$</span>
+                <input type="number" id="bldFixedCost" class="form-control" step="any" min="0" value="55000" oninput="atualizarPreviewOrcamento()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="bldVarCost" class="field-label">Custos Variáveis (% Receita)</label>
+              <div class="input-wrapper">
+                <input type="number" id="bldVarCost" class="form-control" step="any" min="0" max="100" value="30" oninput="atualizarPreviewOrcamento()">
+                <span class="unit-label">%</span>
+              </div>
+            </div>
+            <div class="field-group" style="justify-content: flex-end;">
+              <label class="checkbox-inline">
+                <input type="checkbox" id="bldTaxShieldChk" checked onchange="atualizarPreviewOrcamento()">
+                <span>Considerar compensação fiscal integral em LAJIR negativo</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Prévia da Tabela DRE -> Fluxo de Caixa Livre -->
+          <div class="builder-preview-card">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
+              Prévia da Projeção Operacional (DRE Incremental &rarr; Fluxo de Caixa Livre)
+            </div>
+            <div class="table-wrapper" style="margin-top: 0;">
+              <table class="schedule-table" id="builderPreviewTable">
+                <thead>
+                  <tr>
+                    <th class="col-center">Ano</th>
+                    <th>Receita</th>
+                    <th>Custos Oper.</th>
+                    <th>Depreciação</th>
+                    <th>LAJIR (EBIT)</th>
+                    <th>IR / CSLL</th>
+                    <th>FCO</th>
+                    <th>Capex / NCG / VR</th>
+                    <th>FCL Resultante</th>
+                  </tr>
+                </thead>
+                <tbody id="builderPreviewBody">
+                  <!-- Gerado dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="aplicarOrcamentoNoProjeto('A')">
+              Aplicar FCL no Projeto A e Analisar
+            </button>
+            <button type="button" class="btn btn-outline" onclick="aplicarOrcamentoNoProjeto('B')">
+              Aplicar FCL no Projeto B (Comparativo)
+            </button>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             ABA 3: CALCULADORA DE TMA VIA WACC & CAPM
+             ==================================================================== -->
+        <div class="tab-pane" id="paneWacc">
+          <p class="card-subtitle" style="margin-bottom: 14px;">
+            Estime a Taxa Mínima de Atratividade (TMA) pelo Custo Médio Ponderado de Capital (WACC) com Custo de Capital Próprio via modelo CAPM.
+          </p>
+
+          <div class="params-grid">
+            <div class="field-group">
+              <label for="waccRf" class="field-label"><span>Taxa Livre de Risco (<i>R</i><sub>f</sub> / Selic)</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="waccRf" class="form-control" step="any" value="10.50" oninput="recalcularWacc()">
+                <span class="unit-label">% a.a.</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="waccBeta" class="field-label"><span>Beta do Projeto (&beta;)</span></label>
+              <input type="number" id="waccBeta" class="form-control" step="any" value="1.15" oninput="recalcularWacc()">
+            </div>
+            <div class="field-group">
+              <label for="waccRm" class="field-label"><span>Retorno Esperado do Mercado (<i>R</i><sub>m</sub>)</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="waccRm" class="form-control" step="any" value="16.50" oninput="recalcularWacc()">
+                <span class="unit-label">% a.a.</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="waccKd" class="field-label"><span>Custo Bruto da Dívida (<i>K</i><sub>d</sub>)</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="waccKd" class="form-control" step="any" value="13.50" oninput="recalcularWacc()">
+                <span class="unit-label">% a.a.</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="waccTax" class="field-label"><span>Alíquota IR / CSLL (<i>T</i><sub>c</sub>)</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="waccTax" class="form-control" step="any" min="0" max="100" value="34.00" oninput="recalcularWacc()">
+                <span class="unit-label">%</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="waccWe" class="field-label"><span>Proporção de Capital Próprio (<i>E</i>/<i>V</i>)</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="waccWe" class="form-control" step="any" min="0" max="100" value="60.00" oninput="recalcularWacc()">
+                <span class="unit-label">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wacc-result-banner">
+            <div>
+              <div class="wacc-metric-label">Custo Capital Próprio (<i>K</i><sub>e</sub>)</div>
+              <div class="wacc-metric-value" id="resKe">17,40%</div>
+            </div>
+            <div>
+              <div class="wacc-metric-label">Dívida Pós-IR <i>K</i><sub>d</sub>(1 &minus; <i>T</i><sub>c</sub>)</div>
+              <div class="wacc-metric-value" id="resKdNet">8,91%</div>
+            </div>
+            <div>
+              <div class="wacc-metric-label">Proporção Dívida (<i>D</i>/<i>V</i>)</div>
+              <div class="wacc-metric-value" id="resWd">40,00%</div>
+            </div>
+            <div>
+              <div class="wacc-metric-label">WACC Calculado (TMA)</div>
+              <div class="wacc-metric-value text-green" id="resWacc">14,00%</div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="aplicarWaccComoTMA()">
+              Aplicar WACC como TMA e Voltar aos Fluxos
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exemplos Práticos Clicáveis (Mesmo padrão dos 4 cartões do Trabalho 1) -->
+      <div class="examples-section">
+        <div class="examples-title">Exemplos Práticos (CAD 167):</div>
+        <div class="examples-grid">
+          <!-- Exemplo 1: Projeto Convencional -->
+          <div class="example-card" onclick="carregarExemplo('padrao')">
+            <div>
+              <div class="example-name">1. Expansão Industrial</div>
+              <div class="example-desc">
+                Capex: R$ 250.000,00<br>
+                Prazo: 5 anos &bull; TMA: 12% a.a.<br>
+                Fluxo convencional positivo
+              </div>
+            </div>
+            <div class="example-action">Carregar e analisar &rarr;</div>
+          </div>
+
+          <!-- Exemplo 2: Conflito VPL vs TIR (Ponto de Fisher) -->
+          <div class="example-card" onclick="carregarExemplo('fisher')">
+            <div>
+              <div class="example-name">2. Ponto de Fisher (A vs B)</div>
+              <div class="example-desc">
+                Projeto A (R$ 100k, maior TIR)<br>
+                vs Projeto B (R$ 200k, maior VPL)<br>
+                TMA: 10% a.a. &bull; 3 anos
+              </div>
+            </div>
+            <div class="example-action">Carregar e analisar &rarr;</div>
+          </div>
+
+          <!-- Exemplo 3: Vidas Úteis Diferentes (VAE) -->
+          <div class="example-card" onclick="carregarExemplo('vidas')">
+            <div>
+              <div class="example-name">3. Vidas Úteis Diferentes</div>
+              <div class="example-desc">
+                Equip. A (3 anos) vs B (5 anos)<br>
+                TMA: 11% a.a.<br>
+                Decisão pelo VAE (Anualidade)
+              </div>
+            </div>
+            <div class="example-action">Carregar e analisar &rarr;</div>
+          </div>
+
+          <!-- Exemplo 4: Orçamento de Capital Completo -->
+          <div class="example-card" onclick="carregarExemplo('orcamento')">
+            <div>
+              <div class="example-name">4. Orçamento (DRE &rarr; FCL)</div>
+              <div class="example-desc">
+                Capex R$ 300k + NCG R$ 40k<br>
+                Depreciação, IR 34% e VR<br>
+                TMA: 14% a.a. &bull; 5 anos
+              </div>
+            </div>
+            <div class="example-action">Carregar e analisar &rarr;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         ETAPA 2: RELATÓRIO DE VIABILIDADE, GRÁFICOS, CENÁRIOS E CRONOGRAMA
+         (Revelado automaticamente após o cálculo, seguindo o fluxo do Trabalho 1)
+         ======================================================================== -->
+    <section class="card report-section" id="reportSection" style="display: none;">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title" id="reportMainTitle">Relatório Executivo de Viabilidade Econômica</h2>
+          <p class="card-subtitle" id="reportMainSubtitle">
+            Indicadores de valor, retorno, recuperação de capital, risco e cronograma descontado
+          </p>
+        </div>
+        <div class="export-actions no-print">
+          <button type="button" class="btn btn-outline btn-sm" onclick="exportarRelatorioCSV()">
+            Exportar CSV
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
+            Imprimir / Salvar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Parecer Executivo Automático -->
+      <div class="decision-banner" id="decisionBanner">
+        <div class="decision-title" id="decisionTitle">Parecer de Viabilidade</div>
+        <div class="decision-text" id="decisionText"></div>
+      </div>
+
+      <!-- Quadro de 4 KPIs Principais -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label" id="kpiNpvLabel">VPL (Valor Presente Líquido)</div>
+          <div class="kpi-value" id="kpiNpvValue">R$ 0,00</div>
+          <div class="kpi-sub" id="kpiNpvSub">--</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="kpiIrrLabel">TIR &amp; MTIR</div>
+          <div class="kpi-value" id="kpiIrrValue">0,00%</div>
+          <div class="kpi-sub" id="kpiIrrSub">MTIR: --</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="kpiPaybackLabel">Payback Descontado</div>
+          <div class="kpi-value" id="kpiPaybackValue">--</div>
+          <div class="kpi-sub" id="kpiPaybackSub">Simples: --</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="kpiPiLabel">Índice de Lucratividade / VAE</div>
+          <div class="kpi-value" id="kpiPiValue">--</div>
+          <div class="kpi-sub" id="kpiPiSub">VAE: --</div>
+        </div>
+      </div>
+
+      <!-- Tabela Comparativa Estruturada -->
+      <table class="comparison-report-table" id="comparisonTable">
+        <thead id="comparisonHead">
+          <!-- Gerado dinamicamente pelo JS (Modo Único ou Projeto A vs B) -->
+        </thead>
+        <tbody id="comparisonBody">
+          <!-- Gerado dinamicamente pelo JS -->
+        </tbody>
+      </table>
+
+      <!-- Gráficos Interativos (Chart.js) -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-box-title">Perfil do VPL (VPL &times; Taxa de Desconto)</div>
+          <div class="chart-box-sub" id="npvProfileSub">Sensibilidade do VPL à variação da TMA, TIR e Ponto de Fisher</div>
+          <div class="chart-container" id="npvChartWrap">
+            <canvas id="npvProfileChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-title">Fluxos Anuais &amp; Saldo Acumulado Descontado</div>
+          <div class="chart-box-sub" id="cashflowChartSub">Evolução temporal dos fluxos e cruzamento do Payback Descontado</div>
+          <div class="chart-container" id="cfChartWrap">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Módulo de Análise de Cenários, Risco & Sensibilidade -->
+      <div class="subsection-title">
+        <span id="riskSectionTitle">Análise de Cenários, Risco e Sensibilidade</span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div class="target-pills no-print" id="riskProjectSelector" style="display: none;">
+            <button type="button" class="btn-pill active" id="btnRiskA" onclick="trocarProjetoRisco('A')">Projeto A</button>
+            <button type="button" class="btn-pill" id="btnRiskB" onclick="trocarProjetoRisco('B')">Projeto B</button>
+          </div>
+          <span style="font-size: 0.76rem; font-weight: 500; color: var(--text-muted);" id="scenarioExpectedSummary"></span>
+        </div>
+      </div>
+
+      <!-- Controles Editáveis dos Cenários -->
+      <div class="scenario-controls no-print">
+        <div class="scenario-box">
+          <div class="scenario-box-header text-red">Cenário Pessimista</div>
+          <div class="scenario-mini-grid">
+            <div>
+              <label for="pessFlowShock">Fluxos (%)</label>
+              <input type="number" id="pessFlowShock" class="form-control form-control-sm" value="-20" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="pessTmaShock">TMA (p.p.)</label>
+              <input type="number" id="pessTmaShock" class="form-control form-control-sm" value="2" step="0.5" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="pessProb">Prob. (%)</label>
+              <input type="number" id="pessProb" class="form-control form-control-sm" value="25" min="0" max="100" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-box">
+          <div class="scenario-box-header text-primary">Cenário Base (Realista)</div>
+          <div class="scenario-mini-grid">
+            <div>
+              <label for="baseFlowShock">Fluxos (%)</label>
+              <input type="number" id="baseFlowShock" class="form-control form-control-sm" value="0" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="baseTmaShock">TMA (p.p.)</label>
+              <input type="number" id="baseTmaShock" class="form-control form-control-sm" value="0" step="0.5" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="baseProb">Prob. (%)</label>
+              <input type="number" id="baseProb" class="form-control form-control-sm" value="50" min="0" max="100" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+          </div>
+        </div>
+
+        <div class="scenario-box">
+          <div class="scenario-box-header text-green">Cenário Otimista</div>
+          <div class="scenario-mini-grid">
+            <div>
+              <label for="otimFlowShock">Fluxos (%)</label>
+              <input type="number" id="otimFlowShock" class="form-control form-control-sm" value="20" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="otimTmaShock">TMA (p.p.)</label>
+              <input type="number" id="otimTmaShock" class="form-control form-control-sm" value="-1" step="0.5" oninput="atualizarAnaliseRisco()">
+            </div>
+            <div>
+              <label for="otimProb">Prob. (%)</label>
+              <input type="number" id="otimProb" class="form-control form-control-sm" value="25" min="0" max="100" step="1" oninput="atualizarAnaliseRisco()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Cenários & Métricas Estatísticas de Risco -->
+      <div class="table-wrapper" style="margin-bottom: 18px;">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th class="col-left">Cenário</th>
+              <th class="col-center">Choque Fluxos / TMA</th>
+              <th class="col-center">Probabilidade</th>
+              <th>TMA Aplicada</th>
+              <th>VPL</th>
+              <th>TIR</th>
+              <th>Payback Desc.</th>
+              <th class="col-center">Decisão</th>
+            </tr>
+          </thead>
+          <tbody id="scenariosBody"></tbody>
+          <tfoot id="scenariosFoot"></tfoot>
+        </table>
+      </div>
+
+      <!-- Sensibilidade (Gráfico Tornado + Tabela Ponto de Equilíbrio Financeiro) -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-box-title">Análise de Sensibilidade (&plusmn;20% nos Direcionadores)</div>
+          <div class="chart-box-sub" id="tornadoChartSub">Impacto isolado no VPL do projeto selecionado (ceteris paribus)</div>
+          <div class="chart-container" id="tornadoChartWrap">
+            <canvas id="tornadoChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-title">Margem de Segurança (Ponto de Equilíbrio VPL = 0)</div>
+          <div class="chart-box-sub">Limite máximo de variação adversa antes de o projeto destruir valor</div>
+          <div class="table-wrapper" style="margin-top: 8px;">
+            <table class="schedule-table" id="breakevenTable">
+              <thead>
+                <tr>
+                  <th class="col-left">Variável Crítica</th>
+                  <th>Valor Base</th>
+                  <th>Limite VPL = 0</th>
+                  <th>Margem Tolerada</th>
+                </tr>
+              </thead>
+              <tbody id="breakevenBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cronograma Detalhado Período a Período -->
+      <div class="subsection-title">
+        <span>Cronograma Detalhado de Fluxos de Caixa e Payback</span>
+        <div class="target-pills no-print" id="scheduleViewSelector" style="display: none;">
+          <button type="button" class="btn-pill active" id="btnSchedA" onclick="trocarCronogramaVisivel('A')">Projeto A</button>
+          <button type="button" class="btn-pill" id="btnSchedB" onclick="trocarCronogramaVisivel('B')">Projeto B</button>
+          <button type="button" class="btn-pill" id="btnSchedDiff" onclick="trocarCronogramaVisivel('DIFF')">Incremental (A - B)</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="schedule-table" id="scheduleTable">
+          <thead>
+            <tr>
+              <th class="col-center">Ano (<i>t</i>)</th>
+              <th>Fluxo Nominal (<i>FC</i><sub>t</sub>)</th>
+              <th>Fator (1 + <i>k</i>)<sup><i>t</i></sup></th>
+              <th>Valor Presente (<i>VP</i><sub>t</sub>)</th>
+              <th>Saldo Acum. Nominal</th>
+              <th>Saldo Acum. Descontado</th>
+              <th class="col-center">Situação</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+          <tfoot id="scheduleFoot"></tfoot>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ COM IDENTIFICAÇÃO ACADÊMICA (PADRÃO DO TRABALHO 1) -->
+  <footer class="footer">
+    <div>Universidade Federal de Minas Gerais (UFMG) &bull; CAD 167 - Administração Financeira &bull; ICEX / Sistemas de Informação</div>
+    <div class="footer-student">
+      Aluno: Ítalo Leal Lana Santos &bull; Matrícula: 2024013893
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       LÓGICA JAVASCRIPT: ENGENHARIA FINANCEIRA, ORÇAMENTO DE CAPITAL E RELATÓRIOS
+       Todo o bloco está comentado para fins didáticos e avaliação em CAD 167.
+       ========================================================================== -->
+  <script>
+    'use strict';
+
+    /* --------------------------------------------------------------------------
+       ESTADO GLOBAL DA APLICAÇÃO E INSTÂNCIAS DE GRÁFICOS
+       -------------------------------------------------------------------------- */
+    let analysisMode = 'SINGLE';      // 'SINGLE' (Projeto Único) ou 'COMPARE' (A vs B)
+    let activeScheduleTab = 'A';      // 'A', 'B' ou 'DIFF' (fluxo incremental A - B)
+    let activeRiskProject = 'A';      // 'A' ou 'B' para Cenários e Sensibilidade no modo comparativo
+    let lastReportState = null;       // Armazena o último resultado calculado para re-render e CSV
+
+    let npvChartInstance = null;      // Instância Chart.js - Perfil do VPL
+    let cfChartInstance = null;       // Instância Chart.js - Fluxos e Saldo Acumulado
+    let tornadoChartInstance = null;  // Instância Chart.js - Sensibilidade (Tornado)
+
+    /**
+     * Converte strings numéricas no padrão brasileiro ("1.250,50", "R$ -100.000,00")
+     * ou internacional ("-100000.00", "1,250.50") para Number em JavaScript.
+     */
+    function parseLocaleNumber(raw) {
+      if (typeof raw === 'number') return raw;
+      let s = String(raw || '').trim().replace(/R\$/gi, '').replace(/["'\s]/g, '');
+      if (!s || !/[0-9]/.test(s)) return NaN;
+      const hasComma = s.includes(',');
+      const hasDot = s.includes('.');
+      if (hasComma && hasDot) {
+        if (s.lastIndexOf(',') > s.lastIndexOf('.')) {
+          s = s.replace(/\./g, '').replace(',', '.');
+        } else {
+          s = s.replace(/,/g, '');
+        }
+      } else if (hasComma) {
+        s = s.replace(',', '.');
+      } else if ((s.match(/\./g) || []).length > 1) {
+        // Múltiplos pontos indicam separador de milhar (ex.: 1.000.000)
+        s = s.replace(/\./g, '');
+      }
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    /* --------------------------------------------------------------------------
+       FUNÇÕES DE FORMATAÇÃO REGIONAL (PT-BR)
+       -------------------------------------------------------------------------- */
+
+    /**
+     * Formata um número real para Moeda Brasileira (ex.: R$ 12.345,67).
+     */
+    function formatMoney(value) {
+      if (value === null || value === undefined || isNaN(value)) return '--';
+      const clean = Math.abs(value) < 1e-4 ? 0 : value;
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(clean);
+    }
+
+    /**
+     * Formata uma taxa percentual (ex.: recebe 12.5 e devolve "12,50%").
+     */
+    function formatPercent(value, decimals = 2) {
+      if (value === null || value === undefined || isNaN(value)) return '--';
+      return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      }).format(value) + '%';
+    }
+
+    /**
+     * Formata um número decimal genérico em padrão brasileiro (ex.: 1,31x).
+     */
+    function formatDecimal(value, decimals = 2) {
+      if (value === null || value === undefined || isNaN(value)) return '--';
+      return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      }).format(value);
+    }
+
+    /**
+     * Formata o Payback em anos decimais e na forma composta "X anos (Xa Ym)".
+     * Exemplo: 2.75 -> "2,75 anos (2a 9m)".
+     */
+    function formatPayback(years) {
+      if (years === null || years === undefined || isNaN(years)) {
+        return 'Não recupera no prazo';
+      }
+      if (years <= 0) return '0,00 anos (Imediato)';
+      const wholeYears = Math.floor(years);
+      let months = Math.round((years - wholeYears) * 12);
+      let adjYears = wholeYears;
+      if (months === 12) {
+        adjYears += 1;
+        months = 0;
+      }
+      return `${formatDecimal(years, 2)} anos (${adjYears}a ${months}m)`;
+    }
+
+    /* ==========================================================================
+       1. NÚCLEO DE MATEMÁTICA FINANCEIRA — GESTÃO DE INVESTIMENTOS
+       ========================================================================== */
+
+    /**
+     * 1.1 VALOR PRESENTE LÍQUIDO (VPL / NPV)
+     * Fórmula: VPL(k) = Soma_{t=0}^{n} [ CF_t / (1 + k)^t ]
+     * @param {number[]} cashFlows - Vetor de fluxos [CF_0, CF_1, ..., CF_n]
+     * @param {number} rate - Taxa de desconto decimal (ex.: 0.12 para 12% a.a.)
+     * @returns {number} Valor Presente Líquido em R$
+     */
+    function calcNPV(cashFlows, rate) {
+      if (!Array.isArray(cashFlows) || cashFlows.length === 0) return 0;
+      if (rate <= -1.0) return NaN;
+      let npv = 0;
+      for (let t = 0; t < cashFlows.length; t++) {
+        npv += cashFlows[t] / Math.pow(1.0 + rate, t);
+      }
+      return npv;
+    }
+
+    /**
+     * Derivada primeira d(VPL)/dr usada para acelerar convergência via Newton-Raphson:
+     * d/dr [ CF_t * (1 + r)^(-t) ] = -t * CF_t * (1 + r)^(-t - 1)
+     */
+    function calcNPVDerivative(cashFlows, rate) {
+      let d = 0;
+      for (let t = 1; t < cashFlows.length; t++) {
+        d -= t * cashFlows[t] / Math.pow(1.0 + rate, t + 1);
+      }
+      return d;
+    }
+
+    /**
+     * 1.2 CONTAGEM DE MUDANÇAS DE SINAL (REGRA DOS SINAIS DE DESCARTES)
+     * Fluxos convencionais possuem exatamente 1 mudança de sinal (ex.: -, +, +, +).
+     * Fluxos não-convencionais (>= 2 mudanças) podem apresentar múltiplas TIRs reais.
+     */
+    function countSignChanges(cashFlows) {
+      const nonZero = cashFlows.filter(v => Math.abs(v) > 1e-9);
+      let changes = 0;
+      for (let i = 1; i < nonZero.length; i++) {
+        if ((nonZero[i] > 0 && nonZero[i - 1] < 0) || (nonZero[i] < 0 && nonZero[i - 1] > 0)) {
+          changes++;
+        }
+      }
+      return changes;
+    }
+
+    /**
+     * Refina uma raiz isolada no intervalo [low, high] combinando Bisseção (segurança)
+     * e Newton-Raphson (convergência quadrática).
+     */
+    function refineRootHybrid(cashFlows, low, high) {
+      let fLow = calcNPV(cashFlows, low);
+      let fHigh = calcNPV(cashFlows, high);
+      if (Math.abs(fLow) < 1e-10) return low;
+      if (Math.abs(fHigh) < 1e-10) return high;
+      if (fLow * fHigh > 0) return null;
+
+      let r = 0.5 * (low + high);
+      for (let iter = 0; iter < 80; iter++) {
+        const f = calcNPV(cashFlows, r);
+        if (Math.abs(f) < 1e-9 || Math.abs(high - low) < 1e-11) {
+          return r;
+        }
+        // Atualiza o intervalo da bisseção
+        if (fLow * f < 0) {
+          high = r;
+          fHigh = f;
+        } else {
+          low = r;
+          fLow = f;
+        }
+        // Tenta passo de Newton-Raphson; se sair do intervalo, recua para o ponto médio
+        const df = calcNPVDerivative(cashFlows, r);
+        let nextR = Math.abs(df) > 1e-12 ? r - f / df : 0.5 * (low + high);
+        if (!(nextR > low && nextR < high)) {
+          nextR = 0.5 * (low + high);
+        }
+        r = nextR;
+      }
+      return r;
+    }
+
+    /**
+     * 1.3 TAXA INTERNA DE RETORNO (TIR / IRR) ROBUSTA
+     * Varre o domínio r in (-0.99, 20.0] (de -99% a +2000% a.a.) em busca de
+     * TODAS as raízes reais de VPL(r) = 0, tratando fluxos convencionais e não-convencionais.
+     * @returns {{ primary: number|null, allRoots: number[], signChanges: number, isNonConventional: boolean }}
+     */
+    function calcIRR(cashFlows) {
+      const signChanges = countSignChanges(cashFlows);
+      if (signChanges === 0) {
+        return { primary: null, allRoots: [], signChanges: 0, isNonConventional: false };
+      }
+
+      // Constrói grade adaptativa: passo fino perto de [-0.99, 1.5] e gradual até 20.0
+      const grid = [];
+      for (let r = -0.99; r < -0.5; r += 0.01) grid.push(Number(r.toFixed(4)));
+      for (let r = -0.5; r <= 1.5; r += 0.005) grid.push(Number(r.toFixed(4)));
+      for (let r = 1.52; r <= 5.0; r += 0.02) grid.push(Number(r.toFixed(4)));
+      for (let r = 5.1; r <= 20.0; r += 0.1) grid.push(Number(r.toFixed(4)));
+
+      const roots = [];
+      for (let i = 0; i < grid.length - 1; i++) {
+        const r1 = grid[i];
+        const r2 = grid[i + 1];
+        const f1 = calcNPV(cashFlows, r1);
+        const f2 = calcNPV(cashFlows, r2);
+
+        if (Math.abs(f1) < 1e-8) {
+          roots.push(r1);
+        } else if (f1 * f2 < 0) {
+          const root = refineRootHybrid(cashFlows, r1, r2);
+          if (root !== null && !isNaN(root)) {
+            roots.push(root);
+          }
+        }
+      }
+
+      // Deduplica raízes muito próximas encontradas em fronteiras de subintervalos
+      const uniqueRoots = [];
+      roots.sort((a, b) => a - b).forEach(rt => {
+        if (uniqueRoots.length === 0 || Math.abs(rt - uniqueRoots[uniqueRoots.length - 1]) > 1e-5) {
+          uniqueRoots.push(rt);
+        }
+      });
+
+      // Seleciona como TIR principal a menor raiz não-negativa (ou a mais próxima de 0)
+      let primary = null;
+      if (uniqueRoots.length > 0) {
+        const nonNeg = uniqueRoots.filter(r => r >= -1e-6);
+        primary = nonNeg.length > 0 ? nonNeg[0] : uniqueRoots[uniqueRoots.length - 1];
+      }
+
+      return {
+        primary,
+        allRoots: uniqueRoots,
+        signChanges,
+        isNonConventional: signChanges > 1
+      };
+    }
+
+    /**
+     * 1.4 TAXA INTERNA DE RETORNO MODIFICADA (MTIR / MIRR)
+     * Corrige a premissa irrealista de reinvestimento à própria TIR:
+     *   PV_saidas = Soma [ max(0, -CF_t) / (1 + k_fin)^t ]
+     *   FV_entradas = Soma [ max(0, CF_t) * (1 + k_reinv)^(n - t) ]
+     *   MTIR = (FV_entradas / PV_saidas)^(1 / n) - 1
+     */
+    function calcMIRR(cashFlows, financeRate, reinvestRate) {
+      const n = cashFlows.length - 1;
+      if (n <= 0 || financeRate <= -1 || reinvestRate <= -1) return null;
+
+      let pvOutflows = 0;
+      let fvInflows = 0;
+
+      for (let t = 0; t <= n; t++) {
+        if (cashFlows[t] < 0) {
+          pvOutflows += Math.abs(cashFlows[t]) / Math.pow(1.0 + financeRate, t);
+        } else if (cashFlows[t] > 0) {
+          fvInflows += cashFlows[t] * Math.pow(1.0 + reinvestRate, n - t);
+        }
+      }
+
+      if (pvOutflows <= 1e-9 || fvInflows <= 0) return null;
+      return Math.pow(fvInflows / pvOutflows, 1.0 / n) - 1.0;
+    }
+
+    /**
+     * 1.5 PAYBACK SIMPLES E PAYBACK DESCONTADO (COM INTERPOLAÇÃO LINEAR)
+     * Calcula o tempo exato (em anos) até a recuperação acumulada do capital.
+     * Se houver saída posterior que torne o saldo final negativo, indica não-recuperação.
+     */
+    function calcPayback(flows) {
+      if (!flows || flows.length === 0) return null;
+      let cum = flows[0];
+      if (cum >= 0) return 0; // Sem desembolso líquido inicial
+
+      // Verifica se o saldo acumulado termina positivo/zero e encontra o cruzamento definitivo
+      let lastRecovery = null;
+      for (let t = 1; t < flows.length; t++) {
+        const prev = cum;
+        cum += flows[t];
+        if (prev < 0 && cum >= -1e-9) {
+          const frac = flows[t] > 0 ? Math.abs(prev) / flows[t] : 0;
+          lastRecovery = (t - 1) + Math.min(1, Math.max(0, frac));
+        } else if (cum < -1e-9) {
+          // Caso fluxo negativo posterior volte o acumulado para o vermelho, zera recuperação anterior
+          lastRecovery = null;
+        }
+      }
+      return lastRecovery;
+    }
+
+    /**
+     * 1.6 ÍNDICE DE LUCRATIVIDADE (IL / PROFITABILITY INDEX)
+     * Fórmula clássica: IL = VP(Fluxos futuros) / |CF_0| = 1 + VPL / |CF_0|
+     * Quando há múltiplas saídas futuras e CF_0 = 0, usa VP das saídas no denominador.
+     */
+    function calcProfitabilityIndex(cashFlows, rate) {
+      const cf0 = cashFlows[0] || 0;
+      const npv = calcNPV(cashFlows, rate);
+      if (cf0 < -1e-9) {
+        let pvFuture = 0;
+        for (let t = 1; t < cashFlows.length; t++) {
+          pvFuture += cashFlows[t] / Math.pow(1.0 + rate, t);
+        }
+        return pvFuture / Math.abs(cf0);
+      }
+      // Fallback caso CF_0 >= 0: usa razão VP(entradas) / VP(saídas)
+      let pvIn = 0;
+      let pvOut = 0;
+      for (let t = 0; t < cashFlows.length; t++) {
+        const pv = cashFlows[t] / Math.pow(1.0 + rate, t);
+        if (pv >= 0) pvIn += pv;
+        else pvOut += Math.abs(pv);
+      }
+      if (pvOut <= 1e-9) return null;
+      return (pvOut + npv) / pvOut;
+    }
+
+    /**
+     * 1.7 VALOR ANUAL EQUIVALENTE (VAE / EAA - EQUIVALENT ANNUAL ANUITY)
+     * Converte o VPL em uma anuidade equivalente ao longo da vida útil n:
+     *   VAE = VPL * [ k / (1 - (1 + k)^(-n)) ]
+     * Essencial para comparar projetos mutuamente excludentes de vidas úteis distintas.
+     */
+    function calcEAA(npv, rate, n) {
+      if (n <= 0) return null;
+      if (Math.abs(rate) < 1e-9) return npv / n;
+      const factor = (1.0 - Math.pow(1.0 + rate, -n)) / rate;
+      return npv / factor;
+    }
+
+    /**
+     * 1.8 PONTO DE INTERSECÇÃO DE FISHER (TAXA DE INDIFERENÇA ENTRE A e B)
+     * É a TIR do fluxo incremental (CF_A - CF_B), isto é, a taxa r_F onde VPL_A(r_F) = VPL_B(r_F).
+     */
+    function calcFisherIntersection(flowsA, flowsB) {
+      const maxLen = Math.max(flowsA.length, flowsB.length);
+      const diffFlows = [];
+      for (let t = 0; t < maxLen; t++) {
+        diffFlows.push((flowsA[t] || 0) - (flowsB[t] || 0));
+      }
+      const irrDiff = calcIRR(diffFlows);
+      // Considera cruzamentos economicamente relevantes (r >= 0)
+      const validCrossings = irrDiff.allRoots.filter(r => r >= 0 && r <= 5.0);
+      if (validCrossings.length === 0) {
+        return { rate: null, npvAtFisher: null, diffFlows, allCrossings: [] };
+      }
+      const rate = validCrossings[0];
+      return {
+        rate,
+        npvAtFisher: calcNPV(flowsA, rate),
+        diffFlows,
+        allCrossings: validCrossings
+      };
+    }
+
+    /**
+     * 1.9 GERAÇÃO DO CRONOGRAMA PERÍODO A PERÍODO E CONSOLIDAÇÃO DE MÉTRICAS
+     */
+    function analyzeProject(name, cashFlows, tma, reinvestRate) {
+      const n = cashFlows.length - 1;
+      const schedule = [];
+      let cumNominal = 0;
+      let cumDiscounted = 0;
+      let totalNominalIn = 0;
+      let totalNominalOut = 0;
+      let pvFuture = 0;
+
+      for (let t = 0; t <= n; t++) {
+        const cf = cashFlows[t] || 0;
+        const discountFactor = Math.pow(1.0 + tma, t);
+        const pv = cf / discountFactor;
+
+        cumNominal += cf;
+        cumDiscounted += pv;
+
+        if (cf >= 0) totalNominalIn += cf;
+        else totalNominalOut += Math.abs(cf);
+        if (t >= 1) pvFuture += pv;
+
+        schedule.push({
+          t,
+          cf,
+          discountFactor,
+          pv,
+          cumNominal,
+          cumDiscounted
+        });
+      }
+
+      const npv = cumDiscounted;
+      const irrObj = calcIRR(cashFlows);
+      const mirr = calcMIRR(cashFlows, tma, reinvestRate);
+      const simplePayback = calcPayback(cashFlows);
+      const discountedPayback = calcPayback(schedule.map(row => row.pv));
+      const pi = calcProfitabilityIndex(cashFlows, tma);
+      const eaa = calcEAA(npv, tma, n);
+
+      return {
+        name,
+        cashFlows: [...cashFlows],
+        n,
+        tma,
+        reinvestRate,
+        initialOutlay: cashFlows[0] < 0 ? Math.abs(cashFlows[0]) : 0,
+        totalNominal: cumNominal,
+        totalNominalIn,
+        totalNominalOut,
+        pvFuture,
+        npv,
+        irr: irrObj.primary,
+        irrDetails: irrObj,
+        mirr,
+        simplePayback,
+        discountedPayback,
+        pi,
+        eaa,
+        schedule
+      };
+    }
+
+    /* ==========================================================================
+       2. CONSTRUTOR DE ORÇAMENTO DE CAPITAL (DRE PROJETADA -> FCL)
+       ========================================================================== */
+
+    /**
+     * Gera o Fluxo de Caixa Livre (FCL) completo a partir de parâmetros operacionais:
+     *   FCO_t = (Receita_t - Custos_t - Dep) * (1 - T_c) + Dep
+     *   FCL_0 = -(Capex + NCG)
+     *   FCL_n = FCO_n + NCG + VR * (1 - T_c)   [considerando depreciação integral -> VC_n = 0]
+     */
+    function buildCapitalBudgetingSchedule(params) {
+      const {
+        years, capex, ncg, salvage, revenue1, growthRate,
+        fixedCost, varCostPct, taxRate, fullTaxShield
+      } = params;
+
+      const depAnnual = years > 0 ? capex / years : 0;
+      const rows = [];
+      const cashFlows = [];
+
+      // Ano 0: Desembolso de Capex + Necessidade de Capital de Giro
+      const fcl0 = -(capex + ncg);
+      cashFlows.push(fcl0);
+      rows.push({
+        t: 0,
+        revenue: 0,
+        opCosts: 0,
+        dep: 0,
+        ebit: 0,
+        tax: 0,
+        fco: 0,
+        capexNcgVr: fcl0,
+        fcl: fcl0
+      });
+
+      // Anos 1 até n
+      for (let t = 1; t <= years; t++) {
+        const rev = revenue1 * Math.pow(1.0 + growthRate, t - 1);
+        const opCosts = fixedCost + rev * varCostPct;
+        const dep = depAnnual;
+        const ebit = rev - opCosts - dep;
+        // Se fullTaxShield = true, EBIT negativo gera crédito fiscal no grupo; senão, IR = max(0, EBIT * Tc)
+        const tax = fullTaxShield ? (ebit * taxRate) : Math.max(0, ebit * taxRate);
+        const nopat = ebit - tax;
+        const fco = nopat + dep;
+
+        // No último ano, recupera integralmente o Capital de Giro (NCG) e soma Valor Residual líquido de IR
+        let extra = 0;
+        if (t === years) {
+          const afterTaxSalvage = salvage * (1.0 - taxRate);
+          extra = ncg + afterTaxSalvage;
+        }
+
+        const fcl = fco + extra;
+        cashFlows.push(fcl);
+        rows.push({
+          t,
+          revenue: rev,
+          opCosts,
+          dep,
+          ebit,
+          tax,
+          fco,
+          capexNcgVr: extra,
+          fcl
+        });
+      }
+
+      return { rows, cashFlows };
+    }
+
+    /**
+     * Atualiza a prévia da tabela DRE -> FCL na Aba 2.
+     */
+    function atualizarPreviewOrcamento() {
+      const params = lerParametrosConstrutor();
+      const { rows } = buildCapitalBudgetingSchedule(params);
+      const tbody = document.getElementById('builderPreviewBody');
+      tbody.innerHTML = '';
+
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-center"><strong>${r.t}</strong></td>
+          <td>${formatMoney(r.revenue)}</td>
+          <td>${formatMoney(r.opCosts)}</td>
+          <td>${formatMoney(r.dep)}</td>
+          <td class="${r.ebit < 0 ? 'text-red' : ''}">${formatMoney(r.ebit)}</td>
+          <td>${formatMoney(r.tax)}</td>
+          <td>${formatMoney(r.fco)}</td>
+          <td class="${r.capexNcgVr < 0 ? 'text-red' : (r.capexNcgVr > 0 ? 'text-green' : '')}">${formatMoney(r.capexNcgVr)}</td>
+          <td class="${r.fcl < 0 ? 'text-red' : 'text-green'}"><strong>${formatMoney(r.fcl)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function lerParametrosConstrutor() {
+      return {
+        name: document.getElementById('bldName').value.trim() || 'Projeto Orçamento de Capital',
+        tmaPct: parseFloat(document.getElementById('bldTma').value) || 0,
+        years: Math.min(20, Math.max(1, parseInt(document.getElementById('bldYears').value, 10) || 5)),
+        capex: parseFloat(document.getElementById('bldCapex').value) || 0,
+        ncg: parseFloat(document.getElementById('bldNcg').value) || 0,
+        salvage: parseFloat(document.getElementById('bldSalvage').value) || 0,
+        revenue1: parseFloat(document.getElementById('bldRevenue').value) || 0,
+        growthRate: (parseFloat(document.getElementById('bldGrowth').value) || 0) / 100.0,
+        taxRate: (parseFloat(document.getElementById('bldTax').value) || 0) / 100.0,
+        fixedCost: parseFloat(document.getElementById('bldFixedCost').value) || 0,
+        varCostPct: (parseFloat(document.getElementById('bldVarCost').value) || 0) / 100.0,
+        fullTaxShield: document.getElementById('bldTaxShieldChk').checked
+      };
+    }
+
+    function aplicarOrcamentoNoProjeto(targetProject) {
+      const params = lerParametrosConstrutor();
+      const { cashFlows } = buildCapitalBudgetingSchedule(params);
+
+      if (targetProject === 'B') {
+        definirModoAnalise('COMPARE');
+        document.getElementById('projectNameB').value = params.name;
+        document.getElementById('horizonB').value = params.years;
+        if (!document.getElementById('tmaInput').value) {
+          document.getElementById('tmaInput').value = params.tmaPct;
+        }
+        renderTabelaFluxos(cashFlowsFromDOM('A'), cashFlows);
+      } else {
+        document.getElementById('projectNameA').value = params.name;
+        document.getElementById('horizonA').value = params.years;
+        document.getElementById('tmaInput').value = params.tmaPct;
+        renderTabelaFluxos(cashFlows, analysisMode === 'COMPARE' ? cashFlowsFromDOM('B') : []);
+      }
+
+      alternarAbaCaptura('direct');
+      executarAnaliseInvestimento();
+    }
+
+    /* ==========================================================================
+       3. CALCULADORA DE TMA VIA WACC E CAPM
+       ========================================================================== */
+
+    /**
+     * Calcula WACC:
+     *   Ke = Rf + Beta * (Rm - Rf)
+     *   Kd_liq = Kd * (1 - Tc)
+     *   WACC = (E/V)*Ke + (D/V)*Kd_liq
+     */
+    function recalcularWacc() {
+      const rf = parseFloat(document.getElementById('waccRf').value) || 0;
+      const beta = parseFloat(document.getElementById('waccBeta').value) || 0;
+      const rm = parseFloat(document.getElementById('waccRm').value) || 0;
+      const kd = parseFloat(document.getElementById('waccKd').value) || 0;
+      const tc = Math.min(100, Math.max(0, parseFloat(document.getElementById('waccTax').value) || 0)) / 100.0;
+      const we = Math.min(100, Math.max(0, parseFloat(document.getElementById('waccWe').value) || 0)) / 100.0;
+      const wd = 1.0 - we;
+
+      const ke = rf + beta * (rm - rf);
+      const kdNet = kd * (1.0 - tc);
+      const wacc = we * ke + wd * kdNet;
+
+      document.getElementById('resKe').textContent = formatPercent(ke);
+      document.getElementById('resKdNet').textContent = formatPercent(kdNet);
+      document.getElementById('resWd').textContent = formatPercent(wd * 100);
+      document.getElementById('resWacc').textContent = formatPercent(wacc);
+
+      return wacc;
+    }
+
+    function aplicarWaccComoTMA() {
+      const wacc = recalcularWacc();
+      document.getElementById('tmaInput').value = Math.max(0, wacc).toFixed(2);
+      alternarSyncReinvestimento();
+      alternarAbaCaptura('direct');
+      if (lastReportState) {
+        executarAnaliseInvestimento();
+      }
+    }
+
+    /* ==========================================================================
+       4. CONTROLES DA INTERFACE DE CAPTURA DE DADOS (DOM)
+       ========================================================================== */
+
+    function alternarAbaCaptura(tabKey) {
+      const map = {
+        direct: { btn: 'tabBtnDirect', pane: 'paneDirect' },
+        builder: { btn: 'tabBtnBuilder', pane: 'paneBuilder' },
+        wacc: { btn: 'tabBtnWacc', pane: 'paneWacc' }
+      };
+      Object.keys(map).forEach(k => {
+        document.getElementById(map[k].btn).classList.toggle('active', k === tabKey);
+        document.getElementById(map[k].pane).classList.toggle('active', k === tabKey);
+      });
+      if (tabKey === 'builder') atualizarPreviewOrcamento();
+      if (tabKey === 'wacc') recalcularWacc();
+    }
+
+    function definirModoAnalise(mode) {
+      analysisMode = mode;
+      const isCompare = mode === 'COMPARE';
+
+      document.getElementById('pillSingle').classList.toggle('active', !isCompare);
+      document.getElementById('pillCompare').classList.toggle('active', isCompare);
+
+      document.querySelectorAll('.compare-only').forEach(el => {
+        el.style.display = isCompare ? '' : 'none';
+      });
+
+      document.getElementById('horizonALabel').textContent = isCompare
+        ? 'Horizonte Projeto A (anos)'
+        : 'Horizonte do Projeto (anos)';
+      document.getElementById('suffixLabelA').textContent = isCompare ? 'A' : '';
+      document.getElementById('thFlowA').textContent = isCompare
+        ? 'Fluxo Projeto A (R$)'
+        : 'Fluxo de Caixa (R$)';
+
+      // Preserva valores já digitados ao alternar entre Único e Comparar
+      const currentA = cashFlowsFromDOM('A');
+      const currentB = cashFlowsFromDOM('B');
+      renderTabelaFluxos(currentA, currentB);
+    }
+
+    function alternarSyncReinvestimento() {
+      const chk = document.getElementById('syncReinvestChk');
+      const reinv = document.getElementById('reinvestInput');
+      if (chk.checked) {
+        reinv.value = document.getElementById('tmaInput').value;
+        reinv.readOnly = true;
+        reinv.style.backgroundColor = '#f8fafc';
+      } else {
+        reinv.readOnly = false;
+        reinv.style.backgroundColor = '#ffffff';
+      }
+    }
+
+    function getHorizon(project) {
+      const id = project === 'B' ? 'horizonB' : 'horizonA';
+      const val = parseInt(document.getElementById(id).value, 10);
+      if (isNaN(val)) return 5;
+      return Math.min(20, Math.max(1, val));
+    }
+
+    /**
+     * Lê o vetor de fluxos diretamente dos inputs da tabela DOM.
+     */
+    function cashFlowsFromDOM(project) {
+      const n = getHorizon(project);
+      const flows = [];
+      for (let t = 0; t <= n; t++) {
+        const el = document.getElementById(`cf${project}_${t}`);
+        if (!el) break;
+        const raw = String(el.value).trim();
+        flows.push(raw === '' ? NaN : parseFloat(raw));
+      }
+      return flows;
+    }
+
+    /**
+     * Renderiza dinamicamente a tabela de entrada para t = 0 até max(nA, nB).
+     */
+    function renderTabelaFluxos(presetA = null, presetB = null) {
+      const nA = getHorizon('A');
+      const nB = analysisMode === 'COMPARE' ? getHorizon('B') : 0;
+      const maxN = Math.max(nA, nB);
+
+      const oldA = presetA || cashFlowsFromDOM('A');
+      const oldB = presetB || cashFlowsFromDOM('B');
+
+      const tbody = document.getElementById('cfInputBody');
+      tbody.innerHTML = '';
+
+      for (let t = 0; t <= maxN; t++) {
+        const tr = document.createElement('tr');
+        if (t === 0) tr.className = 'row-t0';
+
+        const desc = t === 0
+          ? 'Investimento Inicial (informe negativo para saída)'
+          : `Fluxo de Caixa Líquido — Ano ${t}`;
+
+        const inA = t <= nA;
+        const inB = analysisMode === 'COMPARE' && t <= nB;
+
+        const valA = inA && oldA[t] !== undefined && !isNaN(oldA[t]) ? oldA[t] : '';
+        const valB = inB && oldB[t] !== undefined && !isNaN(oldB[t]) ? oldB[t] : '';
+
+        const cellA = inA
+          ? `<input type="number" step="any" id="cfA_${t}" class="form-control form-control-sm" value="${valA}" placeholder="${t === 0 ? 'Ex: -100000' : 'Ex: 35000'}">`
+          : `<span style="font-size:0.75rem;color:var(--text-muted);">Fora do prazo (${nA}a)</span>`;
+
+        const cellB = inB
+          ? `<input type="number" step="any" id="cfB_${t}" class="form-control form-control-sm" value="${valB}" placeholder="${t === 0 ? 'Ex: -150000' : 'Ex: 55000'}">`
+          : (analysisMode === 'COMPARE' ? `<span style="font-size:0.75rem;color:var(--text-muted);">Fora do prazo (${nB}a)</span>` : '');
+
+        tr.innerHTML = `
+          <td><span class="period-badge">Ano ${t}</span></td>
+          <td style="color: ${t === 0 ? 'var(--text-main)' : 'var(--text-muted)'}; font-weight: ${t === 0 ? '600' : '400'};">${desc}</td>
+          <td>${cellA}</td>
+          <td class="compare-only" style="display: ${analysisMode === 'COMPARE' ? '' : 'none'};">${cellB}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function ajustarHorizonteTabela() {
+      renderTabelaFluxos();
+    }
+
+    /**
+     * Permite colar uma lista rápida de fluxos separados por ponto e vírgula, vírgula ou espaço.
+     * Ex.: "-100000; 40000; 50000; 60000"
+     */
+    function colarSerieFluxos(project) {
+      const exemplo = '-100000; 35000; 45000; 55000; 60000';
+      const raw = prompt(`Cole a sequência de fluxos do Projeto ${project} (do Ano 0 ao Ano n) separados por ";", tabulação ou espaço:\nExemplo: ${exemplo}`);
+      if (!raw) return;
+
+      const tokens = /[;\t\r\n]/.test(raw)
+        ? raw.split(/[;\t\r\n]+/)
+        : (/,\s+/.test(raw) ? raw.split(/,\s+/) : raw.split(/\s+/));
+
+      const parsed = tokens
+        .map(parseLocaleNumber)
+        .filter(v => !isNaN(v));
+
+      if (parsed.length < 2) {
+        alert('Informe pelo menos o Ano 0 e o Ano 1 (mínimo 2 valores numéricos).');
+        return;
+      }
+
+      const n = Math.min(20, parsed.length - 1);
+      if (project === 'B') {
+        document.getElementById('horizonB').value = n;
+        renderTabelaFluxos(cashFlowsFromDOM('A'), parsed.slice(0, n + 1));
+      } else {
+        document.getElementById('horizonA').value = n;
+        renderTabelaFluxos(parsed.slice(0, n + 1), cashFlowsFromDOM('B'));
+      }
+    }
+
+    /**
+     * Preenche automaticamente os fluxos futuros (t = 1..n) com um valor constante.
+     */
+    function preencherAnuidadeRapida(project) {
+      const valStr = prompt(`Informe o valor anual constante para os anos 1 a n do Projeto ${project} (ex.: 62000):`);
+      if (valStr === null) return;
+      const val = parseLocaleNumber(valStr);
+      if (isNaN(val)) {
+        alert('Valor numérico inválido.');
+        return;
+      }
+      const n = getHorizon(project);
+      for (let t = 1; t <= n; t++) {
+        const inp = document.getElementById(`cf${project}_${t}`);
+        if (inp) inp.value = val;
+      }
+    }
+
+    /**
+     * Importa fluxos de caixa a partir de um arquivo CSV externo.
+     * Aceita formatos:
+     *   - 1 coluna numérica (ou Ano;FluxoA)
+     *   - 3 colunas (Ano;FluxoA;FluxoB) -> ativa modo comparativo automaticamente!
+     */
+    function importarCSVFluxos(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const lines = String(e.target.result || '')
+          .split(/\r?\n/)
+          .map(l => l.trim())
+          .filter(Boolean);
+
+        const flowsA = [];
+        const flowsB = [];
+
+        lines.forEach(line => {
+          // Usa ponto e vírgula ou tabulação prioritariamente; caso contrário, vírgula
+          const delim = /[;\t]/.test(line) ? /[;\t]/ : /,/;
+          const cols = line.split(delim).map(c => c.trim());
+          // Ignora linha de cabeçalho textual
+          const nums = cols.map(parseLocaleNumber).filter(v => !isNaN(v));
+          if (nums.length === 1) {
+            flowsA.push(nums[0]);
+          } else if (nums.length === 2) {
+            // Assume [Ano, FluxoA] se primeiro número for inteiro pequeno sequencial, senão [FluxoA, FluxoB]
+            if (Number.isInteger(nums[0]) && nums[0] === flowsA.length) {
+              flowsA.push(nums[1]);
+            } else {
+              flowsA.push(nums[0]);
+              flowsB.push(nums[1]);
+            }
+          } else if (nums.length >= 3) {
+            flowsA.push(nums[1]);
+            flowsB.push(nums[2]);
+          }
+        });
+
+        if (flowsA.length < 2) {
+          alert('Não foi possível ler pelo menos 2 períodos numéricos (Ano 0 e Ano 1) do CSV.');
+          return;
+        }
+
+        const nA = Math.min(20, flowsA.length - 1);
+        document.getElementById('horizonA').value = nA;
+
+        if (flowsB.length >= 2) {
+          const nB = Math.min(20, flowsB.length - 1);
+          document.getElementById('horizonB').value = nB;
+          definirModoAnalise('COMPARE');
+          renderTabelaFluxos(flowsA.slice(0, nA + 1), flowsB.slice(0, nB + 1));
+        } else {
+          renderTabelaFluxos(flowsA.slice(0, nA + 1), []);
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+
+    function limparFormulario() {
+      document.getElementById('tmaInput').value = '';
+      document.getElementById('reinvestInput').value = '';
+      document.getElementById('syncReinvestChk').checked = true;
+      alternarSyncReinvestimento();
+      document.getElementById('horizonA').value = '5';
+      document.getElementById('horizonB').value = '5';
+      document.getElementById('projectNameA').value = 'Projeto A';
+      document.getElementById('projectNameB').value = 'Projeto B';
+      renderTabelaFluxos([], []);
+      lastReportState = null;
+      document.getElementById('reportSection').style.display = 'none';
+    }
+
+    /* ==========================================================================
+       5. CARREGAMENTO DOS 4 EXEMPLOS PRÁTICOS (PADRÃO DIDÁTICO CAD 167)
+       ========================================================================== */
+
+    function carregarExemplo(tipo) {
+      if (tipo === 'padrao') {
+        alternarAbaCaptura('direct');
+        definirModoAnalise('SINGLE');
+        document.getElementById('projectNameA').value = 'Expansão de Linha Produtiva';
+        document.getElementById('tmaInput').value = '12.00';
+        document.getElementById('syncReinvestChk').checked = true;
+        alternarSyncReinvestimento();
+        document.getElementById('horizonA').value = '5';
+        renderTabelaFluxos([-250000, 75000, 85000, 95000, 100000, 110000], []);
+        executarAnaliseInvestimento();
+      } else if (tipo === 'fisher') {
+        alternarAbaCaptura('direct');
+        definirModoAnalise('COMPARE');
+        document.getElementById('projectNameA').value = 'Projeto A (Escala Menor)';
+        document.getElementById('projectNameB').value = 'Projeto B (Escala Maior)';
+        document.getElementById('tmaInput').value = '10.00';
+        document.getElementById('syncReinvestChk').checked = true;
+        alternarSyncReinvestimento();
+        document.getElementById('horizonA').value = '3';
+        document.getElementById('horizonB').value = '3';
+        renderTabelaFluxos([-100000, 60000, 55000, 40000], [-200000, 50000, 100000, 160000]);
+        executarAnaliseInvestimento();
+      } else if (tipo === 'vidas') {
+        alternarAbaCaptura('direct');
+        definirModoAnalise('COMPARE');
+        document.getElementById('projectNameA').value = 'Equipamento A (3 anos)';
+        document.getElementById('projectNameB').value = 'Equipamento B (5 anos)';
+        document.getElementById('tmaInput').value = '11.00';
+        document.getElementById('syncReinvestChk').checked = true;
+        alternarSyncReinvestimento();
+        document.getElementById('horizonA').value = '3';
+        document.getElementById('horizonB').value = '5';
+        renderTabelaFluxos([-120000, 62000, 62000, 62000], [-180000, 60000, 60000, 60000, 60000, 60000]);
+        executarAnaliseInvestimento();
+      } else if (tipo === 'orcamento') {
+        alternarAbaCaptura('builder');
+        document.getElementById('bldName').value = 'Implantação de Plataforma SaaS';
+        document.getElementById('bldTma').value = '14';
+        document.getElementById('bldYears').value = '5';
+        document.getElementById('bldCapex').value = '300000';
+        document.getElementById('bldNcg').value = '40000';
+        document.getElementById('bldSalvage').value = '50000';
+        document.getElementById('bldRevenue').value = '260000';
+        document.getElementById('bldGrowth').value = '6';
+        document.getElementById('bldTax').value = '34';
+        document.getElementById('bldFixedCost').value = '55000';
+        document.getElementById('bldVarCost').value = '30';
+        document.getElementById('bldTaxShieldChk').checked = true;
+        atualizarPreviewOrcamento();
+        aplicarOrcamentoNoProjeto('A');
+      }
+    }
+
+    /* ==========================================================================
+       6. EXECUÇÃO DA ANÁLISE E RENDERIZAÇÃO DOS RELATÓRIOS
+       ========================================================================== */
+
+    function executarAnaliseInvestimento() {
+      const rawTma = String(document.getElementById('tmaInput').value).trim();
+      const tmaPct = parseFloat(rawTma);
+      if (rawTma === '' || isNaN(tmaPct) || tmaPct < 0) {
+        alert('Informe uma TMA (Taxa Mínima de Atratividade) válida maior ou igual a 0%.');
+        document.getElementById('tmaInput').focus();
+        return;
+      }
+      const tma = tmaPct / 100.0;
+
+      const syncChk = document.getElementById('syncReinvestChk').checked;
+      const rawReinv = String(document.getElementById('reinvestInput').value).trim();
+      const reinvestRate = (syncChk || rawReinv === '') ? tma : (parseFloat(rawReinv) / 100.0);
+      if (isNaN(reinvestRate) || reinvestRate < 0) {
+        alert('Informe uma taxa de reinvestimento (MTIR) válida.');
+        return;
+      }
+
+      const flowsA = cashFlowsFromDOM('A');
+      if (flowsA.some(v => isNaN(v))) {
+        alert('Preencha todos os períodos (Ano 0 até Ano n) do Projeto A com valores numéricos.');
+        return;
+      }
+
+      const nameA = document.getElementById('projectNameA').value.trim() || 'Projeto A';
+      const projA = analyzeProject(nameA, flowsA, tma, reinvestRate);
+
+      let projB = null;
+      let fisher = null;
+
+      if (analysisMode === 'COMPARE') {
+        const flowsB = cashFlowsFromDOM('B');
+        if (flowsB.some(v => isNaN(v))) {
+          alert('Preencha todos os períodos do Projeto B com valores numéricos.');
+          return;
+        }
+        const nameB = document.getElementById('projectNameB').value.trim() || 'Projeto B';
+        projB = analyzeProject(nameB, flowsB, tma, reinvestRate);
+        fisher = calcFisherIntersection(flowsA, flowsB);
+      }
+
+      lastReportState = {
+        mode: analysisMode,
+        tma,
+        reinvestRate,
+        projA,
+        projB,
+        fisher
+      };
+
+      // Revela a seção de relatório e atualiza todos os blocos
+      const reportSection = document.getElementById('reportSection');
+      reportSection.style.display = 'block';
+
+      activeRiskProject = 'A';
+      activeScheduleTab = 'A';
+
+      renderParecerExecutivo(lastReportState);
+      renderKPICards(lastReportState);
+      renderTabelaComparativa(lastReportState);
+      renderGraficoPerfilVPL(lastReportState);
+      renderGraficoFluxos(lastReportState);
+      atualizarBotoesRisco();
+      atualizarAnaliseRisco();
+      renderSensibilidadeETornado(getActiveRiskProject());
+
+      atualizarBotoesCronograma();
+      renderTabelaCronograma();
+
+      reportSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /**
+     * Monta o Parecer Executivo automático conforme critérios de Gestão de Investimentos.
+     */
+    function renderParecerExecutivo(state) {
+      const banner = document.getElementById('decisionBanner');
+      const titleEl = document.getElementById('decisionTitle');
+      const textEl = document.getElementById('decisionText');
+      banner.className = 'decision-banner';
+
+      const { mode, projA, projB, fisher, tma } = state;
+
+      if (mode === 'SINGLE') {
+        const avisoNaoConv = projA.irrDetails.isNonConventional
+          ? ` Atenção: este fluxo possui ${projA.irrDetails.signChanges} mudanças de sinal (não-convencional), gerando ${projA.irrDetails.allRoots.length} TIR(s) real(is) (${projA.irrDetails.allRoots.map(r => formatPercent(r * 100)).join(' e ')}). Nesses casos, utilize estritamente o VPL e a MTIR para decidir.`
+          : '';
+
+        if (projA.npv > 1e-2) {
+          banner.classList.add('viable');
+          titleEl.textContent = `Parecer: PROJETO VIÁVEL — Recomenda-se Aceitar "${projA.name}"`;
+          textEl.innerHTML = `À TMA de <strong>${formatPercent(tma * 100)} a.a.</strong>, o projeto gera um <strong>VPL positivo de ${formatMoney(projA.npv)}</strong>, multiplicando o capital investido em <strong>${formatDecimal(projA.pi)}x</strong> (IL &gt; 1). A MTIR de <strong>${formatPercent((projA.mirr || 0) * 100)} a.a.</strong> supera o custo de capital, com recuperação descontada em <strong>${formatPayback(projA.discountedPayback)}</strong>.${avisoNaoConv}`;
+        } else if (Math.abs(projA.npv) <= 1e-2) {
+          banner.classList.add('warning');
+          titleEl.textContent = `Parecer: PONTO DE INDIFERENÇA — VPL nulo em "${projA.name}"`;
+          textEl.innerHTML = `O projeto remunera exatamente a TMA exigida de <strong>${formatPercent(tma * 100)} a.a.</strong> (VPL &asymp; R$ 0,00; IL = 1,00x). Avalie fatores estratégicos ou margens de segurança antes de aprovar.${avisoNaoConv}`;
+        } else {
+          banner.classList.add('inviable');
+          titleEl.textContent = `Parecer: PROJETO INVIÁVEL — Recomenda-se Rejeitar "${projA.name}"`;
+          textEl.innerHTML = `À TMA de <strong>${formatPercent(tma * 100)} a.a.</strong>, o projeto destrói valor econômico com <strong>VPL negativo de ${formatMoney(projA.npv)}</strong> (IL = ${formatDecimal(projA.pi)}x &lt; 1). O retorno obtido é insuficiente para cobrir o custo de oportunidade do capital.${avisoNaoConv}`;
+        }
+        return;
+      }
+
+      // Modo Comparação A vs B (Mutuamente Excludentes)
+      const diffLives = projA.n !== projB.n;
+      const bestByNPV = projA.npv >= projB.npv ? projA : projB;
+      const bestByEAA = (projA.eaa || -Infinity) >= (projB.eaa || -Infinity) ? projA : projB;
+      const winner = diffLives ? bestByEAA : bestByNPV;
+
+      if (winner.npv <= 0) {
+        banner.classList.add('inviable');
+        titleEl.textContent = 'Parecer Comparativo: NENHUM DOS DOIS PROJETOS É VIÁVEL';
+        textEl.innerHTML = `Tanto "${projA.name}" (VPL ${formatMoney(projA.npv)}) quanto "${projB.name}" (VPL ${formatMoney(projB.npv)}) apresentam VPL negativo à TMA de ${formatPercent(tma * 100)} a.a. Recomenda-se rejeitar ambas as alternativas.`;
+        return;
+      }
+
+      banner.classList.add('viable');
+      if (diffLives) {
+        titleEl.textContent = `Parecer Comparativo (Vidas Úteis Distintas): Escolher "${winner.name}" pelo VAE`;
+        textEl.innerHTML = `Como os horizontes são diferentes (${projA.n} anos vs ${projB.n} anos), o critério rigoroso para substituição/reposição contínua é o <strong>Valor Anual Equivalente (VAE)</strong>. Embora os VPLs nominais possam sugerir outra ordem, <strong>"${winner.name}"</strong> entrega o maior benefício anual equivalente (<strong>${formatMoney(winner.eaa)}/ano</strong> vs ${formatMoney((winner === projA ? projB : projA).eaa)}/ano).`;
+      } else {
+        const hasIrrConflict = projA.irr !== null && projB.irr !== null &&
+          ((projA.npv > projB.npv && projA.irr < projB.irr) || (projB.npv > projA.npv && projB.irr < projA.irr));
+        const fisherTxt = fisher && fisher.rate !== null
+          ? ` O <strong>Ponto de Fisher</strong> ocorre em <strong>${formatPercent(fisher.rate * 100)} a.a.</strong> (VPL = ${formatMoney(fisher.npvAtFisher)}).`
+          : '';
+        const conflictTxt = hasIrrConflict
+          ? ` <strong>Conflito VPL &times; TIR detectado:</strong> a TIR privilegia o projeto de menor escala ou retorno mais rápido, mas o <strong>VPL</strong> sempre prevalece por medir o acréscimo absoluto de riqueza ao acionista.`
+          : '';
+
+        titleEl.textContent = `Parecer Comparativo: Recomenda-se "${winner.name}" (Maior VPL)`;
+        textEl.innerHTML = `Entre os projetos mutuamente excludentes de ${projA.n} anos à TMA de <strong>${formatPercent(tma * 100)} a.a.</strong>, <strong>"${winner.name}"</strong> maximiza o valor da empresa com <strong>VPL de ${formatMoney(winner.npv)}</strong>.${conflictTxt}${fisherTxt}`;
+      }
+    }
+
+    /**
+     * Atualiza os 4 cartões KPI principais (espelhando a estabilidade visual do Trabalho 1).
+     */
+    function renderKPICards(state) {
+      const p = state.mode === 'COMPARE' && (state.projA.n !== state.projB.n
+        ? state.projB.eaa > state.projA.eaa
+        : state.projB.npv > state.projA.npv)
+        ? state.projB
+        : state.projA;
+
+      document.getElementById('kpiNpvLabel').textContent = state.mode === 'COMPARE'
+        ? `VPL Vencedor — ${p.name}`
+        : 'VPL (Valor Presente Líquido)';
+      const npvEl = document.getElementById('kpiNpvValue');
+      npvEl.textContent = formatMoney(p.npv);
+      npvEl.className = 'kpi-value ' + (p.npv > 0 ? 'text-green' : (p.npv < 0 ? 'text-red' : 'text-amber'));
+      document.getElementById('kpiNpvSub').textContent = `Soma Nominal: ${formatMoney(p.totalNominal)}`;
+
+      document.getElementById('kpiIrrLabel').textContent = 'TIR & MTIR';
+      const irrEl = document.getElementById('kpiIrrValue');
+      irrEl.textContent = p.irr !== null ? formatPercent(p.irr * 100) : 'N/A';
+      irrEl.className = 'kpi-value ' + (p.irr !== null && p.irr > p.tma ? 'text-green' : 'text-amber');
+      document.getElementById('kpiIrrSub').textContent = `MTIR: ${p.mirr !== null ? formatPercent(p.mirr * 100) : '--'}`;
+
+      document.getElementById('kpiPaybackLabel').textContent = 'Payback Descontado';
+      document.getElementById('kpiPaybackValue').textContent = p.discountedPayback !== null
+        ? `${formatDecimal(p.discountedPayback)} anos`
+        : 'Não recupera';
+      document.getElementById('kpiPaybackSub').textContent = `Simples: ${p.simplePayback !== null ? formatDecimal(p.simplePayback) + ' anos' : 'Não recupera'}`;
+
+      document.getElementById('kpiPiLabel').textContent = 'IL & VAE (Anual)';
+      document.getElementById('kpiPiValue').textContent = p.pi !== null ? `${formatDecimal(p.pi)}x` : '--';
+      document.getElementById('kpiPiSub').textContent = `VAE: ${formatMoney(p.eaa)}/ano`;
+    }
+
+    /**
+     * Renderiza a Tabela Comparativa Direta (Projeto Único ou A vs B).
+     */
+    function renderTabelaComparativa(state) {
+      const thead = document.getElementById('comparisonHead');
+      const tbody = document.getElementById('comparisonBody');
+      const { mode, projA, projB, fisher } = state;
+
+      if (mode === 'SINGLE') {
+        thead.innerHTML = `
+          <tr>
+            <th>Indicador Financeiro</th>
+            <th class="num-col" style="width: 28%;">${projA.name}</th>
+            <th class="num-col" style="width: 32%;">Critério de Decisão</th>
+          </tr>
+        `;
+        const rows = [
+          ['Investimento Inicial (|FC₀|)', formatMoney(projA.initialOutlay), 'Desembolso inicial em t = 0'],
+          ['Horizonte / TMA / Reinvestimento', `${projA.n} anos / ${formatPercent(projA.tma * 100)} / ${formatPercent(projA.reinvestRate * 100)}`, 'Taxa mínima de atratividade'],
+          ['Soma dos Fluxos Nominais', formatMoney(projA.totalNominal), projA.totalNominal > 0 ? 'Saldo nominal positivo' : 'Saldo nominal negativo'],
+          ['Valor Presente das Entradas (t ≥ 1)', formatMoney(projA.pvFuture), 'Valor atual dos retornos futuros'],
+          ['VPL (Valor Presente Líquido)', formatMoney(projA.npv), projA.npv > 0 ? 'Aceitar (VPL > 0)' : (projA.npv < 0 ? 'Rejeitar (VPL < 0)' : 'Indiferente (VPL = 0)')],
+          ['VAE (Valor Anual Equivalente)', formatMoney(projA.eaa) + ' / ano', 'Benefício líquido anual equivalente'],
+          ['TIR (Taxa Interna de Retorno)', projA.irrDetails.allRoots.length > 1 ? projA.irrDetails.allRoots.map(r => formatPercent(r * 100)).join(' | ') : formatPercent(projA.irr !== null ? projA.irr * 100 : null), projA.irr !== null && projA.irr > projA.tma ? 'TIR > TMA' : 'TIR ≤ TMA'],
+          ['MTIR (TIR Modificada)', formatPercent(projA.mirr !== null ? projA.mirr * 100 : null), projA.mirr !== null && projA.mirr > projA.tma ? 'MTIR > TMA (Reinvestimento realista)' : 'MTIR ≤ TMA'],
+          ['Payback Simples', formatPayback(projA.simplePayback), 'Tempo de retorno sem desconto'],
+          ['Payback Descontado', formatPayback(projA.discountedPayback), 'Tempo de retorno à TMA'],
+          ['Índice de Lucratividade (IL)', projA.pi !== null ? formatDecimal(projA.pi) + 'x' : '--', projA.pi > 1 ? 'IL > 1,00 (Cria valor)' : 'IL ≤ 1,00']
+        ];
+
+        tbody.innerHTML = rows.map(r => `
+          <tr>
+            <td>${r[0]}</td>
+            <td class="num-col metric-val">${r[1]}</td>
+            <td class="num-col" style="color: var(--text-muted);">${r[2]}</td>
+          </tr>
+        `).join('');
+        return;
+      }
+
+      // Modo Comparação A vs B
+      thead.innerHTML = `
+        <tr>
+          <th>Indicador Financeiro</th>
+          <th class="num-col" style="width: 22%;">${projA.name}</th>
+          <th class="num-col" style="width: 22%;">${projB.name}</th>
+          <th class="num-col" style="width: 22%;">Melhor Opção</th>
+        </tr>
+      `;
+
+      const diffLives = projA.n !== projB.n;
+      const winLabel = (condA, condTie = false) => condTie ? 'Empate' : (condA ? projA.name : projB.name);
+
+      const rows = [
+        ['Horizonte (Vida Útil)', `${projA.n} anos`, `${projB.n} anos`, diffLives ? 'Vidas distintas (usar VAE)' : 'Horizontes iguais'],
+        ['Investimento Inicial (|FC₀|)', formatMoney(projA.initialOutlay), formatMoney(projB.initialOutlay), winLabel(projA.initialOutlay < projB.initialOutlay, projA.initialOutlay === projB.initialOutlay) + ' (menor desembolso)'],
+        ['Soma dos Fluxos Nominais', formatMoney(projA.totalNominal), formatMoney(projB.totalNominal), winLabel(projA.totalNominal > projB.totalNominal, projA.totalNominal === projB.totalNominal)],
+        ['VPL (Valor Presente Líquido)', formatMoney(projA.npv), formatMoney(projB.npv), winLabel(projA.npv > projB.npv, Math.abs(projA.npv - projB.npv) < 0.01)],
+        ['VAE (Valor Anual Equivalente)', formatMoney(projA.eaa) + '/ano', formatMoney(projB.eaa) + '/ano', winLabel(projA.eaa > projB.eaa, Math.abs(projA.eaa - projB.eaa) < 0.01)],
+        ['TIR (Taxa Interna de Retorno)', formatPercent(projA.irr !== null ? projA.irr * 100 : null), formatPercent(projB.irr !== null ? projB.irr * 100 : null), (projA.irr !== null && projB.irr !== null) ? winLabel(projA.irr > projB.irr) : '--'],
+        ['MTIR (TIR Modificada)', formatPercent(projA.mirr !== null ? projA.mirr * 100 : null), formatPercent(projB.mirr !== null ? projB.mirr * 100 : null), (projA.mirr !== null && projB.mirr !== null) ? winLabel(projA.mirr > projB.mirr) : '--'],
+        ['Payback Simples', formatPayback(projA.simplePayback), formatPayback(projB.simplePayback), (projA.simplePayback !== null && projB.simplePayback !== null) ? winLabel(projA.simplePayback < projB.simplePayback) : '--'],
+        ['Payback Descontado', formatPayback(projA.discountedPayback), formatPayback(projB.discountedPayback), (projA.discountedPayback !== null && projB.discountedPayback !== null) ? winLabel(projA.discountedPayback < projB.discountedPayback) : '--'],
+        ['Índice de Lucratividade (IL)', projA.pi !== null ? formatDecimal(projA.pi) + 'x' : '--', projB.pi !== null ? formatDecimal(projB.pi) + 'x' : '--', (projA.pi !== null && projB.pi !== null) ? winLabel(projA.pi > projB.pi) : '--'],
+        ['Ponto de Intersecção de Fisher', fisher && fisher.rate !== null ? formatPercent(fisher.rate * 100) + ' a.a.' : 'Sem cruzamento (r ≥ 0%)', fisher && fisher.npvAtFisher !== null ? 'VPL: ' + formatMoney(fisher.npvAtFisher) : '--', fisher && fisher.rate !== null ? (projA.tma < fisher.rate ? 'TMA < Taxa de Fisher' : 'TMA ≥ Taxa de Fisher') : 'Dominância']
+      ];
+
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r[0]}</td>
+          <td class="num-col metric-val">${r[1]}</td>
+          <td class="num-col metric-val">${r[2]}</td>
+          <td class="num-col" style="color: var(--primary); font-weight: 600;">${r[3]}</td>
+        </tr>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       7. GRÁFICOS INTERATIVOS (CHART.JS)
+       ========================================================================== */
+
+    function garantirCanvasChart(wrapId, canvasId) {
+      const wrap = document.getElementById(wrapId);
+      if (typeof Chart === 'undefined') {
+        wrap.innerHTML = `<div class="chart-fallback">Biblioteca gráfica Chart.js indisponível offline. Todos os cálculos e tabelas numéricas permanecem ativos.</div>`;
+        return null;
+      }
+      if (!document.getElementById(canvasId)) {
+        wrap.innerHTML = `<canvas id="${canvasId}"></canvas>`;
+      }
+      return document.getElementById(canvasId).getContext('2d');
+    }
+
+    /**
+     * Gráfico 1: Perfil do VPL (VPL x Taxa de Desconto r em eixo contínuo) + TMA + TIR + Ponto de Fisher
+     */
+    function renderGraficoPerfilVPL(state) {
+      const ctx = garantirCanvasChart('npvChartWrap', 'npvProfileChart');
+      if (!ctx) return;
+      if (npvChartInstance) npvChartInstance.destroy();
+
+      const { mode, projA, projB, fisher, tma } = state;
+
+      // Define limite superior do eixo X cobrindo TMA, TIR(s) e Ponto de Fisher
+      let maxRate = Math.max(0.25, tma * 1.6);
+      if (projA.irr !== null && projA.irr > 0 && projA.irr < 1.5) maxRate = Math.max(maxRate, projA.irr * 1.25);
+      if (projB && projB.irr !== null && projB.irr > 0 && projB.irr < 1.5) maxRate = Math.max(maxRate, projB.irr * 1.25);
+      if (fisher && fisher.rate !== null && fisher.rate < 1.5) maxRate = Math.max(maxRate, fisher.rate * 1.35);
+      maxRate = Math.min(1.5, Math.ceil(maxRate * 20) / 20);
+
+      const steps = 40;
+      const pointsA = [];
+      const pointsB = [];
+      let minY = 0;
+      let maxY = 0;
+
+      for (let s = 0; s <= steps; s++) {
+        const r = (maxRate * s) / steps;
+        const xPct = Number((r * 100).toFixed(3));
+        const yA = calcNPV(projA.cashFlows, r);
+        pointsA.push({ x: xPct, y: yA });
+        minY = Math.min(minY, yA);
+        maxY = Math.max(maxY, yA);
+
+        if (mode === 'COMPARE' && projB) {
+          const yB = calcNPV(projB.cashFlows, r);
+          pointsB.push({ x: xPct, y: yB });
+          minY = Math.min(minY, yB);
+          maxY = Math.max(maxY, yB);
+        }
+      }
+
+      const tmaPct = Number((tma * 100).toFixed(3));
+      const datasets = [
+        {
+          label: `VPL — ${projA.name}`,
+          data: pointsA,
+          borderColor: '#1e3a8a',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 0,
+          tension: 0.16
+        }
+      ];
+
+      if (mode === 'COMPARE' && projB) {
+        datasets.push({
+          label: `VPL — ${projB.name}`,
+          data: pointsB,
+          borderColor: '#059669',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          tension: 0.16
+        });
+      }
+
+      // Linha de referência horizontal (VPL = 0)
+      datasets.push({
+        label: 'Equilíbrio (VPL = 0)',
+        data: [{ x: 0, y: 0 }, { x: Number((maxRate * 100).toFixed(2)), y: 0 }],
+        borderColor: '#94a3b8',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0
+      });
+
+      // Marcador vertical da TMA atual
+      if (tma <= maxRate) {
+        datasets.push({
+          label: `TMA (${formatPercent(tma * 100)})`,
+          data: [{ x: tmaPct, y: minY * 1.05 }, { x: tmaPct, y: maxY * 1.05 }],
+          borderColor: '#d97706',
+          borderWidth: 1.5,
+          borderDash: [4, 4],
+          pointRadius: 0
+        });
+      }
+
+      // Ponto destacado da Intersecção de Fisher (quando houver cruzamento)
+      if (mode === 'COMPARE' && fisher && fisher.rate !== null && fisher.rate <= maxRate) {
+        datasets.push({
+          type: 'scatter',
+          label: `Ponto de Fisher (${formatPercent(fisher.rate * 100)})`,
+          data: [{ x: Number((fisher.rate * 100).toFixed(3)), y: fisher.npvAtFisher }],
+          backgroundColor: '#dc2626',
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8
+        });
+      }
+
+      const subEl = document.getElementById('npvProfileSub');
+      if (mode === 'COMPARE' && fisher && fisher.rate !== null) {
+        subEl.textContent = `TMA atual: ${formatPercent(tma * 100)} | Ponto de Fisher: ${formatPercent(fisher.rate * 100)} (VPL = ${formatMoney(fisher.npvAtFisher)})`;
+      } else {
+        subEl.textContent = `TMA atual: ${formatPercent(tma * 100)} | TIR ${projA.name}: ${formatPercent(projA.irr !== null ? projA.irr * 100 : null)}`;
+      }
+
+      npvChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'nearest', axis: 'x', intersect: false },
+          plugins: {
+            legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 } } },
+            tooltip: {
+              callbacks: {
+                title: items => items.length ? `Taxa de Desconto: ${formatPercent(items[0].parsed.x, 2)}` : '',
+                label: c => `${c.dataset.label}: ${formatMoney(c.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              min: 0,
+              max: Number((maxRate * 100).toFixed(2)),
+              grid: { display: false },
+              ticks: {
+                maxTicksLimit: 9,
+                callback: v => `${formatDecimal(v, 1)}%`,
+                font: { family: 'Inter', size: 11 }
+              }
+            },
+            y: {
+              grid: { color: '#f1f5f9' },
+              ticks: { callback: v => formatMoney(v), font: { family: 'Inter', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    /**
+     * Gráfico 2: Fluxos Nominais vs Descontados e Saldo Acumulado Descontado (Payback)
+     */
+    function renderGraficoFluxos(state) {
+      const ctx = garantirCanvasChart('cfChartWrap', 'cashflowChart');
+      if (!ctx) return;
+      if (cfChartInstance) cfChartInstance.destroy();
+
+      const p = state.projA;
+      document.getElementById('cashflowChartSub').textContent =
+        `Projeto: ${p.name} | Payback Descontado: ${p.discountedPayback !== null ? formatDecimal(p.discountedPayback) + ' anos' : 'Não recupera'}`;
+
+      const labels = p.schedule.map(r => `Ano ${r.t}`);
+      cfChartInstance = new Chart(ctx, {
+        data: {
+          labels,
+          datasets: [
+            {
+              type: 'line',
+              label: 'Saldo Acumulado Descontado',
+              data: p.schedule.map(r => r.cumDiscounted),
+              borderColor: '#d97706',
+              backgroundColor: 'transparent',
+              borderWidth: 2.5,
+              pointRadius: 3,
+              tension: 0.15,
+              order: 1
+            },
+            {
+              type: 'bar',
+              label: 'Fluxo Nominal (FC)',
+              data: p.schedule.map(r => r.cf),
+              backgroundColor: 'rgba(30, 58, 138, 0.25)',
+              borderColor: '#1e3a8a',
+              borderWidth: 1,
+              order: 2
+            },
+            {
+              type: 'bar',
+              label: 'Valor Presente (VP)',
+              data: p.schedule.map(r => r.pv),
+              backgroundColor: 'rgba(5, 150, 105, 0.7)',
+              borderColor: '#059669',
+              borderWidth: 1,
+              order: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: c => `${c.dataset.label}: ${formatMoney(c.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } },
+            y: {
+              grid: { color: '#f1f5f9' },
+              ticks: { callback: v => formatMoney(v), font: { family: 'Inter', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    /* ==========================================================================
+       8. ANÁLISE DE CENÁRIOS, RISCO E SENSIBILIDADE (TORNADO & BREAK-EVEN)
+       ========================================================================== */
+
+    function getActiveRiskProject() {
+      if (!lastReportState) return null;
+      if (lastReportState.mode === 'COMPARE' && activeRiskProject === 'B' && lastReportState.projB) {
+        return lastReportState.projB;
+      }
+      return lastReportState.projA;
+    }
+
+    function atualizarBotoesRisco() {
+      const sel = document.getElementById('riskProjectSelector');
+      if (!lastReportState || lastReportState.mode !== 'COMPARE') {
+        sel.style.display = 'none';
+        return;
+      }
+      sel.style.display = 'flex';
+      document.getElementById('btnRiskA').classList.toggle('active', activeRiskProject === 'A');
+      document.getElementById('btnRiskB').classList.toggle('active', activeRiskProject === 'B');
+    }
+
+    function trocarProjetoRisco(project) {
+      activeRiskProject = project;
+      atualizarBotoesRisco();
+      atualizarAnaliseRisco();
+      const target = getActiveRiskProject();
+      if (target) renderSensibilidadeETornado(target);
+    }
+
+    function atualizarAnaliseRisco() {
+      if (!lastReportState) return;
+      const baseProj = getActiveRiskProject();
+      document.getElementById('riskSectionTitle').textContent =
+        `Análise de Cenários, Risco e Sensibilidade — ${baseProj.name}`;
+
+      const scenarios = [
+        {
+          label: 'Pessimista',
+          flowShockPct: parseFloat(document.getElementById('pessFlowShock').value) || 0,
+          tmaShockPp: parseFloat(document.getElementById('pessTmaShock').value) || 0,
+          probPct: parseFloat(document.getElementById('pessProb').value) || 0
+        },
+        {
+          label: 'Base (Realista)',
+          flowShockPct: parseFloat(document.getElementById('baseFlowShock').value) || 0,
+          tmaShockPp: parseFloat(document.getElementById('baseTmaShock').value) || 0,
+          probPct: parseFloat(document.getElementById('baseProb').value) || 0
+        },
+        {
+          label: 'Otimista',
+          flowShockPct: parseFloat(document.getElementById('otimFlowShock').value) || 0,
+          tmaShockPp: parseFloat(document.getElementById('otimTmaShock').value) || 0,
+          probPct: parseFloat(document.getElementById('otimProb').value) || 0
+        }
+      ];
+
+      const totalProb = scenarios.reduce((acc, s) => acc + s.probPct, 0);
+      const tbody = document.getElementById('scenariosBody');
+      const tfoot = document.getElementById('scenariosFoot');
+      tbody.innerHTML = '';
+
+      const results = scenarios.map(s => {
+        const mult = 1.0 + s.flowShockPct / 100.0;
+        // Aplica choque aos fluxos operacionais (t >= 1), mantendo o investimento inicial (t = 0)
+        const shockedFlows = baseProj.cashFlows.map((cf, t) => t === 0 ? cf : cf * mult);
+        const shockedTma = Math.max(0, baseProj.tma + s.tmaShockPp / 100.0);
+        const analyzed = analyzeProject(s.label, shockedFlows, shockedTma, shockedTma);
+        return { ...s, analyzed };
+      });
+
+      let expectedNPV = 0;
+      results.forEach(r => {
+        const w = totalProb > 0 ? r.probPct / totalProb : 1 / 3;
+        expectedNPV += w * r.analyzed.npv;
+
+        const badge = r.analyzed.npv > 0
+          ? '<span class="badge-status badge-green">Viável</span>'
+          : '<span class="badge-status badge-red">Inviável</span>';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-left"><strong>${r.label}</strong></td>
+          <td class="col-center">${r.flowShockPct >= 0 ? '+' : ''}${r.flowShockPct}% fluxos / ${r.tmaShockPp >= 0 ? '+' : ''}${r.tmaShockPp} p.p. TMA</td>
+          <td class="col-center">${formatPercent(r.probPct, 0)}</td>
+          <td>${formatPercent(r.analyzed.tma * 100)}</td>
+          <td class="${r.analyzed.npv >= 0 ? 'text-green' : 'text-red'}"><strong>${formatMoney(r.analyzed.npv)}</strong></td>
+          <td>${formatPercent(r.analyzed.irr !== null ? r.analyzed.irr * 100 : null)}</td>
+          <td>${r.analyzed.discountedPayback !== null ? formatDecimal(r.analyzed.discountedPayback) + ' anos' : 'Não recupera'}</td>
+          <td class="col-center">${badge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Variância e Desvio-Padrão ponderado pelas probabilidades: sigma = sqrt(Sum p_i * (VPL_i - E[VPL])^2)
+      let variance = 0;
+      results.forEach(r => {
+        const w = totalProb > 0 ? r.probPct / totalProb : 1 / 3;
+        variance += w * Math.pow(r.analyzed.npv - expectedNPV, 2);
+      });
+      const stdDev = Math.sqrt(variance);
+      const cv = Math.abs(expectedNPV) > 1e-6 ? stdDev / Math.abs(expectedNPV) : null;
+
+      tfoot.innerHTML = `
+        <tr>
+          <td class="col-left" colspan="2">Estatísticas Ponderadas de Risco (E[VPL] &amp; &sigma;)</td>
+          <td class="col-center ${Math.abs(totalProb - 100) > 0.1 ? 'text-amber' : ''}">${formatPercent(totalProb, 0)}</td>
+          <td>--</td>
+          <td class="${expectedNPV >= 0 ? 'text-green' : 'text-red'}">${formatMoney(expectedNPV)}</td>
+          <td colspan="3" style="text-align: right;">Desvio-Padrão (&sigma;): ${formatMoney(stdDev)} | Coef. Variação: ${cv !== null ? formatDecimal(cv) : '--'}</td>
+        </tr>
+      `;
+
+      document.getElementById('scenarioExpectedSummary').textContent =
+        `E[VPL]: ${formatMoney(expectedNPV)} | σ: ${formatMoney(stdDev)}`;
+
+      lastReportState.scenarios = { projectName: baseProj.name, results, expectedNPV, stdDev, cv, totalProb };
+    }
+
+    /**
+     * Calcula Sensibilidade (±20% ceteris paribus) para Gráfico Tornado e Margem de Segurança (Break-even VPL = 0).
+     */
+    function renderSensibilidadeETornado(proj) {
+      document.getElementById('tornadoChartSub').textContent =
+        `Impacto isolado no VPL de "${proj.name}" (ceteris paribus)`;
+      const cf0 = proj.cashFlows[0] || 0;
+      const futureFlows = proj.cashFlows.slice(1);
+      const tma = proj.tma;
+
+      // 1. Fluxos Operacionais ±20%
+      const npvFlowDown = calcNPV([cf0, ...futureFlows.map(v => v * 0.8)], tma);
+      const npvFlowUp = calcNPV([cf0, ...futureFlows.map(v => v * 1.2)], tma);
+
+      // 2. Investimento Inicial ±20% (Capex +20% reduz VPL; Capex -20% eleva VPL)
+      const npvCapexHigh = calcNPV([cf0 * 1.2, ...futureFlows], tma);
+      const npvCapexLow = calcNPV([cf0 * 0.8, ...futureFlows], tma);
+
+      // 3. TMA ±20% relativo (ou ±2 p.p. caso TMA base = 0)
+      const tmaHigh = tma > 0 ? tma * 1.2 : 0.02;
+      const tmaLow = tma > 0 ? Math.max(0, tma * 0.8) : 0;
+      const npvTmaHigh = calcNPV(proj.cashFlows, tmaHigh);
+      const npvTmaLow = calcNPV(proj.cashFlows, tmaLow);
+
+      // Gráfico Tornado (Barras Horizontais comparando impacto desfavorável vs favorável)
+      const ctx = garantirCanvasChart('tornadoChartWrap', 'tornadoChart');
+      if (ctx) {
+        if (tornadoChartInstance) tornadoChartInstance.destroy();
+        tornadoChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Fluxos Operacionais (t≥1)', 'Investimento Inicial (FC₀)', 'TMA / Custo de Capital'],
+            datasets: [
+              {
+                label: 'Cenário Adverso (-20% Fluxos / +20% Capex ou TMA)',
+                data: [npvFlowDown - proj.npv, npvCapexHigh - proj.npv, npvTmaHigh - proj.npv],
+                backgroundColor: 'rgba(220, 38, 38, 0.78)',
+                borderColor: '#dc2626',
+                borderWidth: 1
+              },
+              {
+                label: 'Cenário Favorável (+20% Fluxos / -20% Capex ou TMA)',
+                data: [npvFlowUp - proj.npv, npvCapexLow - proj.npv, npvTmaLow - proj.npv],
+                backgroundColor: 'rgba(5, 150, 105, 0.78)',
+                borderColor: '#059669',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: c => `${c.dataset.label}: ${c.parsed.x >= 0 ? '+' : ''}${formatMoney(c.parsed.x)} no VPL`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: '#f1f5f9' },
+                ticks: { callback: v => formatMoney(v), font: { family: 'Inter', size: 10 } }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { font: { family: 'Inter', size: 11 } }
+              }
+            }
+          }
+        });
+      }
+
+      // Tabela de Ponto de Equilíbrio Financeiro (Break-even VPL = 0)
+      const pvFuture = proj.pvFuture;
+      const flowMarginPct = Math.abs(pvFuture) > 1e-6 ? (-proj.npv / pvFuture) * 100.0 : null;
+      const capexMarginPct = cf0 < -1e-6 ? (proj.npv / Math.abs(cf0)) * 100.0 : null;
+      const maxCapex = cf0 < 0 ? Math.abs(cf0) + proj.npv : null;
+      const tmaLimit = proj.irr;
+      const tmaMarginPp = tmaLimit !== null ? (tmaLimit - tma) * 100.0 : null;
+
+      const beRows = [
+        [
+          'Fluxos Futuros (VP)',
+          formatMoney(pvFuture),
+          formatMoney(Math.abs(cf0)),
+          flowMarginPct !== null ? `${flowMarginPct >= 0 ? '+' : ''}${formatDecimal(flowMarginPct)}%` : '--'
+        ],
+        [
+          'Investimento Inicial (|FC₀|)',
+          formatMoney(Math.abs(cf0)),
+          maxCapex !== null ? formatMoney(Math.max(0, maxCapex)) : '--',
+          capexMarginPct !== null ? `${capexMarginPct >= 0 ? '+' : ''}${formatDecimal(capexMarginPct)}%` : '--'
+        ],
+        [
+          'TMA Máxima Suportada (TIR)',
+          formatPercent(tma * 100),
+          tmaLimit !== null ? formatPercent(tmaLimit * 100) : '--',
+          tmaMarginPp !== null ? `${tmaMarginPp >= 0 ? '+' : ''}${formatDecimal(tmaMarginPp)} p.p.` : '--'
+        ]
+      ];
+
+      document.getElementById('breakevenBody').innerHTML = beRows.map(r => `
+        <tr>
+          <td class="col-left"><strong>${r[0]}</strong></td>
+          <td>${r[1]}</td>
+          <td>${r[2]}</td>
+          <td class="text-primary"><strong>${r[3]}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       9. CRONOGRAMA DETALHADO PERÍODO A PERÍODO (ANO 0 ATÉ ANO N)
+       ========================================================================== */
+
+    function trocarCronogramaVisivel(tab) {
+      activeScheduleTab = tab;
+      atualizarBotoesCronograma();
+      renderTabelaCronograma();
+    }
+
+    function atualizarBotoesCronograma() {
+      const sel = document.getElementById('scheduleViewSelector');
+      if (!lastReportState || lastReportState.mode !== 'COMPARE') {
+        sel.style.display = 'none';
+        return;
+      }
+      sel.style.display = 'flex';
+      document.getElementById('btnSchedA').classList.toggle('active', activeScheduleTab === 'A');
+      document.getElementById('btnSchedB').classList.toggle('active', activeScheduleTab === 'B');
+      document.getElementById('btnSchedDiff').classList.toggle('active', activeScheduleTab === 'DIFF');
+    }
+
+    function renderTabelaCronograma() {
+      if (!lastReportState) return;
+      let targetProj = lastReportState.projA;
+
+      if (lastReportState.mode === 'COMPARE' && lastReportState.projB) {
+        if (activeScheduleTab === 'B') {
+          targetProj = lastReportState.projB;
+        } else if (activeScheduleTab === 'DIFF') {
+          const maxLen = Math.max(lastReportState.projA.cashFlows.length, lastReportState.projB.cashFlows.length);
+          const diffFlows = [];
+          for (let t = 0; t < maxLen; t++) {
+            diffFlows.push((lastReportState.projA.cashFlows[t] || 0) - (lastReportState.projB.cashFlows[t] || 0));
+          }
+          targetProj = analyzeProject('Fluxo Incremental (A - B)', diffFlows, lastReportState.tma, lastReportState.reinvestRate);
+        }
+      }
+
+      const tbody = document.getElementById('scheduleBody');
+      const tfoot = document.getElementById('scheduleFoot');
+      tbody.innerHTML = '';
+
+      targetProj.schedule.forEach(row => {
+        let badge = '<span class="badge-status badge-amber">Desembolso</span>';
+        if (row.t === 0) {
+          badge = '<span class="badge-status badge-red">Investimento (t=0)</span>';
+        } else if (row.cumDiscounted >= -1e-6) {
+          badge = '<span class="badge-status badge-green">Capital Recuperado</span>';
+        } else {
+          badge = '<span class="badge-status badge-amber">Em Amortização</span>';
+        }
+
+        const tr = document.createElement('tr');
+        if (row.t === 0) {
+          tr.style.fontWeight = '600';
+          tr.style.backgroundColor = '#f8fafc';
+        }
+
+        tr.innerHTML = `
+          <td class="col-center">${row.t}</td>
+          <td class="${row.cf < -1e-6 ? 'text-red' : 'text-green'}">${formatMoney(row.cf)}</td>
+          <td>${formatDecimal(row.discountFactor, 4)}</td>
+          <td class="${row.pv < -1e-6 ? 'text-red' : 'text-green'}">${formatMoney(row.pv)}</td>
+          <td class="${row.cumNominal < -1e-6 ? 'text-red' : 'text-green'}">${formatMoney(row.cumNominal)}</td>
+          <td class="${row.cumDiscounted < -1e-6 ? 'text-red' : 'text-green'}"><strong>${formatMoney(row.cumDiscounted)}</strong></td>
+          <td class="col-center">${badge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tfoot.innerHTML = `
+        <tr>
+          <td class="col-center">Total (VPL)</td>
+          <td class="${targetProj.totalNominal >= 0 ? 'text-green' : 'text-red'}">${formatMoney(targetProj.totalNominal)}</td>
+          <td>--</td>
+          <td class="${targetProj.npv >= 0 ? 'text-green' : 'text-red'}">${formatMoney(targetProj.npv)}</td>
+          <td>Payback Simples: ${targetProj.simplePayback !== null ? formatDecimal(targetProj.simplePayback) + ' a.' : 'N/R'}</td>
+          <td>Payback Desc.: ${targetProj.discountedPayback !== null ? formatDecimal(targetProj.discountedPayback) + ' a.' : 'N/R'}</td>
+          <td class="col-center">IL: ${targetProj.pi !== null ? formatDecimal(targetProj.pi) + 'x' : '--'}</td>
+        </tr>
+      `;
+    }
+
+    /* ==========================================================================
+       10. EXPORTAÇÃO DO RELATÓRIO EM CSV (EXCEL PT-BR COM BOM UTF-8)
+       ========================================================================== */
+
+    function exportarRelatorioCSV() {
+      if (!lastReportState) return;
+      const { projA, projB, mode, fisher, scenarios } = lastReportState;
+      const sep = ';';
+      const lines = [];
+
+      lines.push(['RELATORIO DE GESTAO DE INVESTIMENTOS - CAD 167 UFMG'].join(sep));
+      lines.push(['Aluno', 'Italo Leal Lana Santos', 'Matricula', '2024013893'].join(sep));
+      lines.push(['TMA (%)', (projA.tma * 100).toFixed(2).replace('.', ','), 'Taxa Reinvestimento MTIR (%)', (projA.reinvestRate * 100).toFixed(2).replace('.', ',')].join(sep));
+      lines.push([]);
+
+      lines.push(['INDICADORES RESUMIDOS', projA.name, mode === 'COMPARE' && projB ? projB.name : ''].join(sep));
+      const addMetric = (label, vA, vB = '') => lines.push([label, vA, vB].join(sep));
+      addMetric('Horizonte (anos)', projA.n, projB ? projB.n : '');
+      addMetric('VPL (R$)', projA.npv.toFixed(2).replace('.', ','), projB ? projB.npv.toFixed(2).replace('.', ',') : '');
+      addMetric('VAE (R$/ano)', (projA.eaa || 0).toFixed(2).replace('.', ','), projB ? (projB.eaa || 0).toFixed(2).replace('.', ',') : '');
+      addMetric('TIR (%)', projA.irr !== null ? (projA.irr * 100).toFixed(2).replace('.', ',') : 'N/A', projB && projB.irr !== null ? (projB.irr * 100).toFixed(2).replace('.', ',') : '');
+      addMetric('MTIR (%)', projA.mirr !== null ? (projA.mirr * 100).toFixed(2).replace('.', ',') : 'N/A', projB && projB.mirr !== null ? (projB.mirr * 100).toFixed(2).replace('.', ',') : '');
+      addMetric('Payback Simples (anos)', projA.simplePayback !== null ? projA.simplePayback.toFixed(2).replace('.', ',') : 'Nao recupera', projB && projB.simplePayback !== null ? projB.simplePayback.toFixed(2).replace('.', ',') : '');
+      addMetric('Payback Descontado (anos)', projA.discountedPayback !== null ? projA.discountedPayback.toFixed(2).replace('.', ',') : 'Nao recupera', projB && projB.discountedPayback !== null ? projB.discountedPayback.toFixed(2).replace('.', ',') : '');
+      addMetric('Indice de Lucratividade (IL)', projA.pi !== null ? projA.pi.toFixed(4).replace('.', ',') : 'N/A', projB && projB.pi !== null ? projB.pi.toFixed(4).replace('.', ',') : '');
+      if (fisher && fisher.rate !== null) {
+        addMetric('Ponto de Fisher (%)', (fisher.rate * 100).toFixed(2).replace('.', ','), '');
+      }
+
+      lines.push([]);
+      lines.push([`CRONOGRAMA DETALHADO - ${projA.name}`].join(sep));
+      lines.push(['Ano (t)', 'Fluxo Nominal (R$)', 'Fator Desconto', 'Valor Presente (R$)', 'Saldo Acum. Nominal (R$)', 'Saldo Acum. Descontado (R$)'].join(sep));
+      projA.schedule.forEach(r => {
+        lines.push([
+          r.t,
+          r.cf.toFixed(2).replace('.', ','),
+          r.discountFactor.toFixed(6).replace('.', ','),
+          r.pv.toFixed(2).replace('.', ','),
+          r.cumNominal.toFixed(2).replace('.', ','),
+          r.cumDiscounted.toFixed(2).replace('.', ',')
+        ].join(sep));
+      });
+
+      if (projB) {
+        lines.push([]);
+        lines.push([`CRONOGRAMA DETALHADO - ${projB.name}`].join(sep));
+        lines.push(['Ano (t)', 'Fluxo Nominal (R$)', 'Fator Desconto', 'Valor Presente (R$)', 'Saldo Acum. Nominal (R$)', 'Saldo Acum. Descontado (R$)'].join(sep));
+        projB.schedule.forEach(r => {
+          lines.push([
+            r.t,
+            r.cf.toFixed(2).replace('.', ','),
+            r.discountFactor.toFixed(6).replace('.', ','),
+            r.pv.toFixed(2).replace('.', ','),
+            r.cumNominal.toFixed(2).replace('.', ','),
+            r.cumDiscounted.toFixed(2).replace('.', ',')
+          ].join(sep));
+        });
+      }
+
+      if (scenarios) {
+        lines.push([]);
+        lines.push([`ANALISE DE CENARIOS - ${scenarios.projectName || projA.name}`].join(sep));
+        lines.push(['Cenario', 'Choque Fluxos (%)', 'Choque TMA (p.p.)', 'Probabilidade (%)', 'VPL (R$)', 'TIR (%)'].join(sep));
+        scenarios.results.forEach(s => {
+          lines.push([
+            s.label,
+            s.flowShockPct,
+            s.tmaShockPp,
+            s.probPct,
+            s.analyzed.npv.toFixed(2).replace('.', ','),
+            s.analyzed.irr !== null ? (s.analyzed.irr * 100).toFixed(2).replace('.', ',') : 'N/A'
+          ].join(sep));
+        });
+        lines.push(['VPL Esperado E[VPL]', scenarios.expectedNPV.toFixed(2).replace('.', ','), 'Desvio-Padrao', scenarios.stdDev.toFixed(2).replace('.', ',')].join(sep));
+      }
+
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `relatorio_investimentos_${projA.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ==========================================================================
+       11. INICIALIZAÇÃO DA PÁGINA E EVENTOS
+       ========================================================================== */
+
+    document.getElementById('tmaInput').addEventListener('input', () => {
+      if (document.getElementById('syncReinvestChk').checked) {
+        document.getElementById('reinvestInput').value = document.getElementById('tmaInput').value;
+      }
+    });
+
+    document.getElementById('investmentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      executarAnaliseInvestimento();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Inicia com os campos vazios (igual ao Trabalho 1) e tabela de 5 anos pronta para entrada ou clique nos exemplos
+      renderTabelaFluxos([], []);
+      alternarSyncReinvestimento();
+      atualizarPreviewOrcamento();
+      recalcularWacc();
+      document.getElementById('reportSection').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
